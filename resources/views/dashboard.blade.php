@@ -16,6 +16,17 @@
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path d="M10.707 1.793a1 1 0 0 0-1.414 0l-7.5 7.5A1 1 0 0 0 2 11h1v6a1 1 0 0 0 1 1h4v-4h4v4h4a1 1 0 0 0 1-1v-6h1a1 1 0 0 0 .707-1.707l-7.5-7.5Z"/></svg>
                             <span>Dashboard</span>
                         </a>
+                        <div x-data="{ open: false }" class="relative">
+                            <button @click="open = !open" type="button" class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-50 w-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm0-11a3 3 0 0 0-3 3v1a3 3 0 1 0 6 0v-1a3 3 0 0 0-3-3Z" clip-rule="evenodd"/></svg>
+                                <span>Customers</span>
+                                <svg class="w-4 h-4 ml-auto" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                            </button>
+                            <div x-show="open" @click.away="open = false" class="mt-1 ml-8 bg-white border border-gray-100 rounded-lg shadow-lg py-1 w-48 z-10 absolute left-0">
+                                <a href="{{ route('customers.create') }}" class="block px-4 py-2 text-gray-700 hover:bg-indigo-50 rounded">Add New Customer</a>
+                                <a href="{{ route('customers.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-indigo-50 rounded">Customers List</a>
+                            </div>
+                        </div>
                         <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-50">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M3 7.5A2.25 2.25 0 0 1 5.25 5.25h13.5A2.25 2.25 0 0 1 21 7.5v9.75A2.25 2.25 0 0 1 18.75 19.5H5.25A2.25 2.25 0 0 1 3 17.25V7.5Zm7.5 1.125a.375.375 0 0 0-.375.375v1.5c0 .207.168.375.375.375h6a.375.375 0 0 0 .375-.375v-1.5a.375.375 0 0 0-.375-.375h-6Z"/></svg>
                             <span>Bookings</span>
@@ -25,10 +36,6 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 6v12m-9-6h12M3 6h.008v.008H3V6Zm0 6h.008v.008H3V12Zm0 6h.008v.008H3V18Z" />
                             </svg>
                             <span>Halls</span>
-                        </a>
-                        <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-50">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm0-11a3 3 0 0 0-3 3v1a3 3 0 1 0 6 0v-1a3 3 0 0 0-3-3Z" clip-rule="evenodd"/></svg>
-                            <span>Customers</span>
                         </a>
                     </nav>
 
@@ -41,7 +48,6 @@
                     </form>
                 </div>
             </aside>
-
             <!-- Main content -->
             <section class="flex-1 p-6 lg:p-10">
                 <div class="max-w-7xl mx-auto">
