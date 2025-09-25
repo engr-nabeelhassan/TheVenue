@@ -1,0 +1,81 @@
+
+					<-The Venue Project Installation-> 
+
+
+C:\Users\Shahjahan\Desktop>php -v
+PHP 8.2.12 (cli) (built: Oct 24 2023 21:15:15) (ZTS Visual C++ 2019 x64)
+Copyright (c) The PHP Group
+Zend Engine v4.2.12, Copyright (c) Zend Technologies
+
+C:\Users\Shahjahan\Desktop>node -v
+v23.11.0
+
+C:\Users\Shahjahan\Desktop>npm -v
+10.9.2
+
+C:\Users\Shahjahan\Desktop>composer -v
+   ______
+  / ____/___  ____ ___  ____  ____  ________  _____
+ / /   / __ \/ __ `__ \/ __ \/ __ \/ ___/ _ \/ ___/
+/ /___/ /_/ / / / / / / /_/ / /_/ (__  )  __/ /
+\____/\____/_/ /_/ /_/ .___/\____/____/\___/_/
+                    /_/
+Composer version 2.8.8 2025-04-04 16:56:46
+
+
+Project Installation
+
+laravel new
+Project Name	: the_venue
+Starter kit	: none
+Testing prefer	: 0 [Pest]
+Database Select	: mysql
+ByDefault migra	: No
+npm install	: yes
+
+cd the_venue
+.env confiq	: the_venue
+xampp server	: the_venue
+composer run dev
+php artisan migrate
+
+
+The_Venue.bat
+
+@echo off
+title 🚀 Laravel + React + Cursor Runner
+
+:: Root folder set karo
+cd /d C:\Users\Shahjahan\Desktop\the_venue
+
+:: Laravel backend start (background)
+start /b composer run dev
+
+:: Cursor editor open
+cursor "%cd%"
+
+:: CMD khula rakho
+pause
+
+cd C:\Users\Shahjahan\Desktop\the_venue
+git init
+git remote add origin https://github.com/engr-nabeelhassan/TheVenue.git
+git add.
+git confiq --global user.email "nabeelkhoso46@gmail.com"
+git confiq --global user.name "Nabeel Ahmed"
+git commit -m "install project"
+git branch -M main
+git push -u origin main
+https://github.com/login/device
+password sent	: github app device success
+
+git add .
+git commit -m "xyz"
+git push
+
+Changes Return in github
+git restore .
+
+
+
+
