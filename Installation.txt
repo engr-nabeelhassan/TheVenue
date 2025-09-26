@@ -1,0 +1,47 @@
+					<--Project Installation-->
+
+
+1. PHP 8.2+ (XAMPP ya WAMP se aa jata hai)
+2. Composer (https://getcomposer.org/download/)
+3. Node.js & npm (https://nodejs.org/) — React/Tailwind ke liye
+4. Git (recommended)
+
+Check karo sab install hua hai:
+php -v
+composer -V
+node -v
+npm -v
+
+5. composer global require laravel/installer
+cd desktop/react_laravel
+
+6. laravel new 
+7. Project Name
+8. Select Starter Kit React js
+9. npm install
+10. .env config 
+11. php artisan install:api
+12. php artisan migrate  
+13. npm install axios
+
+
+run_project.bat
+
+@echo off
+title 🚀 Laravel + React + Cursor Runner
+
+:: Root folder set karo
+cd /d C:\Users\Shahjahan\Desktop\react_laravel
+
+:: Laravel backend start (background)
+start /b php artisan serve
+
+:: React frontend start (background)
+start /b npm run dev
+
+:: Cursor editor open
+cursor "%cd%"
+
+:: CMD khula rakho
+pause
+

@@ -6,7 +6,7 @@
                 <div class="w-full p-6 space-y-6">
                     <div>
                         <div class="text-2xl font-extrabold tracking-tight">
-                            <span class="text-indigo-600">Venue</span><span class="text-gray-900">Banquet</span>
+                            <span class="text-indigo-600">TheVenue-</span><span class="text-gray-900">Banquet</span>
                         </div>
                         <p class="text-sm text-gray-500 mt-1">Manage halls, bookings, and events</p>
                     </div>
