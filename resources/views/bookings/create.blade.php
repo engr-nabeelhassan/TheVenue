@@ -1,0 +1,311 @@
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            New Booking / Inventory Sale
+        </h2>
+    </x-slot>
+
+    <div class="py-6" x-data="bookingForm()">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white shadow-sm sm:rounded-lg p-6">
+                <form method="POST" action="{{ route('bookings.store') }}" @submit.prevent="onSubmit">
+                    @csrf
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Invoice Date</label>
+                            <input type="date" name="invoice_date" x-model="invoiceDate" class="mt-1 block w-full rounded-md border-gray-300" required>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Customer ID</label>
+                            <input type="number" x-model.number="customerId" @change="fetchCustomer()" class="mt-1 block w-full rounded-md border-gray-300" placeholder="Enter Customer ID" required>
+                            <p class="text-xs text-gray-500 mt-1">Latest: {{ optional($latestCustomer)->id }} - {{ optional($latestCustomer)->full_name }}</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Customer Name</label>
+                            <input type="text" name="customer_name" x-model="customerName" class="mt-1 block w-full rounded-md border-gray-300" required>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Event Type</label>
+                            <select name="event_type" x-model="eventType" class="mt-1 block w-full rounded-md border-gray-300" required>
+                                <option value="Wedding">Wedding</option>
+                                <option value="Birthday">Birthday</option>
+                                <option value="Corporate">Corporate</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Total Guests</label>
+                            <input type="number" name="total_guests" x-model.number="totalGuests" min="0" class="mt-1 block w-full rounded-md border-gray-300" placeholder="e.g. 50, 100, 200" required>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Event Start</label>
+                                <input type="datetime-local" x-model="eventStart" class="mt-1 block w-full rounded-md border-gray-300" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Event End</label>
+                                <input type="datetime-local" x-model="eventEnd" class="mt-1 block w-full rounded-md border-gray-300" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8">
+                        <h3 class="font-semibold mb-2">Inventory Items</h3>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full border">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-2 py-2 border text-left">SR</th>
+                                        <th class="px-2 py-2 border text-left">ITEM DESCRIPTION</th>
+                                        <th class="px-2 py-2 border text-right">QUANTITY</th>
+                                        <th class="px-2 py-2 border text-right">RATE</th>
+                                        <th class="px-2 py-2 border text-left">DISC% or DISC-LUM</th>
+                                        <th class="px-2 py-2 border text-right">NET AMOUNT</th>
+                                        <th class="px-2 py-2 border"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template x-for="(row, index) in items" :key="row.key">
+                                        <tr>
+                                            <td class="px-2 py-1 border text-sm" x-text="index + 1"></td>
+                                            <td class="px-2 py-1 border">
+                                                <input type="text" class="w-full border-gray-300 rounded-md" x-model="row.description" @input="onRowFieldChange()" placeholder="Description">
+                                            </td>
+                                            <td class="px-2 py-1 border text-right">
+                                                <input type="number" step="0.01" class="w-full text-right border-gray-300 rounded-md" x-model.number="row.quantity" @input="recalcRow(row); onRowFieldChange()">
+                                            </td>
+                                            <td class="px-2 py-1 border text-right">
+                                                <input type="number" step="0.01" class="w-full text-right border-gray-300 rounded-md" x-model.number="row.rate" @input="recalcRow(row); onRowFieldChange()">
+                                            </td>
+                                            <td class="px-2 py-1 border">
+                                                <div class="flex gap-1">
+                                                    <select class="border-gray-300 rounded-md" x-model="row.discountType" @change="recalcRow(row); onRowFieldChange()">
+                                                        <option value="percent">DISC%</option>
+                                                        <option value="lump">DISC-LUM</option>
+                                                    </select>
+                                                    <input type="number" step="0.01" class="w-full text-right border-gray-300 rounded-md" x-model.number="row.discountValue" @input="recalcRow(row); onRowFieldChange()" placeholder="Value">
+                                                </div>
+                                            </td>
+                                            <td class="px-2 py-1 border text-right" x-text="formatCurrency(row.netAmount)"></td>
+                                            <td class="px-2 py-1 border text-center">
+                                                <button type="button" class="text-red-600" @click="removeRow(index)" x-show="items.length > 1">Remove</button>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mt-2">
+                            <button type="button" class="px-3 py-1 bg-gray-100 border rounded" @click="addRow()">Add Row</button>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <div class="flex justify-between">
+                                <span>Invoice Subtotal</span>
+                                <span x-text="formatCurrency(itemsSubtotal)"></span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Discount Total</span>
+                                <span x-text="formatCurrency(itemsDiscountTotal)"></span>
+                            </div>
+                            <div class="flex justify-between font-semibold">
+                                <span>INVOICE TOTAL</span>
+                                <span x-text="formatCurrency(invoiceNetAmount)"></span>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Payment Status</label>
+                                <select x-model="paymentStatus" class="mt-1 block w-full rounded-md border-gray-300" required>
+                                    <option value="Cash">Cash</option>
+                                    <option value="Cheque">Cheque</option>
+                                    <option value="Online Transaction">Online Transaction</option>
+                                </select>
+                            </div>
+
+                            <div class="flex items-center gap-4">
+                                <label class="inline-flex items-center">
+                                    <input type="checkbox" class="mr-2" x-model="paymentOptionAdvance" @change="onPaymentOptionChange"> Advance
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="checkbox" class="mr-2" x-model="paymentOptionFull" @change="onPaymentOptionChange"> Full Payment
+                                </label>
+                            </div>
+                            <div x-show="paymentOptionAdvance">
+                                <label class="block text-sm font-medium text-gray-700">Advance Amount</label>
+                                <input type="number" step="0.01" x-model.number="advanceAmount" @input="recalcPayments()" class="mt-1 block w-full rounded-md border-gray-300" placeholder="Enter advance amount">
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Closing Amount</span>
+                                <span x-text="formatCurrency(invoiceClosingAmount)"></span>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">In words</label>
+                                <input type="text" x-model="amountInWords" class="mt-1 block w-full rounded-md border-gray-300" placeholder="Amount in words">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6">
+                        <label class="block text-sm font-medium text-gray-700">Remarks</label>
+                        <textarea x-model="remarks" class="mt-1 block w-full rounded-md border-gray-300" rows="3" placeholder="Any remarks..."></textarea>
+                    </div>
+
+                    <div class="mt-8 flex justify-end">
+                        <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">Save Booking</button>
+                    </div>
+
+                    <template x-for="hidden in hiddenFields" :key="hidden.name">
+                        <input type="hidden" :name="hidden.name" :value="hidden.value">
+                    </template>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function bookingForm() {
+            return {
+                invoiceDate: '{{ $today }}',
+                customerId: {{ optional($latestCustomer)->id ?? 'null' }},
+                customerName: '{{ addslashes(optional($latestCustomer)->full_name) }}',
+                eventType: 'Wedding',
+                totalGuests: 0,
+                eventStart: '',
+                eventEnd: '',
+                items: Array.from({ length: 5 }).map((_, i) => ({ key: i+1, description: '', quantity: 0, rate: 0, discountType: 'percent', discountValue: 0, netAmount: 0 })),
+                paymentStatus: 'Cash',
+                paymentOptionAdvance: false,
+                paymentOptionFull: false,
+                advanceAmount: 0,
+                amountInWords: '',
+                remarks: '',
+
+                get itemsSubtotal() {
+                    return this.items.reduce((sum, r) => sum + (Number(r.quantity) * Number(r.rate) || 0), 0);
+                },
+                get itemsDiscountTotal() {
+                    return this.items.reduce((sum, r) => {
+                        const line = (Number(r.quantity) * Number(r.rate)) || 0;
+                        if (r.discountType === 'percent') {
+                            return sum + (line * (Number(r.discountValue) || 0) / 100);
+                        }
+                        return sum + (Number(r.discountValue) || 0);
+                    }, 0);
+                },
+                get invoiceNetAmount() {
+                    return Math.max(0, this.itemsSubtotal - this.itemsDiscountTotal);
+                },
+                get invoiceTotalPaid() {
+                    if (this.paymentOptionFull) return this.invoiceNetAmount;
+                    if (this.paymentOptionAdvance) return Math.min(this.advanceAmount || 0, this.invoiceNetAmount);
+                    return 0;
+                },
+                get invoiceClosingAmount() {
+                    return Math.max(0, this.invoiceNetAmount - this.invoiceTotalPaid);
+                },
+                get hiddenFields() {
+                    const fields = [
+                        { name: 'invoice_date', value: this.invoiceDate },
+                        { name: 'customer_id', value: this.customerId },
+                        { name: 'customer_name', value: this.customerName },
+                        { name: 'event_type', value: this.eventType },
+                        { name: 'total_guests', value: this.totalGuests },
+                        { name: 'event_start_at', value: this.eventStart ? new Date(this.eventStart).toISOString() : '' },
+                        { name: 'event_end_at', value: this.eventEnd ? new Date(this.eventEnd).toISOString() : '' },
+                        { name: 'payment_status', value: this.paymentStatus },
+                        { name: 'payment_option', value: this.paymentOptionFull ? 'full' : (this.paymentOptionAdvance ? 'advance' : '') },
+                        { name: 'advance_amount', value: this.paymentOptionAdvance ? (this.advanceAmount || 0) : 0 },
+                        { name: 'items_subtotal', value: this.itemsSubtotal.toFixed(2) },
+                        { name: 'items_discount_amount', value: this.itemsDiscountTotal.toFixed(2) },
+                        { name: 'invoice_net_amount', value: this.invoiceNetAmount.toFixed(2) },
+                        { name: 'invoice_total_paid', value: this.invoiceTotalPaid.toFixed(2) },
+                        { name: 'invoice_closing_amount', value: this.invoiceClosingAmount.toFixed(2) },
+                        { name: 'amount_in_words', value: this.amountInWords },
+                        { name: 'remarks', value: this.remarks },
+                    ];
+
+                    this.items.forEach((r, idx) => {
+                        fields.push({ name: `items[${idx}][sr_no]`, value: idx + 1 });
+                        fields.push({ name: `items[${idx}][item_description]`, value: r.description });
+                        fields.push({ name: `items[${idx}][quantity]`, value: r.quantity });
+                        fields.push({ name: `items[${idx}][rate]`, value: r.rate });
+                        fields.push({ name: `items[${idx}][discount_type]`, value: r.discountType });
+                        fields.push({ name: `items[${idx}][discount_value]`, value: r.discountValue });
+                        fields.push({ name: `items[${idx}][net_amount]`, value: r.netAmount });
+                    });
+
+                    return fields;
+                },
+
+                formatCurrency(v) {
+                    return new Intl.NumberFormat('en-PK', { style: 'currency', currency: 'PKR' }).format(Number(v || 0));
+                },
+
+                recalcRow(row) {
+                    const line = (Number(row.quantity) * Number(row.rate)) || 0;
+                    const discount = row.discountType === 'percent'
+                        ? line * (Number(row.discountValue) || 0) / 100
+                        : (Number(row.discountValue) || 0);
+                    row.netAmount = Math.max(0, line - discount);
+                },
+
+                addRow() {
+                    this.items.push({ key: Date.now(), description: '', quantity: 0, rate: 0, discountType: 'percent', discountValue: 0, netAmount: 0 });
+                },
+                ensureTrailingEmptyRow() {
+                    const hasEmptyRow = this.items.some(r => !(r.description?.trim()) && Number(r.quantity) === 0 && Number(r.rate) === 0 && Number(r.discountValue) === 0);
+                    if (!hasEmptyRow) {
+                        this.addRow();
+                    }
+                },
+                onRowFieldChange() {
+                    // If initial 5 rows are filled, keep adding one empty row at the end
+                    this.ensureTrailingEmptyRow();
+                },
+                removeRow(index) {
+                    if (this.items.length > 1) {
+                        this.items.splice(index, 1);
+                    }
+                },
+
+                onPaymentOptionChange() {
+                    if (this.paymentOptionFull) {
+                        this.paymentOptionAdvance = false;
+                        this.advanceAmount = 0;
+                    }
+                    if (this.paymentOptionAdvance) {
+                        this.paymentOptionFull = false;
+                    }
+                },
+                recalcPayments() {},
+
+                async fetchCustomer() {
+                    if (!this.customerId) return;
+                    try {
+                        const res = await fetch(`{{ route('api.customer') }}?customer_id=${this.customerId}`, { headers: { 'Accept': 'application/json' } });
+                        const data = await res.json();
+                        if (data.found) {
+                            this.customerName = data.customer.full_name;
+                        }
+                    } catch (e) {}
+                },
+
+                async onSubmit(e) {
+                    e.target.submit();
+                }
+            }
+        }
+    </script>
+</x-app-layout>
+
+

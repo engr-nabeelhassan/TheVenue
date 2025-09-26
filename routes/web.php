@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\BookingController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -20,6 +21,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/customers/{customer}/edit', [CustomerController::class, 'edit'])->name('customers.edit');
     Route::put('/customers/{customer}', [CustomerController::class, 'update'])->name('customers.update');
     Route::delete('/customers/{customer}', [CustomerController::class, 'destroy'])->name('customers.destroy');
+
+    // Bookings
+    Route::get('/bookings/create', [BookingController::class, 'create'])->name('bookings.create');
+    Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
+    Route::get('/api/customer', [BookingController::class, 'customerById'])->name('api.customer');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
