@@ -269,6 +269,91 @@ class BookingController extends Controller
             ],
         ];
     }
+
+    public function cancelled(Request $request): View
+    {
+        $query = Booking::with('customer')
+            ->where('event_status', 'Cancelled');
+
+        // Search functionality
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('customer_name', 'like', "%{$search}%")
+                  ->orWhere('invoice_date', 'like', "%{$search}%")
+                  ->orWhere('event_type', 'like', "%{$search}%");
+            });
+        }
+
+        $bookings = $query->orderBy('created_at', 'desc')->paginate(10);
+
+        return view('bookings.cancelled', compact('bookings'));
+    }
+
+    public function postponed(Request $request): View
+    {
+        $query = Booking::with('customer')
+            ->where('event_status', 'Postponed');
+
+        // Search functionality
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('customer_name', 'like', "%{$search}%")
+                  ->orWhere('invoice_date', 'like', "%{$search}%")
+                  ->orWhere('event_type', 'like', "%{$search}%");
+            });
+        }
+
+        $bookings = $query->orderBy('created_at', 'desc')->paginate(10);
+
+        return view('bookings.postponed', compact('bookings'));
+    }
+
+    public function upcoming(Request $request): View
+    {
+        $query = Booking::with('customer')
+            ->where('event_status', '!=', 'Cancelled')
+            ->where('event_status', '!=', 'Postponed')
+            ->where('event_start_at', '>=', now());
+
+        // Search functionality
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('customer_name', 'like', "%{$search}%")
+                  ->orWhere('event_type', 'like', "%{$search}%")
+                  ->orWhere('contact', 'like', "%{$search}%");
+            });
+        }
+
+        $bookings = $query->orderBy('event_start_at', 'asc')->paginate(10);
+
+        return view('bookings.upcoming', compact('bookings'));
+    }
+
+    public function upcomingPdf(Request $request)
+    {
+        $query = Booking::with('customer')
+            ->where('event_status', '!=', 'Cancelled')
+            ->where('event_status', '!=', 'Postponed')
+            ->where('event_start_at', '>=', now());
+
+        // Search functionality
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('customer_name', 'like', "%{$search}%")
+                  ->orWhere('event_type', 'like', "%{$search}%")
+                  ->orWhere('contact', 'like', "%{$search}%");
+            });
+        }
+
+        $bookings = $query->orderBy('event_start_at', 'asc')->get();
+
+        $pdf = Pdf::loadView('bookings.upcoming-pdf', compact('bookings'));
+        return $pdf->download('upcoming-events-' . now()->format('Y-m-d') . '.pdf');
+    }
 }
 
 

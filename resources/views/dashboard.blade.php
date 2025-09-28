@@ -78,8 +78,24 @@
                             <p class="text-gray-500 mt-1">Here is an overview of your banquet operations.</p>
                         </div>
                         <div class="hidden md:flex items-center gap-3">
-                            <a href="{{ route('bookings.create') }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white border border-gray-200 text-gray-700 hover:bg-gray-50">New Booking</a>
-                            <a href="{{ route('payments.create') }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 text-white shadow hover:bg-indigo-500">Collect Payment</a>
+                            <a href="{{ route('bookings.cancelled') }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-red-600 text-white shadow hover:bg-red-500">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                                Cancelled Booking
+                            </a>
+                            <a href="{{ route('bookings.postponed') }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-yellow-600 text-white shadow hover:bg-yellow-500">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                                Postponed Booking
+                            </a>
+                            <a href="{{ route('bookings.upcoming') }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-green-600 text-white shadow hover:bg-green-500">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                                Upcoming Events
+                            </a>
                         </div>
                     </div>
 

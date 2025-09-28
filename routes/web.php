@@ -33,6 +33,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/bookings/{booking}', [BookingController::class, 'destroy'])->name('bookings.destroy');
     Route::get('/bookings/{booking}/invoice', [BookingController::class, 'invoice'])->name('bookings.invoice');
     Route::get('/bookings-calendar', [BookingController::class, 'calendar'])->name('bookings.calendar');
+    Route::get('/bookings-cancelled', [BookingController::class, 'cancelled'])->name('bookings.cancelled');
+    Route::get('/bookings-postponed', [BookingController::class, 'postponed'])->name('bookings.postponed');
+    Route::get('/bookings-upcoming', [BookingController::class, 'upcoming'])->name('bookings.upcoming');
+    Route::get('/bookings-upcoming-pdf', [BookingController::class, 'upcomingPdf'])->name('bookings.upcoming.pdf');
     Route::get('/api/customer', [BookingController::class, 'customerById'])->name('api.customer');
 
     // Payments
