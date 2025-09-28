@@ -19,6 +19,7 @@ class Booking extends Model
         'total_guests',
         'event_start_at',
         'event_end_at',
+        'event_status',
         'payment_status',
         'payment_option',
         'advance_amount',
@@ -45,6 +46,11 @@ class Booking extends Model
     public function items(): HasMany
     {
         return $this->hasMany(BookingItem::class);
+    }
+
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class);
     }
 }
 

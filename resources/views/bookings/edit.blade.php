@@ -1,15 +1,16 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            New Booking / Inventory Sale
+            Edit Booking - Invoice #{{ $booking->id }}
         </h2>
     </x-slot>
 
     <div class="py-6" x-data="bookingForm()">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white shadow-sm sm:rounded-lg p-6">
-                <form method="POST" action="{{ route('bookings.store') }}" @submit.prevent="onSubmit">
+                <form method="POST" action="{{ route('bookings.update', $booking) }}" @submit.prevent="onSubmit">
                     @csrf
+                    @method('PUT')
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
@@ -43,6 +44,16 @@
                             <input type="number" name="total_guests" x-model.number="totalGuests" min="0" class="mt-1 block w-full rounded-md border-gray-300" placeholder="e.g. 50, 100, 200" required>
                         </div>
 
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Event Status</label>
+                            <select name="event_status" x-model="eventStatus" class="mt-1 block w-full rounded-md border-gray-300" required>
+                                <option value="In Progress">In Progress</option>
+                                <option value="Completed">Completed</option>
+                                <option value="Cancelled">Cancelled</option>
+                                <option value="Postponed">Postponed</option>
+                            </select>
+                        </div>
+
                         <div class="grid grid-cols-2 gap-2">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Event Start</label>
@@ -52,16 +63,6 @@
                                 <label class="block text-sm font-medium text-gray-700">Event End</label>
                                 <input type="datetime-local" x-model="eventEnd" class="mt-1 block w-full rounded-md border-gray-300" required>
                             </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Event Status</label>
-                            <select name="event_status" x-model="eventStatus" class="mt-1 block w-full rounded-md border-gray-300" required>
-                                <option value="In Progress">In Progress</option>
-                                <option value="Completed">Completed</option>
-                                <option value="Cancelled">Cancelled</option>
-                                <option value="Postponed">Postponed</option>
-                            </select>
                         </div>
                     </div>
 
@@ -170,8 +171,9 @@
                         <textarea x-model="remarks" class="mt-1 block w-full rounded-md border-gray-300" rows="3" placeholder="Any remarks..."></textarea>
                     </div>
 
-                    <div class="mt-8 flex justify-end">
-                        <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">Save Booking</button>
+                    <div class="mt-8 flex justify-end space-x-4">
+                        <a href="{{ route('bookings.index') }}" class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400">Cancel</a>
+                        <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">Update Booking</button>
                     </div>
 
                     <template x-for="hidden in hiddenFields" :key="hidden.name">
@@ -185,21 +187,31 @@
     <script>
         function bookingForm() {
             return {
-                invoiceDate: '{{ $today }}',
-                customerId: {{ optional($latestCustomer)->id ?? 'null' }},
-                customerName: '{{ addslashes(optional($latestCustomer)->full_name) }}',
-                eventType: 'Wedding',
-                eventStatus: 'In Progress',
-                totalGuests: 0,
-                eventStart: '{{ $selectedDate }}T10:00',
-                eventEnd: '{{ $selectedDate }}T18:00',
-                items: Array.from({ length: 5 }).map((_, i) => ({ key: i+1, description: '', quantity: 0, rate: 0, discountType: 'percent', discountValue: 0, netAmount: 0 })),
-                paymentStatus: 'Cash',
-                paymentOptionAdvance: false,
-                paymentOptionFull: false,
-                advanceAmount: 0,
-                amountInWords: '',
-                remarks: '',
+                invoiceDate: '{{ $booking->invoice_date->format('Y-m-d') }}',
+                customerId: {{ $booking->customer_id }},
+                customerName: '{{ addslashes($booking->customer_name) }}',
+                eventType: '{{ $booking->event_type }}',
+                eventStatus: '{{ $booking->event_status }}',
+                totalGuests: {{ $booking->total_guests }},
+                eventStart: '{{ $booking->event_start_at->format('Y-m-d\TH:i') }}',
+                eventEnd: '{{ $booking->event_end_at->format('Y-m-d\TH:i') }}',
+                items: @json($booking->items->map(function($item) {
+                    return [
+                        'key' => $item->id,
+                        'description' => $item->item_description,
+                        'quantity' => $item->quantity,
+                        'rate' => $item->rate,
+                        'discountType' => $item->discount_type,
+                        'discountValue' => $item->discount_value,
+                        'netAmount' => $item->net_amount
+                    ];
+                })),
+                paymentStatus: '{{ $booking->payment_status }}',
+                paymentOptionAdvance: {{ $booking->payment_option === 'advance' ? 'true' : 'false' }},
+                paymentOptionFull: {{ $booking->payment_option === 'full' ? 'true' : 'false' }},
+                advanceAmount: {{ $booking->advance_amount }},
+                amountInWords: '{{ addslashes($booking->amount_in_words) }}',
+                remarks: '{{ addslashes($booking->remarks) }}',
 
                 get itemsSubtotal() {
                     return this.items.reduce((sum, r) => sum + (Number(r.quantity) * Number(r.rate) || 0), 0);
@@ -281,7 +293,6 @@
                     }
                 },
                 onRowFieldChange() {
-                    // If initial 5 rows are filled, keep adding one empty row at the end
                     this.ensureTrailingEmptyRow();
                 },
                 removeRow(index) {
@@ -319,5 +330,3 @@
         }
     </script>
 </x-app-layout>
-
-

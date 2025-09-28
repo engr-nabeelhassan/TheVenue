@@ -18,8 +18,11 @@
                         <x-nav-link :href="route('customers.index')" :active="request()->routeIs('customers.*')">
                             Customers
                         </x-nav-link>
-                        <x-nav-link :href="route('bookings.create')" :active="request()->routeIs('bookings.*')">
-                            New Booking
+                        <x-nav-link :href="route('bookings.index')" :active="request()->routeIs('bookings.*')">
+                            Bookings
+                        </x-nav-link>
+                        <x-nav-link :href="route('payments.index')" :active="request()->routeIs('payments.*')">
+                            Payments
                         </x-nav-link>
                 </div>
             </div>
@@ -42,6 +45,10 @@
                     <x-slot name="content">
                         <x-dropdown-link :href="route('profile.edit')">
                             {{ __('Profile') }}
+                        </x-dropdown-link>
+
+                        <x-dropdown-link href="#" onclick="backupDatabase()">
+                            {{ __('Backup Database') }}
                         </x-dropdown-link>
 
                         <!-- Authentication -->
@@ -104,3 +111,25 @@
         </div>
     </div>
 </nav>
+
+<script>
+function backupDatabase() {
+    if (confirm('Are you sure you want to backup the database? This will export the current database to XAMPP.')) {
+        // Create a form to submit the backup request
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '{{ route("backup.database") }}';
+        
+        // Add CSRF token
+        const csrfToken = document.createElement('input');
+        csrfToken.type = 'hidden';
+        csrfToken.name = '_token';
+        csrfToken.value = '{{ csrf_token() }}';
+        form.appendChild(csrfToken);
+        
+        document.body.appendChild(form);
+        form.submit();
+        document.body.removeChild(form);
+    }
+}
+</script>
