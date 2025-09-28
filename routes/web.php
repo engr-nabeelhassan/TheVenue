@@ -6,6 +6,7 @@ use App\Http\Controllers\BookingController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\BackupController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ReportsController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -47,6 +48,19 @@ Route::middleware('auth')->group(function () {
     Route::get('/payments/{payment}', [PaymentController::class, 'show'])->name('payments.show');
     Route::get('/api/customer-balance', [PaymentController::class, 'getCustomerBalance'])->name('api.customer-balance');
     Route::get('/api/customer-bookings', [PaymentController::class, 'getCustomerBookings'])->name('api.customer-bookings');
+    
+    // Reports
+    Route::get('/reports', [ReportsController::class, 'index'])->name('reports.index');
+    Route::get('/reports/customers-summary', [ReportsController::class, 'customersSummary'])->name('reports.customers-summary');
+    Route::get('/reports/customers-summary-pdf', [ReportsController::class, 'customersSummaryPdf'])->name('reports.customers-summary.pdf');
+    Route::get('/reports/events-balance', [ReportsController::class, 'eventsBalance'])->name('reports.events-balance');
+    Route::get('/reports/events-balance-pdf', [ReportsController::class, 'eventsBalancePdf'])->name('reports.events-balance.pdf');
+    Route::get('/reports/payment-summary', [ReportsController::class, 'paymentSummary'])->name('reports.payment-summary');
+    Route::get('/reports/payment-summary-pdf', [ReportsController::class, 'paymentSummaryPdf'])->name('reports.payment-summary.pdf');
+    Route::get('/reports/venue-events', [ReportsController::class, 'venueEvents'])->name('reports.venue-events');
+    Route::get('/reports/venue-events-pdf', [ReportsController::class, 'venueEventsPdf'])->name('reports.venue-events.pdf');
+    Route::get('/reports/customer-statements', [ReportsController::class, 'customerStatements'])->name('reports.customer-statements');
+    Route::get('/reports/customer-statements-pdf', [ReportsController::class, 'customerStatementsPdf'])->name('reports.customer-statements.pdf');
     
     // Backup
     Route::post('/backup', [BackupController::class, 'backup'])->name('backup.database');
