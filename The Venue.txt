@@ -76,6 +76,13 @@ git push
 Changes Return in github
 git restore .
 
+cd folder_name
+git pull origin main
+
+git branch -r
+
+git fetch origin
+git reset --hard origin/main
 
 git --version
 cd desktop      
@@ -87,3 +94,5 @@ composer install
 npm install
 copy .env.example .env
 php artisan key:generate
+
+

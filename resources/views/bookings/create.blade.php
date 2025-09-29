@@ -170,8 +170,9 @@
                         <textarea x-model="remarks" class="mt-1 block w-full rounded-md border-gray-300" rows="3" placeholder="Any remarks..."></textarea>
                     </div>
 
-                    <div class="mt-8 flex justify-end">
-                        <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">Save Booking</button>
+                    <div class="mt-8 flex justify-end gap-2">
+                        <button type="submit" @click="formAction='save'" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">Save Booking</button>
+                        <button type="submit" @click="formAction='save_and_print'" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">Save & Print Invoice</button>
                     </div>
 
                     <template x-for="hidden in hiddenFields" :key="hidden.name">
@@ -193,7 +194,8 @@
                 totalGuests: 0,
                 eventStart: '{{ $selectedDate }}T10:00',
                 eventEnd: '{{ $selectedDate }}T18:00',
-                items: Array.from({ length: 5 }).map((_, i) => ({ key: i+1, description: '', quantity: 0, rate: 0, discountType: 'percent', discountValue: 0, netAmount: 0 })),
+                items: [{ key: 1, description: '', quantity: 0, rate: 0, discountType: 'percent', discountValue: 0, netAmount: 0 }],
+                formAction: 'save',
                 paymentStatus: 'Cash',
                 paymentOptionAdvance: false,
                 paymentOptionFull: false,
@@ -226,6 +228,7 @@
                 },
                 get hiddenFields() {
                     const fields = [
+                        { name: 'action', value: this.formAction },
                         { name: 'invoice_date', value: this.invoiceDate },
                         { name: 'customer_id', value: this.customerId },
                         { name: 'customer_name', value: this.customerName },
@@ -246,7 +249,9 @@
                         { name: 'remarks', value: this.remarks },
                     ];
 
-                    this.items.forEach((r, idx) => {
+                    // Only include non-empty item rows
+                    const nonEmptyItems = this.items.filter(r => (r.description && r.description.trim().length) || Number(r.quantity) > 0 || Number(r.rate) > 0 || Number(r.discountValue) > 0);
+                    nonEmptyItems.forEach((r, idx) => {
                         fields.push({ name: `items[${idx}][sr_no]`, value: idx + 1 });
                         fields.push({ name: `items[${idx}][item_description]`, value: r.description });
                         fields.push({ name: `items[${idx}][quantity]`, value: r.quantity });

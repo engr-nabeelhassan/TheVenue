@@ -92,7 +92,9 @@ class BookingController extends Controller
             'remarks' => ['nullable', 'string', 'max:2000'],
         ]);
 
-        DB::transaction(function () use ($validated) {
+        $booking = null;
+
+        DB::transaction(function () use ($validated, &$booking) {
             $booking = Booking::create([
                 'invoice_date' => $validated['invoice_date'],
                 'customer_id' => $validated['customer_id'],
@@ -126,6 +128,10 @@ class BookingController extends Controller
                 ]);
             }
         });
+
+        if ($request->input('action') === 'save_and_print' && $booking) {
+            return redirect()->route('bookings.invoice', $booking);
+        }
 
         return redirect()->route('bookings.index')->with('status', 'Booking saved successfully.');
     }
@@ -322,8 +328,7 @@ class BookingController extends Controller
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('customer_name', 'like', "%{$search}%")
-                  ->orWhere('event_type', 'like', "%{$search}%")
-                  ->orWhere('contact', 'like', "%{$search}%");
+                  ->orWhere('event_type', 'like', "%{$search}%");
             });
         }
 
@@ -344,8 +349,7 @@ class BookingController extends Controller
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('customer_name', 'like', "%{$search}%")
-                  ->orWhere('event_type', 'like', "%{$search}%")
-                  ->orWhere('contact', 'like', "%{$search}%");
+                  ->orWhere('event_type', 'like', "%{$search}%");
             });
         }
 

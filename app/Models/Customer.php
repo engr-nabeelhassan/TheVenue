@@ -15,6 +15,16 @@ class Customer extends Model
         'phone',
         'address',
     ];
+
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class);
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
 }
 
 

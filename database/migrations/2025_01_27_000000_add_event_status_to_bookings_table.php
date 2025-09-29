@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('bookings', function (Blueprint $table) {
-            $table->enum('event_status', ['In Progress', 'Completed', 'Cancelled', 'Postponed'])->default('In Progress')->after('event_end_at');
-        });
+        if (Schema::hasTable('bookings') && !Schema::hasColumn('bookings', 'event_status')) {
+            Schema::table('bookings', function (Blueprint $table) {
+                $table->enum('event_status', ['In Progress', 'Completed', 'Cancelled', 'Postponed'])->default('In Progress')->after('event_end_at');
+            });
+        }
     }
 
     /**
@@ -21,8 +23,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('bookings', function (Blueprint $table) {
-            $table->dropColumn('event_status');
-        });
+        if (Schema::hasTable('bookings') && Schema::hasColumn('bookings', 'event_status')) {
+            Schema::table('bookings', function (Blueprint $table) {
+                $table->dropColumn('event_status');
+            });
+        }
     }
 };

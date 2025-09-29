@@ -108,6 +108,8 @@
                                                class="text-indigo-600 hover:text-indigo-900">View</a>
                                             <a href="{{ route('bookings.edit', $booking) }}" 
                                                class="text-yellow-600 hover:text-yellow-900">Edit</a>
+                                            <a href="{{ route('bookings.invoice', $booking) }}" 
+                                               class="text-green-600 hover:text-green-900">Invoice</a>
                                             <form method="POST" action="{{ route('bookings.destroy', $booking) }}" 
                                                   class="inline" onsubmit="return confirm('Are you sure you want to delete this booking?')">
                                                 @csrf

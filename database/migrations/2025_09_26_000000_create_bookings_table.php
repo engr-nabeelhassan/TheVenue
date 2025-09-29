@@ -37,7 +37,7 @@ return new class extends Migration
 
             $table->timestamps();
 
-            $table->foreign('customer_id')->references('id')->on('customers')->cascadeOnUpdate()->restrictOnDelete();
+            // Defer adding FK to a later migration to avoid ordering issues in fresh installs
         });
     }
 

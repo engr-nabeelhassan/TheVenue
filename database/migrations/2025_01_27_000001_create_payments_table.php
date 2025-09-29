@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('booking_id')->constrained()->onDelete('cascade');
-            $table->foreignId('customer_id')->constrained()->onDelete('cascade');
+            // Use unsigned big integers initially to avoid FK issues if parent tables don't exist yet
+            $table->unsignedBigInteger('booking_id');
+            $table->unsignedBigInteger('customer_id');
             $table->string('customer_name');
             $table->string('contact');
             $table->date('receipt_date');
@@ -25,6 +26,9 @@ return new class extends Migration
             $table->decimal('remaining_balance', 10, 2)->default(0);
             $table->text('remarks')->nullable();
             $table->timestamps();
+
+            $table->index('booking_id');
+            $table->index('customer_id');
         });
     }
 
