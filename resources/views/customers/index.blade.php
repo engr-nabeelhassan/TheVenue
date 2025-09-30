@@ -27,12 +27,66 @@
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
                                 <tr>
-                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Full Name</th>
-                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">CNIC</th>
-                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
-                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Address</th>
-                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created</th>
+                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <a href="{{ route('customers.index', array_merge(request()->query(), ['sort' => 'id', 'direction' => request('sort')==='id' && request('direction')==='asc' ? 'desc' : 'asc'])) }}" class="inline-flex items-center gap-1 hover:text-gray-700">
+                                            ID
+                                            @if(request('sort')==='id')
+                                                <span class="text-gray-400">{{ request('direction')==='asc' ? '▲' : '▼' }}</span>
+                                            @else
+                                                <span class="text-gray-300">↕</span>
+                                            @endif
+                                        </a>
+                                    </th>
+                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <a href="{{ route('customers.index', array_merge(request()->query(), ['sort' => 'full_name', 'direction' => request('sort')==='full_name' && request('direction')==='asc' ? 'desc' : 'asc'])) }}" class="inline-flex items-center gap-1 hover:text-gray-700">
+                                            Full Name
+                                            @if(request('sort')==='full_name')
+                                                <span class="text-gray-400">{{ request('direction')==='asc' ? '▲' : '▼' }}</span>
+                                            @else
+                                                <span class="text-gray-300">↕</span>
+                                            @endif
+                                        </a>
+                                    </th>
+                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <a href="{{ route('customers.index', array_merge(request()->query(), ['sort' => 'cnic', 'direction' => request('sort')==='cnic' && request('direction')==='asc' ? 'desc' : 'asc'])) }}" class="inline-flex items-center gap-1 hover:text-gray-700">
+                                            CNIC
+                                            @if(request('sort')==='cnic')
+                                                <span class="text-gray-400">{{ request('direction')==='asc' ? '▲' : '▼' }}</span>
+                                            @else
+                                                <span class="text-gray-300">↕</span>
+                                            @endif
+                                        </a>
+                                    </th>
+                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <a href="{{ route('customers.index', array_merge(request()->query(), ['sort' => 'phone', 'direction' => request('sort')==='phone' && request('direction')==='asc' ? 'desc' : 'asc'])) }}" class="inline-flex items-center gap-1 hover:text-gray-700">
+                                            Phone
+                                            @if(request('sort')==='phone')
+                                                <span class="text-gray-400">{{ request('direction')==='asc' ? '▲' : '▼' }}</span>
+                                            @else
+                                                <span class="text-gray-300">↕</span>
+                                            @endif
+                                        </a>
+                                    </th>
+                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <a href="{{ route('customers.index', array_merge(request()->query(), ['sort' => 'address', 'direction' => request('sort')==='address' && request('direction')==='asc' ? 'desc' : 'asc'])) }}" class="inline-flex items-center gap-1 hover:text-gray-700">
+                                            Address
+                                            @if(request('sort')==='address')
+                                                <span class="text-gray-400">{{ request('direction')==='asc' ? '▲' : '▼' }}</span>
+                                            @else
+                                                <span class="text-gray-300">↕</span>
+                                            @endif
+                                        </a>
+                                    </th>
+                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <a href="{{ route('customers.index', array_merge(request()->query(), ['sort' => 'created_at', 'direction' => request('sort')==='created_at' && request('direction')==='asc' ? 'desc' : 'asc'])) }}" class="inline-flex items-center gap-1 hover:text-gray-700">
+                                            Created
+                                            @if(request('sort')==='created_at')
+                                                <span class="text-gray-400">{{ request('direction')==='asc' ? '▲' : '▼' }}</span>
+                                            @else
+                                                <span class="text-gray-300">↕</span>
+                                            @endif
+                                        </a>
+                                    </th>
                                     <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                                 </tr>
                             </thead>
@@ -65,7 +119,30 @@
                         </table>
                     </div>
 
-                    <div class="mt-4">{{ $customers->links() }}</div>
+                    <div class="mt-4 flex items-center justify-between gap-4">
+                        <form method="GET" action="{{ route('customers.index') }}" class="flex items-center gap-2 text-sm">
+                            <span class="text-gray-600">Show</span>
+                            <select name="per_page" class="rounded-md border-gray-300" onchange="this.form.submit()">
+                                @foreach([10,25,50,100] as $n)
+                                    <option value="{{ $n }}" {{ (int)request('per_page', 10) === $n ? 'selected' : '' }}>{{ $n }}</option>
+                                @endforeach
+                            </select>
+                            <span class="text-gray-600">entries</span>
+                            <input type="hidden" name="q" value="{{ request('q') }}" />
+                            <input type="hidden" name="sort" value="{{ request('sort', 'created_at') }}" />
+                            <input type="hidden" name="direction" value="{{ request('direction', 'desc') }}" />
+                        </form>
+
+                        <div class="text-sm text-gray-600">
+                            @if ($customers->total() > 0)
+                                Showing {{ $customers->firstItem() }} to {{ $customers->lastItem() }} of {{ $customers->total() }} entries
+                            @else
+                                Showing 0 entries
+                            @endif
+                        </div>
+
+                        <div>{{ $customers->links() }}</div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -13,12 +13,27 @@ class CustomerController extends Controller
     {
         $searchQuery = trim((string) $request->input('q'));
 
+        // Sorting params with whitelisting
+        $sortableColumns = ['id', 'full_name', 'cnic', 'phone', 'address', 'created_at'];
+        $sort = $request->input('sort', 'created_at');
+        if (!in_array($sort, $sortableColumns, true)) {
+            $sort = 'created_at';
+        }
+        $direction = strtolower((string) $request->input('direction', 'desc')) === 'asc' ? 'asc' : 'desc';
+
+        // Per page selection with sensible bounds
+        $perPage = (int) $request->input('per_page', 10);
+        $allowedPerPage = [10, 25, 50, 100];
+        if (!in_array($perPage, $allowedPerPage, true)) {
+            $perPage = 10;
+        }
+
         $customers = Customer::query()
             ->when($searchQuery !== '', function ($query) use ($searchQuery) {
                 $query->where('full_name', 'like', "%{$searchQuery}%");
             })
-            ->latest()
-            ->paginate(10)
+            ->orderBy($sort, $direction)
+            ->paginate($perPage)
             ->withQueryString();
 
         return view('customers.index', compact('customers'));
