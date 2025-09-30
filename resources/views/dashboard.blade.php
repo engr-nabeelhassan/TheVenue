@@ -6,11 +6,10 @@
                 <div class="w-full p-6 space-y-6">
                     <div>
                         <div class="text-2xl font-extrabold tracking-tight">
-                            <span class="text-indigo-600">TheVenue-</span><span class="text-gray-900">Banquet</span>
+                            <span class="text-indigo-600">THE VENUE-</span><span class="text-gray-900">Banquet</span>
                         </div>
                         <p class="text-sm text-gray-500 mt-1">Manage halls, bookings, and events</p>
                     </div>
-
                     <nav class="space-y-1">
                         <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-lg bg-indigo-50 text-indigo-700 font-medium">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path d="M10.707 1.793a1 1 0 0 0-1.414 0l-7.5 7.5A1 1 0 0 0 2 11h1v6a1 1 0 0 0 1 1h4v-4h4v4h4a1 1 0 0 0 1-1v-6h1a1 1 0 0 0 .707-1.707l-7.5-7.5Z"/></svg>

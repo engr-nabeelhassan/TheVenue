@@ -18,7 +18,7 @@
         <div class="min-h-screen flex flex-col sm:justify-center items-center p-6">
             <div class="text-center">
                 <a href="/" class="inline-flex items-center gap-2">
-                    <span class="text-3xl font-extrabold tracking-tight"><span class="text-indigo-600">Venue</span><span class="text-gray-900">Banquet</span></span>
+                    <span class="text-3xl font-extrabold tracking-tight"><span class="text-indigo-600">THE </span><span class="text-gray-900">VENUE</span></span>
                 </a>
                 <p class="text-sm text-gray-500 mt-1">Elegant events & banquet management</p>
             </div>
