@@ -7,6 +7,13 @@
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
+    @if (session('reset_link'))
+        <div class="mb-4 p-3 rounded bg-green-50 text-green-700 text-sm">
+            Reset link generated:
+            <a class="underline font-medium" href="{{ session('reset_link') }}">{{ session('reset_link') }}</a>
+        </div>
+    @endif
+
     <form method="POST" action="{{ route('password.email') }}">
         @csrf
 
