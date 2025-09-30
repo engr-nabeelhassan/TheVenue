@@ -1,6 +1,13 @@
 <x-guest-layout>
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
+    
+    <!-- Success Message -->
+    @if (session('success'))
+        <div class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
+            {{ session('success') }}
+        </div>
+    @endif
 
     <div class="text-center mb-6">
         <h2 class="text-2xl font-bold tracking-tight text-gray-900">Welcome back</h2>
@@ -10,11 +17,11 @@
     <form method="POST" action="{{ route('login') }}" class="space-y-4">
         @csrf
 
-        <!-- Username -->
+        <!-- Email -->
         <div>
-            <x-input-label for="name" :value="__('Username')" />
-            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="username" placeholder="e.g. shahjahan" />
-            <x-input-error :messages="$errors->get('name')" class="mt-2" />
+            <x-input-label for="email" :value="__('Email')" />
+            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" placeholder="e.g. user@example.com" />
+            <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
         <!-- Password -->
