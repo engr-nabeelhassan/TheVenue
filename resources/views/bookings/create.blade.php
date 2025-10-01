@@ -189,6 +189,8 @@
                         <textarea x-model="remarks" class="mt-1 block w-full rounded-md border-gray-300" rows="3" placeholder="Any remarks..."></textarea>
                     </div>
 
+                    <input type="hidden" name="customer_id" x-model="customerId">
+                    
                     <div class="mt-8 flex justify-end gap-2">
                         <button type="submit" @click="formAction='save'" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">Save Booking</button>
                         <button type="submit" @click="formAction='save_and_print'" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">Save & Print Invoice</button>
@@ -255,7 +257,6 @@
                     const fields = [
                         { name: 'action', value: this.formAction },
                         { name: 'invoice_date', value: this.invoiceDate },
-                        { name: 'customer_id', value: this.customerId },
                         { name: 'customer_name', value: this.customerName },
                         { name: 'event_type', value: this.eventType },
                         { name: 'event_status', value: this.eventStatus },
@@ -432,6 +433,19 @@
                 },
 
                 async onSubmit(e) {
+                    // Validate customer is selected
+                    if (!this.customerId) {
+                        alert('Please select a customer first');
+                        return;
+                    }
+                    
+                    // Validate at least one item
+                    const nonEmptyItems = this.items.filter(r => (r.description && r.description.trim().length) || Number(r.quantity) > 0 || Number(r.rate) > 0);
+                    if (nonEmptyItems.length === 0) {
+                        alert('Please add at least one item');
+                        return;
+                    }
+                    
                     e.target.submit();
                 }
             }
