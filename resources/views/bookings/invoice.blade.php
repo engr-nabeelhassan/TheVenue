@@ -23,10 +23,15 @@
 </head>
 <body>
     <div class="container">
+        <div style="text-align: center; margin-bottom: 20px; border-bottom: 2px solid #333; padding-bottom: 12px;">
+            <div style="font-size: 22px; font-weight: bold; margin-bottom: 4px;">THE VENUE BANQUET</div>
+            <div style="font-size: 11px; margin-bottom: 2px;">Contact: 0335-999 9357 - 0304-888 1100 | 021-34635544 - 021-34635533</div>
+            <div style="font-size: 11px;">Address: Askari 4, Main Rashid Minhas Road Karachi</div>
+        </div>
+
         <div class="header">
             <div>
-                <div class="title">The Venue - Invoice</div>
-                <div class="muted">Banquet and Events</div>
+                <div class="title">Invoice</div>
             </div>
             <div class="meta">
                 <div><strong>Invoice #:</strong> {{ $booking->id }}</div>
@@ -37,16 +42,15 @@
         <div class="section">
             <table>
                 <tr>
-                    <th style="width: 50%">Bill To</th>
+                    <th style="width: 50%">Customer Details</th>
                     <th>Event Details</th>
                 </tr>
                 <tr>
                     <td>
-                        <div><strong>{{ $booking->customer_name }}</strong></div>
+                        <div><strong>Customer:</strong> {{ $booking->customer_name }}</div>
                         @if($booking->customer)
-                            <div class="muted">CNIC: {{ $booking->customer->cnic }}</div>
-                            <div class="muted">Phone: {{ $booking->customer->phone }}</div>
-                            <div class="muted">{{ $booking->customer->address }}</div>
+                            <div class="muted"><strong>Contact:</strong> {{ $booking->customer->phone }}</div>
+                            <div class="muted"><strong>Address:</strong> {{ $booking->customer->address }}</div>
                         @endif
                     </td>
                     <td>
