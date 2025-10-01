@@ -234,7 +234,9 @@ class BookingController extends Controller
     {
         $booking->load(['customer', 'items']);
         
-        $pdf = Pdf::loadView('bookings.invoice', compact('booking'));
+        // Render Blade to HTML explicitly to ensure all directives are compiled
+        $html = view('bookings.invoice', compact('booking'))->render();
+        $pdf = Pdf::loadHTML($html)->setPaper('a4');
         return $pdf->download("invoice-{$booking->id}.pdf");
     }
 
