@@ -17,15 +17,34 @@
                             <input type="date" name="invoice_date" x-model="invoiceDate" class="mt-1 block w-full rounded-md border-gray-300" required>
                         </div>
 
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Customer ID</label>
-                            <input type="number" x-model.number="customerId" @change="fetchCustomer()" class="mt-1 block w-full rounded-md border-gray-300" placeholder="Enter Customer ID" required>
+                        <div class="relative">
+                            <label class="block text-sm font-medium text-gray-700">Customer Search</label>
+                            <input 
+                                type="text" 
+                                x-model="customerSearch" 
+                                @input.debounce.300ms="searchCustomers()" 
+                                @focus="showCustomerDropdown = true"
+                                class="mt-1 block w-full rounded-md border-gray-300" 
+                                placeholder="Search by name or enter ID"
+                                autocomplete="off">
+                            <div x-show="showCustomerDropdown && customerResults.length > 0" 
+                                 @click.away="showCustomerDropdown = false"
+                                 class="absolute z-10 mt-1 left-0 right-0 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+                                <template x-for="customer in customerResults" :key="customer.id">
+                                    <div @click="selectCustomer(customer)" 
+                                         class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                                        <div class="font-medium" x-text="customer.full_name"></div>
+                                        <div class="text-xs text-gray-500" x-text="'ID: ' + customer.id + ' | ' + customer.phone"></div>
+                                    </div>
+                                </template>
+                            </div>
                             <p class="text-xs text-gray-500 mt-1">Latest: {{ optional($latestCustomer)->id }} - {{ optional($latestCustomer)->full_name }}</p>
                         </div>
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Customer Name</label>
-                            <input type="text" name="customer_name" x-model="customerName" class="mt-1 block w-full rounded-md border-gray-300" required>
+                            <input type="text" name="customer_name" x-model="customerName" class="mt-1 block w-full rounded-md border-gray-300" required readonly>
+                            <p class="text-xs text-gray-500 mt-1" x-show="customerId">ID: <span x-text="customerId"></span></p>
                         </div>
 
                         <div>
@@ -189,6 +208,9 @@
                 invoiceDate: '{{ $today }}',
                 customerId: {{ optional($latestCustomer)->id ?? 'null' }},
                 customerName: '{{ addslashes(optional($latestCustomer)->full_name) }}',
+                customerSearch: '{{ addslashes(optional($latestCustomer)->full_name) }}',
+                customerResults: [],
+                showCustomerDropdown: false,
                 eventType: 'Wedding',
                 eventStatus: 'In Progress',
                 totalGuests: 0,
@@ -224,7 +246,10 @@
                     return 0;
                 },
                 get invoiceClosingAmount() {
-                    return Math.max(0, this.invoiceNetAmount - this.invoiceTotalPaid);
+                    const amount = Math.max(0, this.invoiceNetAmount - this.invoiceTotalPaid);
+                    // Auto-update amount in words
+                    this.amountInWords = this.numberToWords(amount);
+                    return amount;
                 },
                 get hiddenFields() {
                     const fields = [
@@ -268,12 +293,79 @@
                     return new Intl.NumberFormat('en-PK', { style: 'currency', currency: 'PKR' }).format(Number(v || 0));
                 },
 
+                numberToWords(num) {
+                    if (num === 0) return 'Zero Rupees Only';
+                    
+                    const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
+                    const teens = ['Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+                    const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+                    
+                    const convertLessThanThousand = (n) => {
+                        if (n === 0) return '';
+                        if (n < 10) return ones[n];
+                        if (n < 20) return teens[n - 10];
+                        if (n < 100) {
+                            const ten = Math.floor(n / 10);
+                            const one = n % 10;
+                            return tens[ten] + (one > 0 ? ' ' + ones[one] : '');
+                        }
+                        const hundred = Math.floor(n / 100);
+                        const rest = n % 100;
+                        return ones[hundred] + ' Hundred' + (rest > 0 ? ' ' + convertLessThanThousand(rest) : '');
+                    };
+                    
+                    let amount = Math.floor(num);
+                    const paisa = Math.round((num - amount) * 100);
+                    
+                    if (amount === 0 && paisa > 0) {
+                        return convertLessThanThousand(paisa) + ' Paisa Only';
+                    }
+                    
+                    let result = '';
+                    
+                    // Crore (10,000,000)
+                    if (amount >= 10000000) {
+                        const crore = Math.floor(amount / 10000000);
+                        result += convertLessThanThousand(crore) + ' Crore ';
+                        amount = amount % 10000000;
+                    }
+                    
+                    // Lakh (100,000)
+                    if (amount >= 100000) {
+                        const lakh = Math.floor(amount / 100000);
+                        result += convertLessThanThousand(lakh) + ' Lakh ';
+                        amount = amount % 100000;
+                    }
+                    
+                    // Thousand (1,000)
+                    if (amount >= 1000) {
+                        const thousand = Math.floor(amount / 1000);
+                        result += convertLessThanThousand(thousand) + ' Thousand ';
+                        amount = amount % 1000;
+                    }
+                    
+                    // Remaining (0-999)
+                    if (amount > 0) {
+                        result += convertLessThanThousand(amount) + ' ';
+                    }
+                    
+                    result = result.trim() + ' Rupees';
+                    
+                    if (paisa > 0) {
+                        result += ' and ' + convertLessThanThousand(paisa) + ' Paisa';
+                    }
+                    
+                    return result + ' Only';
+                },
+
                 recalcRow(row) {
                     const line = (Number(row.quantity) * Number(row.rate)) || 0;
                     const discount = row.discountType === 'percent'
                         ? line * (Number(row.discountValue) || 0) / 100
                         : (Number(row.discountValue) || 0);
                     row.netAmount = Math.max(0, line - discount);
+                    // Trigger amount in words update
+                    this.$nextTick(() => { this.invoiceClosingAmount; });
                 },
 
                 addRow() {
@@ -303,18 +395,40 @@
                     if (this.paymentOptionAdvance) {
                         this.paymentOptionFull = false;
                     }
+                    // Trigger amount in words update
+                    this.$nextTick(() => { this.invoiceClosingAmount; });
                 },
-                recalcPayments() {},
+                recalcPayments() {
+                    // Trigger amount in words update
+                    this.$nextTick(() => { this.invoiceClosingAmount; });
+                },
 
-                async fetchCustomer() {
-                    if (!this.customerId) return;
+                async searchCustomers() {
+                    const query = this.customerSearch.trim();
+                    if (!query || query.length < 2) {
+                        this.customerResults = [];
+                        return;
+                    }
+                    
                     try {
-                        const res = await fetch(`{{ route('api.customer') }}?customer_id=${this.customerId}`, { headers: { 'Accept': 'application/json' } });
+                        const res = await fetch(`{{ route('api.customer.search') }}?q=${encodeURIComponent(query)}`, { 
+                            headers: { 'Accept': 'application/json' } 
+                        });
                         const data = await res.json();
-                        if (data.found) {
-                            this.customerName = data.customer.full_name;
-                        }
-                    } catch (e) {}
+                        this.customerResults = data.customers || [];
+                        this.showCustomerDropdown = true;
+                    } catch (e) {
+                        console.error('Search error:', e);
+                        this.customerResults = [];
+                    }
+                },
+
+                selectCustomer(customer) {
+                    this.customerId = customer.id;
+                    this.customerName = customer.full_name;
+                    this.customerSearch = customer.full_name;
+                    this.showCustomerDropdown = false;
+                    this.customerResults = [];
                 },
 
                 async onSubmit(e) {

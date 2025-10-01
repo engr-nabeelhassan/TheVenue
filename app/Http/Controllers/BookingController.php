@@ -278,6 +278,33 @@ class BookingController extends Controller
         ];
     }
 
+    public function searchCustomers(Request $request): array
+    {
+        $query = $request->query('q', '');
+        
+        if (strlen($query) < 2) {
+            return ['customers' => []];
+        }
+
+        $customers = Customer::where('full_name', 'like', "%{$query}%")
+            ->orWhere('phone', 'like', "%{$query}%")
+            ->orWhere('cnic', 'like', "%{$query}%")
+            ->limit(10)
+            ->get(['id', 'full_name', 'phone', 'cnic', 'address']);
+
+        return [
+            'customers' => $customers->map(function($customer) {
+                return [
+                    'id' => $customer->id,
+                    'full_name' => $customer->full_name,
+                    'phone' => $customer->phone,
+                    'cnic' => $customer->cnic,
+                    'address' => $customer->address,
+                ];
+            })
+        ];
+    }
+
     public function cancelled(Request $request): View
     {
         $query = Booking::with('customer')
