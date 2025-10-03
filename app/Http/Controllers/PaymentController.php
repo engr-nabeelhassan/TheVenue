@@ -63,6 +63,14 @@ class PaymentController extends Controller
         return redirect()->route('payments.index')->with('status', 'Payment collected successfully.');
     }
 
+    public function receipt(Payment $payment)
+    {
+        $payment->load(['booking', 'customer']);
+        
+        $pdf = Pdf::loadView('payments.receipt', compact('payment'))->setPaper('a4');
+        return $pdf->download("payment-receipt-{$payment->id}.pdf");
+    }
+
     public function details(Request $request)
     {
         $fromDate = $request->input('from_date');

@@ -198,12 +198,15 @@
                 },
 
                 calculateRemainingBalance() {
+                    const prevBalance = parseFloat(this.previousBalance) || 0;
+                    const amount = parseFloat(this.addAmount) || 0;
+                    
                     if (this.paymentMethod === 'Debit') {
-                        this.remainingBalance = this.previousBalance + this.addAmount;
+                        this.remainingBalance = prevBalance + amount;
                     } else if (this.paymentMethod === 'Credit') {
-                        this.remainingBalance = this.previousBalance - this.addAmount;
+                        this.remainingBalance = prevBalance - amount;
                     } else {
-                        this.remainingBalance = this.previousBalance;
+                        this.remainingBalance = prevBalance;
                     }
                 },
 

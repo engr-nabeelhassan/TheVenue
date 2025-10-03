@@ -82,7 +82,7 @@
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Credit</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Balance</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Remarks</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Details</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
@@ -111,9 +111,13 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                         <button onclick="showPaymentDetails({{ $payment->id }})" 
-                                                class="text-indigo-600 hover:text-indigo-900">
+                                                class="text-indigo-600 hover:text-indigo-900 mr-3">
                                             Details
                                         </button>
+                                        <a href="{{ route('payments.receipt', $payment) }}" 
+                                           class="text-green-600 hover:text-green-900" target="_blank">
+                                            Print Receipt
+                                        </a>
                                     </td>
                                 </tr>
                             @empty
