@@ -128,6 +128,10 @@
                                                 class="text-indigo-600 hover:text-indigo-900 mr-3">
                                             Details
                                         </button>
+                                        <a href="<?php echo e(route('payments.edit', $payment)); ?>" 
+                                           class="text-blue-600 hover:text-blue-900 mr-3">
+                                            Edit
+                                        </a>
                                         <a href="<?php echo e(route('payments.receipt', $payment)); ?>" 
                                            class="text-green-600 hover:text-green-900" target="_blank">
                                             Print Receipt

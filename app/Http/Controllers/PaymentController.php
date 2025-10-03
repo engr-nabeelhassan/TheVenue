@@ -74,6 +74,34 @@ class PaymentController extends Controller
         return redirect()->route('payments.index')->with('status', 'Payment collected successfully.');
     }
 
+    public function edit(Payment $payment): View
+    {
+        $customers = Customer::orderBy('full_name')->get();
+        $payment->load(['booking', 'customer']);
+        return view('payments.edit', compact('payment', 'customers'));
+    }
+
+    public function update(Request $request, Payment $payment): RedirectResponse
+    {
+        $validated = $request->validate([
+            'booking_id' => ['required', 'exists:bookings,id'],
+            'customer_id' => ['required', 'exists:customers,id'],
+            'customer_name' => ['required', 'string', 'max:255'],
+            'contact' => ['required', 'string', 'max:20'],
+            'receipt_date' => ['required', 'date'],
+            'payment_method' => ['required', 'in:Debit,Credit'],
+            'payment_status' => ['required', 'in:Cash,Cheque,Online Transaction'],
+            'previous_balance' => ['required', 'numeric', 'min:0'],
+            'add_amount' => ['required', 'numeric', 'min:0'],
+            'remaining_balance' => ['required', 'numeric'],
+            'remarks' => ['nullable', 'string', 'max:500'],
+        ]);
+
+        $payment->update($validated);
+
+        return redirect()->route('payments.index')->with('status', 'Payment updated successfully.');
+    }
+
     public function receipt(Payment $payment)
     {
         $payment->load(['booking', 'customer']);

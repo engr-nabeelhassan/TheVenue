@@ -46,6 +46,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/payments/create', [PaymentController::class, 'create'])->name('payments.create');
     Route::post('/payments', [PaymentController::class, 'store'])->name('payments.store');
     Route::get('/payments/{payment}/receipt', [PaymentController::class, 'receipt'])->name('payments.receipt');
+    Route::get('/payments/{payment}/edit', [PaymentController::class, 'edit'])->name('payments.edit');
+    Route::put('/payments/{payment}', [PaymentController::class, 'update'])->name('payments.update');
     Route::get('/payments/details', [PaymentController::class, 'details'])->name('payments.details');
     Route::get('/payments/{payment}', [PaymentController::class, 'show'])->name('payments.show');
     Route::get('/api/customer-balance', [PaymentController::class, 'getCustomerBalance'])->name('api.customer-balance');
