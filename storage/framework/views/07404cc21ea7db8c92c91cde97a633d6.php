@@ -72,12 +72,57 @@
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sr#</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer Name</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <a href="<?php echo e(route('payments.index', array_merge(request()->query(), ['sort' => 'sr', 'direction' => request('sort')==='sr' && request('direction')==='asc' ? 'desc' : 'asc']))); ?>" class="inline-flex items-center gap-1 hover:text-gray-700">
+                                        Sr#
+                                        <?php if(request('sort')==='sr'): ?>
+                                            <span class="text-gray-400"><?php echo e(request('direction')==='asc' ? '▲' : '▼'); ?></span>
+                                        <?php else: ?>
+                                            <span class="text-gray-300">↕</span>
+                                        <?php endif; ?>
+                                    </a>
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <a href="<?php echo e(route('payments.index', array_merge(request()->query(), ['sort' => 'customer_name', 'direction' => request('sort')==='customer_name' && request('direction')==='asc' ? 'desc' : 'asc']))); ?>" class="inline-flex items-center gap-1 hover:text-gray-700">
+                                        Customer Name
+                                        <?php if(request('sort')==='customer_name'): ?>
+                                            <span class="text-gray-400"><?php echo e(request('direction')==='asc' ? '▲' : '▼'); ?></span>
+                                        <?php else: ?>
+                                            <span class="text-gray-300">↕</span>
+                                        <?php endif; ?>
+                                    </a>
+                                </th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Debit</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Credit</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Balance</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <a href="<?php echo e(route('payments.index', array_merge(request()->query(), ['sort' => 'debit', 'direction' => request('sort')==='debit' && request('direction')==='asc' ? 'desc' : 'asc']))); ?>" class="inline-flex items-center gap-1 hover:text-gray-700">
+                                        Debit
+                                        <?php if(request('sort')==='debit'): ?>
+                                            <span class="text-gray-400"><?php echo e(request('direction')==='asc' ? '▲' : '▼'); ?></span>
+                                        <?php else: ?>
+                                            <span class="text-gray-300">↕</span>
+                                        <?php endif; ?>
+                                    </a>
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <a href="<?php echo e(route('payments.index', array_merge(request()->query(), ['sort' => 'credit', 'direction' => request('sort')==='credit' && request('direction')==='asc' ? 'desc' : 'asc']))); ?>" class="inline-flex items-center gap-1 hover:text-gray-700">
+                                        Credit
+                                        <?php if(request('sort')==='credit'): ?>
+                                            <span class="text-gray-400"><?php echo e(request('direction')==='asc' ? '▲' : '▼'); ?></span>
+                                        <?php else: ?>
+                                            <span class="text-gray-300">↕</span>
+                                        <?php endif; ?>
+                                    </a>
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <a href="<?php echo e(route('payments.index', array_merge(request()->query(), ['sort' => 'balance', 'direction' => request('sort')==='balance' && request('direction')==='asc' ? 'desc' : 'asc']))); ?>" class="inline-flex items-center gap-1 hover:text-gray-700">
+                                        Balance
+                                        <?php if(request('sort')==='balance'): ?>
+                                            <span class="text-gray-400"><?php echo e(request('direction')==='asc' ? '▲' : '▼'); ?></span>
+                                        <?php else: ?>
+                                            <span class="text-gray-300">↕</span>
+                                        <?php endif; ?>
+                                    </a>
+                                </th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                             </tr>
                         </thead>
@@ -149,6 +194,8 @@
                         </select>
                         <span class="text-gray-600">entries</span>
                         <input type="hidden" name="search" value="<?php echo e(request('search')); ?>" />
+                        <input type="hidden" name="sort" value="<?php echo e(request('sort', 'sr')); ?>" />
+                        <input type="hidden" name="direction" value="<?php echo e(request('direction', 'desc')); ?>" />
                     </form>
 
                     <div class="text-sm text-gray-600">

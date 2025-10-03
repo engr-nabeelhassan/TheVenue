@@ -47,7 +47,21 @@ class PaymentController extends Controller
             $perPage = 10;
         }
 
-        $payments = $query->orderBy('created_at', 'desc')->paginate($perPage)->appends($request->query());
+        // Sorting (sr, customer_name, debit, credit, balance)
+        $sort = $request->input('sort', 'sr');
+        $direction = strtolower($request->input('direction', 'desc')) === 'asc' ? 'asc' : 'desc';
+        $sortable = [
+            'sr' => 'id',
+            'customer_name' => 'customer_name',
+            'debit' => 'add_amount',
+            'credit' => 'add_amount',
+            'balance' => 'remaining_balance',
+        ];
+        $sortColumn = $sortable[$sort] ?? 'id';
+
+        $payments = $query->orderBy($sortColumn, $direction)
+                          ->paginate($perPage)
+                          ->appends($request->query());
 
         // Totals across the filtered dataset (not just current page)
         $totalDebit = (clone $filtered)->where('payment_method', 'Debit')->sum('add_amount');
