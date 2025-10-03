@@ -8,7 +8,19 @@
     <div class="py-6" x-data="paymentForm()">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white shadow-sm sm:rounded-lg p-6">
-                <form method="POST" action="{{ route('payments.store') }}" @submit.prevent="onSubmit">
+                <!-- Validation Errors -->
+                @if ($errors->any())
+                    <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                        <strong>Errors:</strong>
+                        <ul class="mt-2 list-disc list-inside">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                <form method="POST" action="{{ route('payments.store') }}" onsubmit="console.log('Form submitting...', new FormData(this))">
                     @csrf
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -35,15 +47,19 @@
 
                             <div x-show="customerName">
                                 <label class="block text-sm font-medium text-gray-700">Selected Customer</label>
-                                <input type="text" name="customer_name" x-model="customerName" 
+                                <input type="text" x-model="customerName" 
                                        class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50" readonly>
                             </div>
 
-                            <div>
+                            <div x-show="contact">
                                 <label class="block text-sm font-medium text-gray-700">Contact</label>
-                                <input type="text" name="contact" x-model="contact" 
-                                       class="mt-1 block w-full rounded-md border-gray-300" readonly>
+                                <input type="text" x-model="contact" 
+                                       class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50" readonly>
                             </div>
+
+                            <!-- Hidden fields for form submission -->
+                            <input type="hidden" name="customer_name" x-model="customerName">
+                            <input type="hidden" name="contact" x-model="contact">
                         </div>
 
                         <!-- Payment Information -->
@@ -224,10 +240,6 @@
                 printReceipt() {
                     // This would open a print dialog for the receipt
                     window.print();
-                },
-
-                async onSubmit(e) {
-                    e.target.submit();
                 }
             }
         }
