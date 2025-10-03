@@ -126,17 +126,23 @@
                                 <div class="flex items-center justify-between">
                                     <h2 class="text-xl font-semibold text-gray-900">Booking Calendar</h2>
                                     <div class="flex items-center space-x-2">
-                                        <button onclick="previousMonth()" class="p-2 rounded-lg bg-white border border-gray-200 hover:bg-gray-50">
+                                        <a href="<?php echo e(route('dashboard', ['year' => $month == 1 ? $year - 1 : $year, 'month' => $month == 1 ? 12 : $month - 1])); ?>" 
+                                           class="p-2 rounded-lg bg-white border border-gray-200 hover:bg-gray-50">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                                             </svg>
-                                        </button>
-                                        <span id="current-month" class="text-lg font-medium text-gray-900"><?php echo e(now()->format('F Y')); ?></span>
-                                        <button onclick="nextMonth()" class="p-2 rounded-lg bg-white border border-gray-200 hover:bg-gray-50">
+                                        </a>
+                                        <a href="<?php echo e(route('dashboard', ['year' => now()->year, 'month' => now()->month])); ?>" 
+                                           class="px-3 py-2 text-sm rounded-lg bg-white border border-gray-200 hover:bg-gray-50">
+                                            Today
+                                        </a>
+                                        <span class="text-lg font-medium text-gray-900"><?php echo e(\Carbon\Carbon::create($year, $month, 1)->format('F Y')); ?></span>
+                                        <a href="<?php echo e(route('dashboard', ['year' => $month == 12 ? $year + 1 : $year, 'month' => $month == 12 ? 1 : $month + 1])); ?>" 
+                                           class="p-2 rounded-lg bg-white border border-gray-200 hover:bg-gray-50">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                                             </svg>
-                                        </button>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -155,8 +161,8 @@
 
                                 <div class="grid grid-cols-7 gap-1" id="calendar-grid">
                                     <?php
-                                        $firstDay = \Carbon\Carbon::create(now()->year, now()->month, 1);
-                                        $lastDay = \Carbon\Carbon::create(now()->year, now()->month, 1)->endOfMonth();
+                                        $firstDay = \Carbon\Carbon::create($year, $month, 1);
+                                        $lastDay = \Carbon\Carbon::create($year, $month, 1)->endOfMonth();
                                         $startDate = $firstDay->copy()->startOfWeek();
                                         $endDate = $lastDay->copy()->endOfWeek();
                                         $currentDate = $startDate->copy();
@@ -165,7 +171,7 @@
                                     <?php while($currentDate <= $endDate): ?>
                                         <?php
                                             $dateString = $currentDate->format('Y-m-d');
-                                            $isCurrentMonth = $currentDate->month == now()->month;
+                                            $isCurrentMonth = $currentDate->month == $month;
                                             $isToday = $currentDate->isToday();
                                             $dayBookings = $recentBookings->get($dateString, collect());
                                             $hasBookings = $dayBookings->count() > 0;
@@ -298,71 +304,42 @@
         </div>
     </div>
 
+    <!-- Booking Details Modal -->
+    <div id="bookingModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-lg max-w-2xl w-full p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold" id="modalDate"></h3>
+                    <button onclick="closeBookingModal()" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div id="modalContent"></div>
+            </div>
+        </div>
+    </div>
+
     <script>
-        let currentYear = <?php echo e(now()->year); ?>;
-        let currentMonth = <?php echo e(now()->month); ?>;
+        function handleDateClick(dateString, bookings) {
+            const modal = document.getElementById('bookingModal');
+            const modalDate = document.getElementById('modalDate');
+            const modalContent = document.getElementById('modalContent');
+            
+            modalDate.textContent = new Date(dateString).toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
 
-        function previousMonth() {
-            currentMonth--;
-            if (currentMonth < 1) {
-                currentMonth = 12;
-                currentYear--;
-            }
-            updateCalendar();
-        }
-
-        function nextMonth() {
-            currentMonth++;
-            if (currentMonth > 12) {
-                currentMonth = 1;
-                currentYear++;
-            }
-            updateCalendar();
-        }
-
-        function updateCalendar() {
-            // Update the month display
-            const monthNames = [
-                'January', 'February', 'March', 'April', 'May', 'June',
-                'July', 'August', 'September', 'October', 'November', 'December'
-            ];
-            document.getElementById('current-month').textContent = 
-                monthNames[currentMonth - 1] + ' ' + currentYear;
-
-            // Reload the calendar grid
-            fetch(`/bookings-calendar?year=${currentYear}&month=${currentMonth}`)
-                .then(response => response.text())
-                .then(html => {
-                    // Extract just the calendar grid from the response
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(html, 'text/html');
-                    const calendarGrid = doc.querySelector('#calendar-grid');
-                    if (calendarGrid) {
-                        document.getElementById('calendar-grid').innerHTML = calendarGrid.innerHTML;
-                    }
-                })
-                .catch(error => {
-                    console.error('Error loading calendar:', error);
-                });
-        }
-
-        // Add click handlers for calendar dates
-        document.addEventListener('click', function(e) {
-            if (e.target.closest('[data-date]')) {
-                const dateElement = e.target.closest('[data-date]');
-                const date = dateElement.getAttribute('data-date');
-                handleDateClick(date);
-            }
-        });
-
-        function handleDateClick(date, bookings) {
-            if (bookings && bookings.length > 0) {
+            if (bookings.length > 0) {
                 let content = '<div class="space-y-4">';
-                content += '<h3 class="text-lg font-semibold text-gray-900">Bookings for ' + new Date(date).toLocaleDateString() + '</h3>';
-                
                 bookings.forEach(booking => {
                     content += `
-                        <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50">
+                        <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 cursor-pointer"
+                             onclick="viewBooking(${booking.id})">
                             <div class="flex justify-between items-start">
                                 <div>
                                     <h4 class="font-semibold text-gray-900">${booking.customer_name}</h4>
@@ -387,46 +364,38 @@
                     `;
                 });
                 content += '</div>';
-                
-                // Create and show modal
-                showBookingModal(content);
+                modalContent.innerHTML = content;
             } else {
-                alert('No bookings for ' + new Date(date).toLocaleDateString() + '\n\nThis date is available for booking.');
-            }
-        }
-
-        function showBookingModal(content) {
-            // Create modal if it doesn't exist
-            let modal = document.getElementById('bookingModal');
-            if (!modal) {
-                modal = document.createElement('div');
-                modal.id = 'bookingModal';
-                modal.className = 'fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50';
-                modal.innerHTML = `
-                    <div class="flex items-center justify-center min-h-screen p-4">
-                        <div class="bg-white rounded-lg max-w-2xl w-full p-6">
-                            <div class="flex justify-between items-center mb-4">
-                                <h3 class="text-lg font-semibold">Booking Details</h3>
-                                <button onclick="closeBookingModal()" class="text-gray-400 hover:text-gray-600">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                    </svg>
-                                </button>
-                            </div>
-                            <div id="bookingDetails"></div>
-                        </div>
+                modalContent.innerHTML = `
+                    <div class="text-center py-8">
+                        <div class="text-green-600 text-6xl mb-4">✓</div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Date Available</h3>
+                        <p class="text-gray-600">This date is available for booking.</p>
+                        <a href="<?php echo e(route('bookings.create')); ?>?date=${dateString}" 
+                           class="mt-4 inline-block bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">
+                            Create Booking
+                        </a>
                     </div>
                 `;
-                document.body.appendChild(modal);
             }
             
-            document.getElementById('bookingDetails').innerHTML = content;
             modal.classList.remove('hidden');
         }
 
         function closeBookingModal() {
             document.getElementById('bookingModal').classList.add('hidden');
         }
+
+        function viewBooking(bookingId) {
+            window.location.href = `/bookings/${bookingId}`;
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('bookingModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeBookingModal();
+            }
+        });
     </script>
  <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>

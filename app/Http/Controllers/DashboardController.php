@@ -11,7 +11,7 @@ use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
         // Get today's bookings
         $todayBookings = Booking::whereDate('event_start_at', today())->count();
@@ -27,10 +27,14 @@ class DashboardController extends Controller
         $bookedHalls = Booking::whereDate('event_start_at', today())->count();
         $availableHalls = max(0, $totalHalls - $bookedHalls);
         
-        // Get recent bookings for calendar
+        // Get year and month from request or use current
+        $year = $request->get('year', now()->year);
+        $month = $request->get('month', now()->month);
+        
+        // Get bookings for calendar with selected month/year
         $recentBookings = Booking::with('customer')
-            ->whereMonth('event_start_at', now()->month)
-            ->whereYear('event_start_at', now()->year)
+            ->whereMonth('event_start_at', $month)
+            ->whereYear('event_start_at', $year)
             ->get()
             ->groupBy(function ($booking) {
                 return $booking->event_start_at->format('Y-m-d');
@@ -41,7 +45,9 @@ class DashboardController extends Controller
             'upcomingEvents', 
             'totalCustomers',
             'availableHalls',
-            'recentBookings'
+            'recentBookings',
+            'year',
+            'month'
         ));
     }
 }
