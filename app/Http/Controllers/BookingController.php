@@ -41,7 +41,30 @@ class BookingController extends Controller
             $query->where('invoice_date', '<=', $request->invoice_date_to);
         }
 
-        $bookings = $query->orderBy('created_at', 'desc')->paginate(10);
+        // Sorting
+        $sortField = $request->get('sort', 'invoice_date');
+        $sortDirection = $request->get('direction', 'desc');
+        
+        // Validate sort field
+        $allowedSortFields = ['invoice_date', 'customer_name', 'event_type', 'event_start_at', 'event_end_at', 'event_status'];
+        if (!in_array($sortField, $allowedSortFields)) {
+            $sortField = 'invoice_date';
+        }
+        
+        // Validate sort direction
+        if (!in_array($sortDirection, ['asc', 'desc'])) {
+            $sortDirection = 'desc';
+        }
+
+        $query->orderBy($sortField, $sortDirection);
+
+        // Pagination
+        $perPage = (int) $request->get('per_page', 10);
+        if (!in_array($perPage, [10, 25, 50, 100])) {
+            $perPage = 10;
+        }
+
+        $bookings = $query->paginate($perPage)->appends($request->query());
 
         return view('bookings.index', compact('bookings'));
     }

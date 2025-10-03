@@ -1,16 +1,24 @@
-<x-app-layout>
-    <x-slot name="header">
+<?php if (isset($component)) { $__componentOriginal9ac128a9029c0e4701924bd2d73d7f54 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54 = $attributes; } ?>
+<?php $component = App\View\Components\AppLayout::resolve([] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('app-layout'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\App\View\Components\AppLayout::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+     <?php $__env->slot('header', null, []); ?> 
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Edit Booking - Invoice #{{ $booking->id }}
+            New Booking / Inventory Sale
         </h2>
-    </x-slot>
+     <?php $__env->endSlot(); ?>
 
     <div class="py-6" x-data="bookingForm()">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white shadow-sm sm:rounded-lg p-6">
-                <form method="POST" action="{{ route('bookings.update', $booking) }}" @submit.prevent="onSubmit">
-                    @csrf
-                    @method('PUT')
+                <form method="POST" action="<?php echo e(route('bookings.store')); ?>" @submit.prevent="onSubmit">
+                    <?php echo csrf_field(); ?>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
@@ -18,15 +26,34 @@
                             <input type="date" name="invoice_date" x-model="invoiceDate" class="mt-1 block w-full rounded-md border-gray-300" required>
                         </div>
 
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Customer ID</label>
-                            <input type="number" x-model.number="customerId" @change="fetchCustomer()" class="mt-1 block w-full rounded-md border-gray-300" placeholder="Enter Customer ID" required>
-                            <p class="text-xs text-gray-500 mt-1">Latest: {{ optional($latestCustomer)->id }} - {{ optional($latestCustomer)->full_name }}</p>
+                        <div class="relative">
+                            <label class="block text-sm font-medium text-gray-700">Customer Search</label>
+                            <input 
+                                type="text" 
+                                x-model="customerSearch" 
+                                @input.debounce.300ms="searchCustomers()" 
+                                @focus="showCustomerDropdown = true"
+                                class="mt-1 block w-full rounded-md border-gray-300" 
+                                placeholder="Search by name or enter ID"
+                                autocomplete="off">
+                            <div x-show="showCustomerDropdown && customerResults.length > 0" 
+                                 @click.away="showCustomerDropdown = false"
+                                 class="absolute z-10 mt-1 left-0 right-0 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+                                <template x-for="customer in customerResults" :key="customer.id">
+                                    <div @click="selectCustomer(customer)" 
+                                         class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                                        <div class="font-medium" x-text="customer.full_name"></div>
+                                        <div class="text-xs text-gray-500" x-text="'ID: ' + customer.id + ' | ' + customer.phone"></div>
+                                    </div>
+                                </template>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1">Latest: <?php echo e(optional($latestCustomer)->id); ?> - <?php echo e(optional($latestCustomer)->full_name); ?></p>
                         </div>
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Customer Name</label>
-                            <input type="text" name="customer_name" x-model="customerName" class="mt-1 block w-full rounded-md border-gray-300" required>
+                            <input type="text" name="customer_name" x-model="customerName" class="mt-1 block w-full rounded-md border-gray-300" required readonly>
+                            <p class="text-xs text-gray-500 mt-1" x-show="customerId">ID: <span x-text="customerId"></span></p>
                         </div>
 
                         <div>
@@ -44,16 +71,6 @@
                             <input type="number" name="total_guests" x-model.number="totalGuests" min="0" class="mt-1 block w-full rounded-md border-gray-300" placeholder="e.g. 50, 100, 200" required>
                         </div>
 
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Event Status</label>
-                            <select name="event_status" x-model="eventStatus" class="mt-1 block w-full rounded-md border-gray-300" required>
-                                <option value="In Progress">In Progress</option>
-                                <option value="Completed">Completed</option>
-                                <option value="Cancelled">Cancelled</option>
-                                <option value="Postponed">Postponed</option>
-                            </select>
-                        </div>
-
                         <div class="grid grid-cols-2 gap-2">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Event Start</label>
@@ -63,6 +80,16 @@
                                 <label class="block text-sm font-medium text-gray-700">Event End</label>
                                 <input type="datetime-local" x-model="eventEnd" class="mt-1 block w-full rounded-md border-gray-300" required>
                             </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Event Status</label>
+                            <select name="event_status" x-model="eventStatus" class="mt-1 block w-full rounded-md border-gray-300" required>
+                                <option value="In Progress">In Progress</option>
+                                <option value="Completed">Completed</option>
+                                <option value="Cancelled">Cancelled</option>
+                                <option value="Postponed">Postponed</option>
+                            </select>
                         </div>
                     </div>
 
@@ -171,9 +198,11 @@
                         <textarea x-model="remarks" class="mt-1 block w-full rounded-md border-gray-300" rows="3" placeholder="Any remarks..."></textarea>
                     </div>
 
-                    <div class="mt-8 flex justify-end space-x-4">
-                        <a href="{{ route('bookings.index') }}" class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400">Cancel</a>
-                        <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">Update Booking</button>
+                    <input type="hidden" name="customer_id" x-model="customerId">
+                    
+                    <div class="mt-8 flex justify-end gap-2">
+                        <button type="submit" @click="formAction='save'" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">Save Booking</button>
+                        <button type="submit" @click="formAction='save_and_print'" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">Save & Print Invoice</button>
                     </div>
 
                     <template x-for="hidden in hiddenFields" :key="hidden.name">
@@ -187,33 +216,25 @@
     <script>
         function bookingForm() {
             return {
-                invoiceDate: '{{ $booking->invoice_date->format('Y-m-d') }}',
-                customerId: {{ $booking->customer_id }},
-                customerName: '{{ addslashes($booking->customer_name) }}',
-                eventType: '{{ $booking->event_type }}',
-                eventStatus: '{{ $booking->event_status }}',
-                totalGuests: {{ $booking->total_guests }},
-                eventStart: '{{ $booking->event_start_at->format('Y-m-d\TH:i') }}',
-                eventEnd: '{{ $booking->event_end_at->format('Y-m-d\TH:i') }}',
-                items: [
-                    @foreach($booking->items as $it)
-                    {
-                        key: {{ $it->id }},
-                        description: @json($it->item_description),
-                        quantity: {{ $it->quantity }},
-                        rate: {{ $it->rate }},
-                        discountType: @json($it->discount_type),
-                        discountValue: {{ $it->discount_value }},
-                        netAmount: {{ $it->net_amount }}
-                    }@if (!$loop->last),@endif
-                    @endforeach
-                ],
-                paymentStatus: '{{ $booking->payment_status }}',
-                paymentOptionAdvance: {{ $booking->payment_option === 'advance' ? 'true' : 'false' }},
-                paymentOptionFull: {{ $booking->payment_option === 'full' ? 'true' : 'false' }},
-                advanceAmount: {{ $booking->advance_amount }},
-                amountInWords: @json($booking->amount_in_words ?? ''),
-                remarks: @json($booking->remarks ?? ''),
+                invoiceDate: '<?php echo e($today); ?>',
+                customerId: <?php echo e(optional($latestCustomer)->id ?? 'null'); ?>,
+                customerName: '<?php echo e(addslashes(optional($latestCustomer)->full_name)); ?>',
+                customerSearch: '<?php echo e(addslashes(optional($latestCustomer)->full_name)); ?>',
+                customerResults: [],
+                showCustomerDropdown: false,
+                eventType: 'Wedding',
+                eventStatus: 'In Progress',
+                totalGuests: 0,
+                eventStart: '<?php echo e($selectedDate); ?>T10:00',
+                eventEnd: '<?php echo e($selectedDate); ?>T18:00',
+                items: [{ key: 1, description: '', quantity: 0, rate: 0, discountType: 'percent', discountValue: 0, netAmount: 0 }],
+                formAction: 'save',
+                paymentStatus: 'Cash',
+                paymentOptionAdvance: false,
+                paymentOptionFull: false,
+                advanceAmount: 0,
+                amountInWords: '',
+                remarks: '',
 
                 get itemsSubtotal() {
                     return this.items.reduce((sum, r) => sum + (Number(r.quantity) * Number(r.rate) || 0), 0);
@@ -236,12 +257,15 @@
                     return 0;
                 },
                 get invoiceClosingAmount() {
-                    return Math.max(0, this.invoiceNetAmount - this.invoiceTotalPaid);
+                    const amount = Math.max(0, this.invoiceNetAmount - this.invoiceTotalPaid);
+                    // Auto-update amount in words
+                    this.amountInWords = this.numberToWords(amount);
+                    return amount;
                 },
                 get hiddenFields() {
                     const fields = [
+                        { name: 'action', value: this.formAction },
                         { name: 'invoice_date', value: this.invoiceDate },
-                        { name: 'customer_id', value: this.customerId },
                         { name: 'customer_name', value: this.customerName },
                         { name: 'event_type', value: this.eventType },
                         { name: 'event_status', value: this.eventStatus },
@@ -260,7 +284,9 @@
                         { name: 'remarks', value: this.remarks },
                     ];
 
-                    this.items.forEach((r, idx) => {
+                    // Only include non-empty item rows
+                    const nonEmptyItems = this.items.filter(r => (r.description && r.description.trim().length) || Number(r.quantity) > 0 || Number(r.rate) > 0 || Number(r.discountValue) > 0);
+                    nonEmptyItems.forEach((r, idx) => {
                         fields.push({ name: `items[${idx}][sr_no]`, value: idx + 1 });
                         fields.push({ name: `items[${idx}][item_description]`, value: r.description });
                         fields.push({ name: `items[${idx}][quantity]`, value: r.quantity });
@@ -277,12 +303,79 @@
                     return new Intl.NumberFormat('en-PK', { style: 'currency', currency: 'PKR' }).format(Number(v || 0));
                 },
 
+                numberToWords(num) {
+                    if (num === 0) return 'Zero Rupees Only';
+                    
+                    const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
+                    const teens = ['Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+                    const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+                    
+                    const convertLessThanThousand = (n) => {
+                        if (n === 0) return '';
+                        if (n < 10) return ones[n];
+                        if (n < 20) return teens[n - 10];
+                        if (n < 100) {
+                            const ten = Math.floor(n / 10);
+                            const one = n % 10;
+                            return tens[ten] + (one > 0 ? ' ' + ones[one] : '');
+                        }
+                        const hundred = Math.floor(n / 100);
+                        const rest = n % 100;
+                        return ones[hundred] + ' Hundred' + (rest > 0 ? ' ' + convertLessThanThousand(rest) : '');
+                    };
+                    
+                    let amount = Math.floor(num);
+                    const paisa = Math.round((num - amount) * 100);
+                    
+                    if (amount === 0 && paisa > 0) {
+                        return convertLessThanThousand(paisa) + ' Paisa Only';
+                    }
+                    
+                    let result = '';
+                    
+                    // Crore (10,000,000)
+                    if (amount >= 10000000) {
+                        const crore = Math.floor(amount / 10000000);
+                        result += convertLessThanThousand(crore) + ' Crore ';
+                        amount = amount % 10000000;
+                    }
+                    
+                    // Lakh (100,000)
+                    if (amount >= 100000) {
+                        const lakh = Math.floor(amount / 100000);
+                        result += convertLessThanThousand(lakh) + ' Lakh ';
+                        amount = amount % 100000;
+                    }
+                    
+                    // Thousand (1,000)
+                    if (amount >= 1000) {
+                        const thousand = Math.floor(amount / 1000);
+                        result += convertLessThanThousand(thousand) + ' Thousand ';
+                        amount = amount % 1000;
+                    }
+                    
+                    // Remaining (0-999)
+                    if (amount > 0) {
+                        result += convertLessThanThousand(amount) + ' ';
+                    }
+                    
+                    result = result.trim() + ' Rupees';
+                    
+                    if (paisa > 0) {
+                        result += ' and ' + convertLessThanThousand(paisa) + ' Paisa';
+                    }
+                    
+                    return result + ' Only';
+                },
+
                 recalcRow(row) {
                     const line = (Number(row.quantity) * Number(row.rate)) || 0;
                     const discount = row.discountType === 'percent'
                         ? line * (Number(row.discountValue) || 0) / 100
                         : (Number(row.discountValue) || 0);
                     row.netAmount = Math.max(0, line - discount);
+                    // Trigger amount in words update
+                    this.$nextTick(() => { this.invoiceClosingAmount; });
                 },
 
                 addRow() {
@@ -295,6 +388,7 @@
                     }
                 },
                 onRowFieldChange() {
+                    // If initial 5 rows are filled, keep adding one empty row at the end
                     this.ensureTrailingEmptyRow();
                 },
                 removeRow(index) {
@@ -311,24 +405,71 @@
                     if (this.paymentOptionAdvance) {
                         this.paymentOptionFull = false;
                     }
+                    // Trigger amount in words update
+                    this.$nextTick(() => { this.invoiceClosingAmount; });
                 },
-                recalcPayments() {},
+                recalcPayments() {
+                    // Trigger amount in words update
+                    this.$nextTick(() => { this.invoiceClosingAmount; });
+                },
 
-                async fetchCustomer() {
-                    if (!this.customerId) return;
+                async searchCustomers() {
+                    const query = this.customerSearch.trim();
+                    if (!query || query.length < 2) {
+                        this.customerResults = [];
+                        return;
+                    }
+                    
                     try {
-                        const res = await fetch(`{{ route('api.customer') }}?customer_id=${this.customerId}`, { headers: { 'Accept': 'application/json' } });
+                        const res = await fetch(`<?php echo e(route('api.customer.search')); ?>?q=${encodeURIComponent(query)}`, { 
+                            headers: { 'Accept': 'application/json' } 
+                        });
                         const data = await res.json();
-                        if (data.found) {
-                            this.customerName = data.customer.full_name;
-                        }
-                    } catch (e) {}
+                        this.customerResults = data.customers || [];
+                        this.showCustomerDropdown = true;
+                    } catch (e) {
+                        console.error('Search error:', e);
+                        this.customerResults = [];
+                    }
+                },
+
+                selectCustomer(customer) {
+                    this.customerId = customer.id;
+                    this.customerName = customer.full_name;
+                    this.customerSearch = customer.full_name;
+                    this.showCustomerDropdown = false;
+                    this.customerResults = [];
                 },
 
                 async onSubmit(e) {
+                    // Validate customer is selected
+                    if (!this.customerId) {
+                        alert('Please select a customer first');
+                        return;
+                    }
+                    
+                    // Validate at least one item
+                    const nonEmptyItems = this.items.filter(r => (r.description && r.description.trim().length) || Number(r.quantity) > 0 || Number(r.rate) > 0);
+                    if (nonEmptyItems.length === 0) {
+                        alert('Please add at least one item');
+                        return;
+                    }
+                    
                     e.target.submit();
                 }
             }
         }
     </script>
-</x-app-layout>
+ <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54)): ?>
+<?php $attributes = $__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54; ?>
+<?php unset($__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54)): ?>
+<?php $component = $__componentOriginal9ac128a9029c0e4701924bd2d73d7f54; ?>
+<?php unset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54); ?>
+<?php endif; ?>
+
+
+<?php /**PATH C:\Users\Shahjahan\Desktop\the_venue\resources\views/bookings/create.blade.php ENDPATH**/ ?>

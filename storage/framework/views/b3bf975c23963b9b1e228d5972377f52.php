@@ -1,16 +1,26 @@
-<x-app-layout>
-    <x-slot name="header">
+<?php if (isset($component)) { $__componentOriginal9ac128a9029c0e4701924bd2d73d7f54 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54 = $attributes; } ?>
+<?php $component = App\View\Components\AppLayout::resolve([] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('app-layout'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\App\View\Components\AppLayout::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+     <?php $__env->slot('header', null, []); ?> 
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Edit Booking - Invoice #{{ $booking->id }}
+            Edit Booking - Invoice #<?php echo e($booking->id); ?>
+
         </h2>
-    </x-slot>
+     <?php $__env->endSlot(); ?>
 
     <div class="py-6" x-data="bookingForm()">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white shadow-sm sm:rounded-lg p-6">
-                <form method="POST" action="{{ route('bookings.update', $booking) }}" @submit.prevent="onSubmit">
-                    @csrf
-                    @method('PUT')
+                <form method="POST" action="<?php echo e(route('bookings.update', $booking)); ?>" @submit.prevent="onSubmit">
+                    <?php echo csrf_field(); ?>
+                    <?php echo method_field('PUT'); ?>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
@@ -21,7 +31,7 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Customer ID</label>
                             <input type="number" x-model.number="customerId" @change="fetchCustomer()" class="mt-1 block w-full rounded-md border-gray-300" placeholder="Enter Customer ID" required>
-                            <p class="text-xs text-gray-500 mt-1">Latest: {{ optional($latestCustomer)->id }} - {{ optional($latestCustomer)->full_name }}</p>
+                            <p class="text-xs text-gray-500 mt-1">Latest: <?php echo e(optional($latestCustomer)->id); ?> - <?php echo e(optional($latestCustomer)->full_name); ?></p>
                         </div>
 
                         <div>
@@ -172,7 +182,7 @@
                     </div>
 
                     <div class="mt-8 flex justify-end space-x-4">
-                        <a href="{{ route('bookings.index') }}" class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400">Cancel</a>
+                        <a href="<?php echo e(route('bookings.index')); ?>" class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400">Cancel</a>
                         <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">Update Booking</button>
                     </div>
 
@@ -187,33 +197,34 @@
     <script>
         function bookingForm() {
             return {
-                invoiceDate: '{{ $booking->invoice_date->format('Y-m-d') }}',
-                customerId: {{ $booking->customer_id }},
-                customerName: '{{ addslashes($booking->customer_name) }}',
-                eventType: '{{ $booking->event_type }}',
-                eventStatus: '{{ $booking->event_status }}',
-                totalGuests: {{ $booking->total_guests }},
-                eventStart: '{{ $booking->event_start_at->format('Y-m-d\TH:i') }}',
-                eventEnd: '{{ $booking->event_end_at->format('Y-m-d\TH:i') }}',
+                invoiceDate: '<?php echo e($booking->invoice_date->format('Y-m-d')); ?>',
+                customerId: <?php echo e($booking->customer_id); ?>,
+                customerName: '<?php echo e(addslashes($booking->customer_name)); ?>',
+                eventType: '<?php echo e($booking->event_type); ?>',
+                eventStatus: '<?php echo e($booking->event_status); ?>',
+                totalGuests: <?php echo e($booking->total_guests); ?>,
+                eventStart: '<?php echo e($booking->event_start_at->format('Y-m-d\TH:i')); ?>',
+                eventEnd: '<?php echo e($booking->event_end_at->format('Y-m-d\TH:i')); ?>',
                 items: [
-                    @foreach($booking->items as $it)
+                    <?php $__currentLoopData = $booking->items; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $it): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     {
-                        key: {{ $it->id }},
-                        description: @json($it->item_description),
-                        quantity: {{ $it->quantity }},
-                        rate: {{ $it->rate }},
-                        discountType: @json($it->discount_type),
-                        discountValue: {{ $it->discount_value }},
-                        netAmount: {{ $it->net_amount }}
-                    }@if (!$loop->last),@endif
-                    @endforeach
+                        key: <?php echo e($it->id); ?>,
+                        description: <?php echo json_encode($it->item_description, 15, 512) ?>,
+                        quantity: <?php echo e($it->quantity); ?>,
+                        rate: <?php echo e($it->rate); ?>,
+                        discountType: <?php echo json_encode($it->discount_type, 15, 512) ?>,
+                        discountValue: <?php echo e($it->discount_value); ?>,
+                        netAmount: <?php echo e($it->net_amount); ?>
+
+                    }<?php if(!$loop->last): ?>,<?php endif; ?>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 ],
-                paymentStatus: '{{ $booking->payment_status }}',
-                paymentOptionAdvance: {{ $booking->payment_option === 'advance' ? 'true' : 'false' }},
-                paymentOptionFull: {{ $booking->payment_option === 'full' ? 'true' : 'false' }},
-                advanceAmount: {{ $booking->advance_amount }},
-                amountInWords: @json($booking->amount_in_words ?? ''),
-                remarks: @json($booking->remarks ?? ''),
+                paymentStatus: '<?php echo e($booking->payment_status); ?>',
+                paymentOptionAdvance: <?php echo e($booking->payment_option === 'advance' ? 'true' : 'false'); ?>,
+                paymentOptionFull: <?php echo e($booking->payment_option === 'full' ? 'true' : 'false'); ?>,
+                advanceAmount: <?php echo e($booking->advance_amount); ?>,
+                amountInWords: <?php echo json_encode($booking->amount_in_words ?? '', 15, 512) ?>,
+                remarks: <?php echo json_encode($booking->remarks ?? '', 15, 512) ?>,
 
                 get itemsSubtotal() {
                     return this.items.reduce((sum, r) => sum + (Number(r.quantity) * Number(r.rate) || 0), 0);
@@ -317,7 +328,7 @@
                 async fetchCustomer() {
                     if (!this.customerId) return;
                     try {
-                        const res = await fetch(`{{ route('api.customer') }}?customer_id=${this.customerId}`, { headers: { 'Accept': 'application/json' } });
+                        const res = await fetch(`<?php echo e(route('api.customer')); ?>?customer_id=${this.customerId}`, { headers: { 'Accept': 'application/json' } });
                         const data = await res.json();
                         if (data.found) {
                             this.customerName = data.customer.full_name;
@@ -331,4 +342,14 @@
             }
         }
     </script>
-</x-app-layout>
+ <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54)): ?>
+<?php $attributes = $__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54; ?>
+<?php unset($__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54)): ?>
+<?php $component = $__componentOriginal9ac128a9029c0e4701924bd2d73d7f54; ?>
+<?php unset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54); ?>
+<?php endif; ?>
+<?php /**PATH C:\Users\Shahjahan\Desktop\the_venue\resources\views/bookings/edit.blade.php ENDPATH**/ ?>
