@@ -26,12 +26,23 @@ class PaymentController extends Controller
             });
         }
 
+        // Clone filtered query for totals BEFORE pagination
+        $filtered = clone $query;
+
+        // Paginate for table view
         $payments = $query->orderBy('created_at', 'desc')->paginate(10);
 
-        // Calculate totals
-        $totalDebit = Payment::sum('add_amount');
-        $totalCredit = Payment::where('payment_method', 'Credit')->sum('add_amount');
-        $totalBalance = $totalDebit - $totalCredit;
+        // Totals across the filtered dataset (not just current page)
+        $totalDebit = (clone $filtered)->where('payment_method', 'Debit')->sum('add_amount');
+        $totalCredit = (clone $filtered)->where('payment_method', 'Credit')->sum('add_amount');
+
+        // Total Balance = sum of remaining_balance from the latest payment per unique customer
+        $latestPaymentIds = (clone $filtered)
+            ->select(DB::raw('MAX(id) as id'))
+            ->groupBy('customer_id')
+            ->pluck('id');
+
+        $totalBalance = Payment::whereIn('id', $latestPaymentIds)->sum('remaining_balance');
 
         return view('payments.index', compact('payments', 'totalDebit', 'totalCredit', 'totalBalance'));
     }
