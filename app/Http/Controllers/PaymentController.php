@@ -30,7 +30,24 @@ class PaymentController extends Controller
         $filtered = clone $query;
 
         // Paginate for table view
-        $payments = $query->orderBy('created_at', 'desc')->paginate(10);
+        // Additional filters
+        if ($request->filled('payment_method')) {
+            $query->where('payment_method', $request->input('payment_method'));
+        }
+        if ($request->filled('from_date') && $request->filled('to_date')) {
+            $query->whereBetween('receipt_date', [
+                $request->input('from_date'),
+                $request->input('to_date')
+            ]);
+        }
+
+        // Per-page selection similar to bookings list
+        $perPage = (int) $request->input('per_page', 10);
+        if (!in_array($perPage, [10, 25, 50, 100])) {
+            $perPage = 10;
+        }
+
+        $payments = $query->orderBy('created_at', 'desc')->paginate($perPage)->appends($request->query());
 
         // Totals across the filtered dataset (not just current page)
         $totalDebit = (clone $filtered)->where('payment_method', 'Debit')->sum('add_amount');
@@ -45,6 +62,12 @@ class PaymentController extends Controller
         $totalBalance = Payment::whereIn('id', $latestPaymentIds)->sum('remaining_balance');
 
         return view('payments.index', compact('payments', 'totalDebit', 'totalCredit', 'totalBalance'));
+    }
+
+    public function destroy(Payment $payment): RedirectResponse
+    {
+        $payment->delete();
+        return redirect()->route('payments.index')->with('status', 'Payment deleted successfully.');
     }
 
     public function create(): View

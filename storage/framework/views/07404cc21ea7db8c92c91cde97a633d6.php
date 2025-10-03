@@ -22,32 +22,11 @@
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white shadow-sm sm:rounded-lg">
-                <!-- Search Section -->
-                <div class="p-6 border-b border-gray-200">
-                    <form method="GET" action="<?php echo e(route('payments.index')); ?>" class="space-y-4">
-                        <div class="flex gap-4">
-                            <div class="flex-1">
-                                <label class="block text-sm font-medium text-gray-700">Search</label>
-                                <input type="text" name="search" value="<?php echo e(request('search')); ?>" 
-                                       class="mt-1 block w-full rounded-md border-gray-300" 
-                                       placeholder="Search by customer name or contact">
-                            </div>
-                            <div class="flex items-end">
-                                <button type="submit" class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700">
-                                    Search
-                                </button>
-                                <a href="<?php echo e(route('payments.index')); ?>" class="ml-2 bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400">
-                                    Clear
-                                </a>
-                            </div>
-                        </div>
-                    </form>
-                </div>
 
                 <!-- Payment Details Form -->
                 <div class="p-6 border-b border-gray-200">
                     <h3 class="text-lg font-semibold text-gray-900 mb-4">Payment Details Report</h3>
-                    <form method="GET" action="<?php echo e(route('payments.details')); ?>" class="space-y-4">
+                    <form method="GET" action="<?php echo e(route('payments.details')); ?>" id="reportForm" class="space-y-4">
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">From Date</label>
@@ -72,12 +51,20 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="flex justify-end">
-                            <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700">
-                                Generate PDF Report
-                            </button>
-                        </div>
                     </form>
+
+                    <!-- Shared action row: Search (left) and Generate PDF (right) -->
+                    <div class="mt-6 flex flex-col md:flex-row md:items-end md:justify-between gap-3">
+                        <form method="GET" action="<?php echo e(route('payments.index')); ?>" class="flex gap-2 w-full md:w-auto">
+                            <input type="text" name="search" value="<?php echo e(request('search')); ?>" placeholder="Search by customer name or contact" class="w-full md:w-96 rounded-md border-gray-300 shadow-sm py-2" />
+                            <button type="submit" class="px-4 py-2 bg-gray-100 border rounded-md hover:bg-gray-200">Search</button>
+                            <a href="<?php echo e(route('payments.index')); ?>" class="px-4 py-2 border rounded-md hover:bg-gray-50">Reset</a>
+                        </form>
+
+                        <button type="submit" form="reportForm" class="self-end md:self-auto bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700">
+                            Generate PDF Report
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Payments Table -->
@@ -91,7 +78,6 @@
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Debit</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Credit</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Balance</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Remarks</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                             </tr>
                         </thead>
@@ -119,28 +105,22 @@
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                         <?php echo e(number_format($payment->remaining_balance, 2)); ?> PKR
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                        <?php echo e($payment->remarks ?? 'N/A'); ?>
-
-                                    </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        <button onclick="showPaymentDetails(<?php echo e($payment->id); ?>)" 
-                                                class="text-indigo-600 hover:text-indigo-900 mr-3">
-                                            Details
-                                        </button>
-                                        <a href="<?php echo e(route('payments.edit', $payment)); ?>" 
-                                           class="text-blue-600 hover:text-blue-900 mr-3">
-                                            Edit
-                                        </a>
-                                        <a href="<?php echo e(route('payments.receipt', $payment)); ?>" 
-                                           class="text-green-600 hover:text-green-900" target="_blank">
-                                            Print Receipt
-                                        </a>
+                                        <div class="flex items-center gap-2">
+                                            <button onclick="showPaymentDetails(<?php echo e($payment->id); ?>)" class="px-3 py-1 text-sm rounded bg-indigo-600 text-white hover:bg-indigo-500">Details</button>
+                                            <a href="<?php echo e(route('payments.edit', $payment)); ?>" class="px-3 py-1 text-sm rounded bg-amber-500 text-white hover:bg-amber-400">Edit</a>
+                                            <a href="<?php echo e(route('payments.receipt', $payment)); ?>" target="_blank" class="px-3 py-1 text-sm rounded bg-green-600 text-white hover:bg-green-500">Print</a>
+                                            <form action="<?php echo e(route('payments.destroy', $payment)); ?>" method="POST" onsubmit="return confirm('Delete this payment?')">
+                                                <?php echo csrf_field(); ?>
+                                                <?php echo method_field('DELETE'); ?>
+                                                <button type="submit" class="px-3 py-1 text-sm rounded bg-red-600 text-white hover:bg-red-500">Delete</button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                 <tr>
-                                    <td colspan="8" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                                    <td colspan="7" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
                                         No payments found.
                                     </td>
                                 </tr>
@@ -152,16 +132,34 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?php echo e(number_format($totalDebit, 2)); ?> PKR</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?php echo e(number_format($totalCredit, 2)); ?> PKR</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?php echo e(number_format($totalBalance, 2)); ?> PKR</td>
-                                <td colspan="2"></td>
+                                <td colspan="1"></td>
                             </tr>
                         </tfoot>
                     </table>
                 </div>
 
-                <!-- Pagination -->
-                <div class="px-6 py-4 border-t border-gray-200">
-                    <?php echo e($payments->links()); ?>
+                <!-- Pagination & Per-page Controls (match Booking List style) -->
+                <div class="px-6 py-4 border-t border-gray-200 mt-4 flex items-center justify-between gap-4">
+                    <form method="GET" action="<?php echo e(route('payments.index')); ?>" class="flex items-center gap-2 text-sm">
+                        <span class="text-gray-600">Show</span>
+                        <select name="per_page" class="rounded-md border-gray-300" onchange="this.form.submit()">
+                            <?php $__currentLoopData = [10,25,50,100]; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $n): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <option value="<?php echo e($n); ?>" <?php echo e((int)request('per_page', 10) === $n ? 'selected' : ''); ?>><?php echo e($n); ?></option>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                        </select>
+                        <span class="text-gray-600">entries</span>
+                        <input type="hidden" name="search" value="<?php echo e(request('search')); ?>" />
+                    </form>
 
+                    <div class="text-sm text-gray-600">
+                        <?php if($payments->total() > 0): ?>
+                            Showing <?php echo e($payments->firstItem()); ?> to <?php echo e($payments->lastItem()); ?> of <?php echo e($payments->total()); ?> entries
+                        <?php else: ?>
+                            Showing 0 entries
+                        <?php endif; ?>
+                    </div>
+
+                    <div><?php echo e($payments->links()); ?></div>
                 </div>
             </div>
         </div>
