@@ -35,7 +35,6 @@
                             <div x-show="open" @click.away="open = false" class="mt-1 ml-8 bg-white border border-gray-100 rounded-lg shadow-lg py-1 w-48 z-10 absolute left-0">
                                 <a href="{{ route('bookings.create') }}" class="block px-4 py-2 text-gray-700 hover:bg-indigo-50 rounded">New Booking</a>
                                 <a href="{{ route('bookings.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-indigo-50 rounded">Booking List</a>
-                                <a href="{{ route('bookings.calendar') }}" class="block px-4 py-2 text-gray-700 hover:bg-indigo-50 rounded">Booking Calendar</a>
                             </div>
                         </div>
                         <div x-data="{ open: false }" class="relative">
