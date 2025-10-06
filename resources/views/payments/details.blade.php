@@ -60,13 +60,6 @@
         </tbody>
     </table>
 
-    <?php
-        $totalDebit = $payments->where('payment_method', 'Debit')->sum('add_amount');
-        $totalCredit = $payments->where('payment_method', 'Credit')->sum('add_amount');
-        
-        // Get the last payment's remaining balance for total balance
-        $totalBalance = $payments->isNotEmpty() ? $payments->last()->remaining_balance : 0;
-    ?>
     <table>
         <thead>
             <tr>

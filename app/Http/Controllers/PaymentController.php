@@ -173,7 +173,17 @@ class PaymentController extends Controller
         $payments = $query->orderBy('receipt_date')->get();
         $customer = $customerId ? Customer::find($customerId) : null;
 
-        $pdf = Pdf::loadView('payments.details', compact('payments', 'customer', 'fromDate', 'toDate'))
+        // Calculate totals similar to Payment List
+        $totalDebit = $payments->where('payment_method', 'Debit')->sum('add_amount');
+        $totalCredit = $payments->where('payment_method', 'Credit')->sum('add_amount');
+        
+        // Total Balance = sum of remaining_balance from the latest payment per unique customer
+        $latestPayments = $payments->groupBy('customer_id')->map(function ($customerPayments) {
+            return $customerPayments->sortByDesc('id')->first();
+        });
+        $totalBalance = $latestPayments->sum('remaining_balance');
+
+        $pdf = Pdf::loadView('payments.details', compact('payments', 'customer', 'fromDate', 'toDate', 'totalDebit', 'totalCredit', 'totalBalance'))
             ->setPaper('a4', 'landscape');
         
         return $pdf->download("payment-details-{$fromDate}-to-{$toDate}.pdf");
