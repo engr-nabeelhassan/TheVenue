@@ -37,6 +37,7 @@
                 <th>Customer</th>
                 <th>Method</th>
                 <th>Status</th>
+                <th>Booking</th>
                 <th>Debit</th>
                 <th>Credit</th>
                 <th>Balance</th>
@@ -51,6 +52,14 @@
                 <td><?php echo e($payment->customer_name); ?></td>
                 <td><?php echo e($payment->payment_method); ?></td>
                 <td><?php echo e($payment->payment_status); ?></td>
+                <td>
+                    <?php if($payment->booking): ?>
+                        <?php echo e(number_format($payment->previous_balance, 2)); ?> #<?php echo e($payment->booking->id); ?> — <?php echo e(\Carbon\Carbon::parse($payment->booking->invoice_date)->format('M d, Y')); ?>
+
+                    <?php else: ?>
+                        —
+                    <?php endif; ?>
+                </td>
                 <td><?php echo e($payment->payment_method === 'Debit' ? number_format($payment->add_amount, 2) : '0.00'); ?></td>
                 <td><?php echo e($payment->payment_method === 'Credit' ? number_format($payment->add_amount, 2) : '0.00'); ?></td>
                 <td><?php echo e(number_format($payment->remaining_balance, 2)); ?></td>
@@ -63,7 +72,7 @@
     <table>
         <thead>
             <tr>
-                <th colspan="5" style="text-align: right;">TOTAL</th>
+                <th colspan="6" style="text-align: right;">TOTAL</th>
                 <th><?php echo e(number_format($totalDebit, 2)); ?></th>
                 <th><?php echo e(number_format($totalCredit, 2)); ?></th>
                 <th><?php echo e(number_format($totalBalance, 2)); ?></th>

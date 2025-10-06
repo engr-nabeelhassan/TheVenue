@@ -37,6 +37,7 @@
                 <th>Customer</th>
                 <th>Method</th>
                 <th>Status</th>
+                <th>Booking</th>
                 <th>Debit</th>
                 <th>Credit</th>
                 <th>Balance</th>
@@ -51,6 +52,13 @@
                 <td>{{ $payment->customer_name }}</td>
                 <td>{{ $payment->payment_method }}</td>
                 <td>{{ $payment->payment_status }}</td>
+                <td>
+                    @if($payment->booking)
+                        {{ number_format($payment->previous_balance, 2) }} #{{ $payment->booking->id }} — {{ \Carbon\Carbon::parse($payment->booking->invoice_date)->format('M d, Y') }}
+                    @else
+                        —
+                    @endif
+                </td>
                 <td>{{ $payment->payment_method === 'Debit' ? number_format($payment->add_amount, 2) : '0.00' }}</td>
                 <td>{{ $payment->payment_method === 'Credit' ? number_format($payment->add_amount, 2) : '0.00' }}</td>
                 <td>{{ number_format($payment->remaining_balance, 2) }}</td>
@@ -63,7 +71,7 @@
     <table>
         <thead>
             <tr>
-                <th colspan="5" style="text-align: right;">TOTAL</th>
+                <th colspan="6" style="text-align: right;">TOTAL</th>
                 <th>{{ number_format($totalDebit, 2) }}</th>
                 <th>{{ number_format($totalCredit, 2) }}</th>
                 <th>{{ number_format($totalBalance, 2) }}</th>
