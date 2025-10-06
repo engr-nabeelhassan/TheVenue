@@ -25,10 +25,11 @@
     </div>
 
     <div class="customer-info">
-        <strong>Customer:</strong> {{ $selectedCustomer->full_name ?? 'Unknown' }}<br>
-        <strong>Phone:</strong> {{ $selectedCustomer->phone ?? 'N/A' }}<br>
-        <strong>CNIC:</strong> {{ $selectedCustomer->cnic ?? 'N/A' }}<br>
-        <strong>Period:</strong> {{ \Carbon\Carbon::parse($fromDate)->format('M d, Y') }} to {{ \Carbon\Carbon::parse($toDate)->format('M d, Y') }}
+        <strong>Customer:</strong> <?php echo e($selectedCustomer->full_name ?? 'Unknown'); ?><br>
+        <strong>Phone:</strong> <?php echo e($selectedCustomer->phone ?? 'N/A'); ?><br>
+        <strong>CNIC:</strong> <?php echo e($selectedCustomer->cnic ?? 'N/A'); ?><br>
+        <strong>Period:</strong> <?php echo e(\Carbon\Carbon::parse($fromDate)->format('M d, Y')); ?> to <?php echo e(\Carbon\Carbon::parse($toDate)->format('M d, Y')); ?>
+
     </div>
 
     <?php
@@ -78,19 +79,19 @@
     <div class="summary">
         <div class="summary-box">
             <div style="font-size: 8px; color: #666;">Opening Balance</div>
-            <div style="font-size: 12px; font-weight: bold;">{{ number_format($openingBalance, 2) }}</div>
+            <div style="font-size: 12px; font-weight: bold;"><?php echo e(number_format($openingBalance, 2)); ?></div>
         </div>
         <div class="summary-box">
             <div style="font-size: 8px; color: #666;">Total Invoiced</div>
-            <div style="font-size: 12px; font-weight: bold;">{{ number_format($totalBookings, 2) }}</div>
+            <div style="font-size: 12px; font-weight: bold;"><?php echo e(number_format($totalBookings, 2)); ?></div>
         </div>
         <div class="summary-box">
             <div style="font-size: 8px; color: #666;">Total Paid</div>
-            <div style="font-size: 12px; font-weight: bold;">{{ number_format($totalPayments, 2) }}</div>
+            <div style="font-size: 12px; font-weight: bold;"><?php echo e(number_format($totalPayments, 2)); ?></div>
         </div>
         <div class="summary-box">
             <div style="font-size: 8px; color: #666;">Closing Balance</div>
-            <div style="font-size: 12px; font-weight: bold;">{{ number_format($closingBalance, 2) }}</div>
+            <div style="font-size: 12px; font-weight: bold;"><?php echo e(number_format($closingBalance, 2)); ?></div>
         </div>
     </div>
 
@@ -108,45 +109,47 @@
         </thead>
         <tbody>
             <tr class="opening-row">
-                <td>{{ \Carbon\Carbon::parse($fromDate)->format('M d, Y') }}</td>
+                <td><?php echo e(\Carbon\Carbon::parse($fromDate)->format('M d, Y')); ?></td>
                 <td>Opening</td>
                 <td>Opening Balance</td>
                 <td>—</td>
                 <td class="text-right">—</td>
                 <td class="text-right">—</td>
-                <td class="text-right">{{ number_format($openingBalance, 2) }}</td>
+                <td class="text-right"><?php echo e(number_format($openingBalance, 2)); ?></td>
             </tr>
 
             <?php $runningBalance = $openingBalance; ?>
-            @foreach($transactions as $transaction)
+            <?php $__currentLoopData = $transactions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $transaction): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <?php $runningBalance += $transaction['debit'] - $transaction['credit']; ?>
                 <tr>
-                    <td>{{ \Carbon\Carbon::parse($transaction['date'])->format('M d, Y') }}</td>
-                    <td>{{ $transaction['type'] }}</td>
-                    <td>{{ $transaction['description'] }}</td>
-                    <td>{{ $transaction['reference'] }}</td>
-                    <td class="text-right">{{ $transaction['debit'] > 0 ? number_format($transaction['debit'], 2) : '—' }}</td>
-                    <td class="text-right">{{ $transaction['credit'] > 0 ? number_format($transaction['credit'], 2) : '—' }}</td>
-                    <td class="text-right">{{ number_format($runningBalance, 2) }}</td>
+                    <td><?php echo e(\Carbon\Carbon::parse($transaction['date'])->format('M d, Y')); ?></td>
+                    <td><?php echo e($transaction['type']); ?></td>
+                    <td><?php echo e($transaction['description']); ?></td>
+                    <td><?php echo e($transaction['reference']); ?></td>
+                    <td class="text-right"><?php echo e($transaction['debit'] > 0 ? number_format($transaction['debit'], 2) : '—'); ?></td>
+                    <td class="text-right"><?php echo e($transaction['credit'] > 0 ? number_format($transaction['credit'], 2) : '—'); ?></td>
+                    <td class="text-right"><?php echo e(number_format($runningBalance, 2)); ?></td>
                 </tr>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
             <tr class="closing-row">
-                <td>{{ \Carbon\Carbon::parse($toDate)->format('M d, Y') }}</td>
+                <td><?php echo e(\Carbon\Carbon::parse($toDate)->format('M d, Y')); ?></td>
                 <td>Closing</td>
                 <td>Closing Balance</td>
                 <td>—</td>
-                <td class="text-right">{{ number_format($totalBookings + $totalDebits, 2) }}</td>
-                <td class="text-right">{{ number_format($totalPayments, 2) }}</td>
-                <td class="text-right">{{ number_format($closingBalance, 2) }}</td>
+                <td class="text-right"><?php echo e(number_format($totalBookings + $totalDebits, 2)); ?></td>
+                <td class="text-right"><?php echo e(number_format($totalPayments, 2)); ?></td>
+                <td class="text-right"><?php echo e(number_format($closingBalance, 2)); ?></td>
             </tr>
         </tbody>
     </table>
 
     <div class="footer">
-        Generated on {{ now()->format('M d, Y h:i A') }}
+        Generated on <?php echo e(now()->format('M d, Y h:i A')); ?>
+
     </div>
 </body>
 </html>
 
 
+<?php /**PATH C:\Users\Shahjahan\Desktop\the_venue\resources\views/reports/customer-statements-pdf.blade.php ENDPATH**/ ?>
