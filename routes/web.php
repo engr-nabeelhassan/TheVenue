@@ -36,6 +36,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/bookings-calendar', [BookingController::class, 'calendar'])->name('bookings.calendar');
     Route::get('/bookings-cancelled', [BookingController::class, 'cancelled'])->name('bookings.cancelled');
     Route::get('/bookings-postponed', [BookingController::class, 'postponed'])->name('bookings.postponed');
+    Route::get('/bookings-postponed-pdf', [BookingController::class, 'postponedPdf'])->name('bookings.postponed.pdf');
     Route::get('/bookings-upcoming', [BookingController::class, 'upcoming'])->name('bookings.upcoming');
     Route::get('/bookings-upcoming-pdf', [BookingController::class, 'upcomingPdf'])->name('bookings.upcoming.pdf');
     Route::get('/api/customer', [BookingController::class, 'customerById'])->name('api.customer');

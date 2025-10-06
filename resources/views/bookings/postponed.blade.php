@@ -8,6 +8,12 @@
                 <a href="{{ route('bookings.index') }}" class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700">
                     Back to All Bookings
                 </a>
+                <a href="{{ route('bookings.postponed.pdf', request()->query()) }}" class="bg-yellow-600 text-white px-4 py-2 rounded-md hover:bg-yellow-700">
+                    <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    Print PDF
+                </a>
                 <a href="{{ route('bookings.create') }}" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">
                     New Booking
                 </a>
@@ -18,24 +24,39 @@
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white shadow-sm sm:rounded-lg">
-                <!-- Search Section -->
+                <!-- Filters Section -->
                 <div class="p-6 border-b border-gray-200">
                     <form method="GET" action="{{ route('bookings.postponed') }}" class="space-y-4">
-                        <div class="flex gap-4">
-                            <div class="flex-1">
-                                <label class="block text-sm font-medium text-gray-700">Search</label>
-                                <input type="text" name="search" value="{{ request('search') }}" 
-                                       class="mt-1 block w-full rounded-md border-gray-300" 
-                                       placeholder="Search by customer name, invoice date, or event type">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">From Date</label>
+                                <input type="date" name="from_date" value="{{ $fromDate }}" 
+                                       class="mt-1 block w-full rounded-md border-gray-300" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">To Date</label>
+                                <input type="date" name="to_date" value="{{ $toDate }}" 
+                                       class="mt-1 block w-full rounded-md border-gray-300" required>
                             </div>
                             <div class="flex items-end">
-                                <button type="submit" class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700">
-                                    Search
+                                <button type="submit" class="bg-yellow-600 text-white px-4 py-2 rounded-md hover:bg-yellow-700">
+                                    Generate
                                 </button>
-                                <a href="{{ route('bookings.postponed') }}" class="ml-2 bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400">
-                                    Clear
-                                </a>
                             </div>
+                        </div>
+                        
+                        <!-- Search Box -->
+                        <div class="flex gap-2">
+                            <input type="hidden" name="from_date" value="{{ $fromDate }}">
+                            <input type="hidden" name="to_date" value="{{ $toDate }}">
+                            <input type="hidden" name="sort" value="{{ request('sort', 'event_start_at') }}">
+                            <input type="hidden" name="direction" value="{{ request('direction', 'desc') }}">
+                            <input type="text" name="search" value="{{ request('search') }}" 
+                                   placeholder="Search by customer name or event type" 
+                                   class="w-full md:w-96 rounded-md border-gray-300 shadow-sm py-2">
+                            <button type="submit" class="px-4 py-2 bg-gray-100 border rounded-md hover:bg-gray-200">Search</button>
+                            <a href="{{ route('bookings.postponed', ['from_date' => $fromDate, 'to_date' => $toDate]) }}" 
+                               class="px-4 py-2 border rounded-md hover:bg-gray-50">Reset</a>
                         </div>
                     </form>
                 </div>
@@ -46,9 +67,39 @@
                         <thead class="bg-yellow-50">
                             <tr>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sr#</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer Name</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Event Type</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Original Date</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <a href="{{ route('bookings.postponed', array_merge(request()->query(), ['sort' => 'customer_name', 'direction' => request('sort')==='customer_name' && request('direction')==='asc' ? 'desc' : 'asc'])) }}" 
+                                       class="inline-flex items-center gap-1 hover:text-gray-700">
+                                        Customer Name
+                                        @if(request('sort')==='customer_name')
+                                            <span class="text-gray-400">{{ request('direction')==='asc' ? '▲' : '▼' }}</span>
+                                        @else
+                                            <span class="text-gray-300">↕</span>
+                                        @endif
+                                    </a>
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <a href="{{ route('bookings.postponed', array_merge(request()->query(), ['sort' => 'event_type', 'direction' => request('sort')==='event_type' && request('direction')==='asc' ? 'desc' : 'asc'])) }}" 
+                                       class="inline-flex items-center gap-1 hover:text-gray-700">
+                                        Event Type
+                                        @if(request('sort')==='event_type')
+                                            <span class="text-gray-400">{{ request('direction')==='asc' ? '▲' : '▼' }}</span>
+                                        @else
+                                            <span class="text-gray-300">↕</span>
+                                        @endif
+                                    </a>
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <a href="{{ route('bookings.postponed', array_merge(request()->query(), ['sort' => 'event_start_at', 'direction' => request('sort')==='event_start_at' && request('direction')==='asc' ? 'desc' : 'asc'])) }}" 
+                                       class="inline-flex items-center gap-1 hover:text-gray-700">
+                                        Original Date
+                                        @if(request('sort')==='event_start_at')
+                                            <span class="text-gray-400">{{ request('direction')==='asc' ? '▲' : '▼' }}</span>
+                                        @else
+                                            <span class="text-gray-300">↕</span>
+                                        @endif
+                                    </a>
+                                </th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Invoice Amount</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
@@ -117,9 +168,32 @@
                     </table>
                 </div>
 
-                <!-- Pagination -->
-                <div class="px-6 py-4 border-t border-gray-200">
-                    {{ $bookings->links() }}
+                <!-- Pagination & Per-page Controls -->
+                <div class="px-6 py-4 border-t border-gray-200 mt-4 flex items-center justify-between gap-4">
+                    <form method="GET" action="{{ route('bookings.postponed') }}" class="flex items-center gap-2 text-sm">
+                        <span class="text-gray-600">Show</span>
+                        <select name="per_page" class="rounded-md border-gray-300" onchange="this.form.submit()">
+                            @foreach([10,25,50,100] as $n)
+                                <option value="{{ $n }}" {{ (int)request('per_page', 10) === $n ? 'selected' : '' }}>{{ $n }}</option>
+                            @endforeach
+                        </select>
+                        <span class="text-gray-600">entries</span>
+                        <input type="hidden" name="from_date" value="{{ $fromDate }}" />
+                        <input type="hidden" name="to_date" value="{{ $toDate }}" />
+                        <input type="hidden" name="search" value="{{ request('search') }}" />
+                        <input type="hidden" name="sort" value="{{ request('sort', 'event_start_at') }}" />
+                        <input type="hidden" name="direction" value="{{ request('direction', 'desc') }}" />
+                    </form>
+
+                    <div class="text-sm text-gray-600">
+                        @if ($bookings->total() > 0)
+                            Showing {{ $bookings->firstItem() }} to {{ $bookings->lastItem() }} of {{ $bookings->total() }} entries
+                        @else
+                            Showing 0 entries
+                        @endif
+                    </div>
+
+                    <div>{{ $bookings->links() }}</div>
                 </div>
             </div>
         </div>
