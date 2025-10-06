@@ -29,6 +29,22 @@
                             <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700">Generate</button>
                         </div>
                     </form>
+
+                    <!-- Search Box -->
+                    <div class="mt-4">
+                        <form method="GET" action="{{ route('reports.events-balance') }}" class="flex gap-2">
+                            <input type="hidden" name="from_date" value="{{ $fromDate }}">
+                            <input type="hidden" name="to_date" value="{{ $toDate }}">
+                            <input type="hidden" name="sort" value="{{ request('sort', 'event_start_at') }}">
+                            <input type="hidden" name="direction" value="{{ request('direction', 'desc') }}">
+                            <input type="text" name="search" value="{{ request('search') }}" 
+                                   placeholder="Search by customer name or event type" 
+                                   class="w-full md:w-96 rounded-md border-gray-300 shadow-sm py-2">
+                            <button type="submit" class="px-4 py-2 bg-gray-100 border rounded-md hover:bg-gray-200">Search</button>
+                            <a href="{{ route('reports.events-balance', ['from_date' => $fromDate, 'to_date' => $toDate]) }}" 
+                               class="px-4 py-2 border rounded-md hover:bg-gray-50">Reset</a>
+                        </form>
+                    </div>
                 </div>
 
                 <!-- Summary -->
@@ -55,10 +71,50 @@
                         <thead class="bg-gray-50">
                             <tr>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sr#</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Event Date</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Event Type</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Invoice Amount</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <a href="{{ route('reports.events-balance', array_merge(request()->query(), ['sort' => 'event_start_at', 'direction' => request('sort')==='event_start_at' && request('direction')==='asc' ? 'desc' : 'asc'])) }}" 
+                                       class="inline-flex items-center gap-1 hover:text-gray-700">
+                                        Event Date
+                                        @if(request('sort')==='event_start_at')
+                                            <span class="text-gray-400">{{ request('direction')==='asc' ? '▲' : '▼' }}</span>
+                                        @else
+                                            <span class="text-gray-300">↕</span>
+                                        @endif
+                                    </a>
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <a href="{{ route('reports.events-balance', array_merge(request()->query(), ['sort' => 'customer_name', 'direction' => request('sort')==='customer_name' && request('direction')==='asc' ? 'desc' : 'asc'])) }}" 
+                                       class="inline-flex items-center gap-1 hover:text-gray-700">
+                                        Customer
+                                        @if(request('sort')==='customer_name')
+                                            <span class="text-gray-400">{{ request('direction')==='asc' ? '▲' : '▼' }}</span>
+                                        @else
+                                            <span class="text-gray-300">↕</span>
+                                        @endif
+                                    </a>
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <a href="{{ route('reports.events-balance', array_merge(request()->query(), ['sort' => 'event_type', 'direction' => request('sort')==='event_type' && request('direction')==='asc' ? 'desc' : 'asc'])) }}" 
+                                       class="inline-flex items-center gap-1 hover:text-gray-700">
+                                        Event Type
+                                        @if(request('sort')==='event_type')
+                                            <span class="text-gray-400">{{ request('direction')==='asc' ? '▲' : '▼' }}</span>
+                                        @else
+                                            <span class="text-gray-300">↕</span>
+                                        @endif
+                                    </a>
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <a href="{{ route('reports.events-balance', array_merge(request()->query(), ['sort' => 'invoice_net_amount', 'direction' => request('sort')==='invoice_net_amount' && request('direction')==='asc' ? 'desc' : 'asc'])) }}" 
+                                       class="inline-flex items-center gap-1 hover:text-gray-700">
+                                        Invoice Amount
+                                        @if(request('sort')==='invoice_net_amount')
+                                            <span class="text-gray-400">{{ request('direction')==='asc' ? '▲' : '▼' }}</span>
+                                        @else
+                                            <span class="text-gray-300">↕</span>
+                                        @endif
+                                    </a>
+                                </th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Paid (Credit)</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Outstanding</th>
                             </tr>
@@ -70,7 +126,7 @@
                                     $outstanding = ($booking->invoice_net_amount ?? 0) - $paid;
                                 @endphp
                                 <tr class="hover:bg-gray-50">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $index + 1 }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $bookings->firstItem() + $index }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ optional($booking->event_start_at)->format('M d, Y') }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $booking->customer_name }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $booking->event_type }}</td>
@@ -81,6 +137,34 @@
                             @endforeach
                         </tbody>
                     </table>
+                </div>
+
+                <!-- Pagination & Per-page Controls -->
+                <div class="px-6 py-4 border-t border-gray-200 mt-4 flex items-center justify-between gap-4">
+                    <form method="GET" action="{{ route('reports.events-balance') }}" class="flex items-center gap-2 text-sm">
+                        <span class="text-gray-600">Show</span>
+                        <select name="per_page" class="rounded-md border-gray-300" onchange="this.form.submit()">
+                            @foreach([10,25,50,100] as $n)
+                                <option value="{{ $n }}" {{ (int)request('per_page', 10) === $n ? 'selected' : '' }}>{{ $n }}</option>
+                            @endforeach
+                        </select>
+                        <span class="text-gray-600">entries</span>
+                        <input type="hidden" name="from_date" value="{{ $fromDate }}" />
+                        <input type="hidden" name="to_date" value="{{ $toDate }}" />
+                        <input type="hidden" name="search" value="{{ request('search') }}" />
+                        <input type="hidden" name="sort" value="{{ request('sort', 'event_start_at') }}" />
+                        <input type="hidden" name="direction" value="{{ request('direction', 'desc') }}" />
+                    </form>
+
+                    <div class="text-sm text-gray-600">
+                        @if ($bookings->total() > 0)
+                            Showing {{ $bookings->firstItem() }} to {{ $bookings->lastItem() }} of {{ $bookings->total() }} entries
+                        @else
+                            Showing 0 entries
+                        @endif
+                    </div>
+
+                    <div>{{ $bookings->links() }}</div>
                 </div>
             </div>
         </div>
