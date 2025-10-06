@@ -91,7 +91,7 @@ class PaymentController extends Controller
         return view('payments.create', compact('customers'));
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
         $validated = $request->validate([
             'booking_id' => ['required', 'exists:bookings,id'],
@@ -108,6 +108,15 @@ class PaymentController extends Controller
         ]);
 
         $payment = Payment::create($validated);
+
+        // If AJAX request, return JSON
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'payment_id' => $payment->id,
+                'message' => 'Payment collected successfully.'
+            ]);
+        }
 
         return redirect()->route('payments.index')->with('status', 'Payment collected successfully.');
     }
@@ -146,6 +155,14 @@ class PaymentController extends Controller
         
         $pdf = Pdf::loadView('payments.receipt', compact('payment'))->setPaper('a4');
         return $pdf->download("payment-receipt-{$payment->id}.pdf");
+    }
+
+    public function receiptPrint(Payment $payment)
+    {
+        $payment->load(['booking', 'customer']);
+        
+        $pdf = Pdf::loadView('payments.receipt', compact('payment'))->setPaper('a4');
+        return $pdf->stream("payment-receipt-{$payment->id}.pdf");
     }
 
     public function details(Request $request)

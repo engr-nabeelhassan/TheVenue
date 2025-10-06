@@ -141,7 +141,7 @@
                                         <div class="flex items-center gap-2">
                                             <button onclick="showPaymentDetails({{ $payment->id }})" class="px-3 py-1 text-sm rounded bg-indigo-600 text-white hover:bg-indigo-500">Details</button>
                                             <a href="{{ route('payments.edit', $payment) }}" class="px-3 py-1 text-sm rounded bg-amber-500 text-white hover:bg-amber-400">Edit</a>
-                                            <a href="{{ route('payments.receipt', $payment) }}" target="_blank" class="px-3 py-1 text-sm rounded bg-green-600 text-white hover:bg-green-500">Print</a>
+                                            <a href="{{ route('payments.receipt.print', $payment) }}" target="_blank" class="px-3 py-1 text-sm rounded bg-green-600 text-white hover:bg-green-500">Print</a>
                                             <form action="{{ route('payments.destroy', $payment) }}" method="POST" onsubmit="return confirm('Delete this payment?')">
                                                 @csrf
                                                 @method('DELETE')

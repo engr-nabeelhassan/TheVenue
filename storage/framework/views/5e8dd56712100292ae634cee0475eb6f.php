@@ -1,27 +1,36 @@
-<x-app-layout>
-    <x-slot name="header">
+<?php if (isset($component)) { $__componentOriginal9ac128a9029c0e4701924bd2d73d7f54 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54 = $attributes; } ?>
+<?php $component = App\View\Components\AppLayout::resolve([] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('app-layout'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\App\View\Components\AppLayout::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+     <?php $__env->slot('header', null, []); ?> 
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             Collect Payment
         </h2>
-    </x-slot>
+     <?php $__env->endSlot(); ?>
 
     <div class="py-6" x-data="paymentForm()">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white shadow-sm sm:rounded-lg p-6">
                 <!-- Validation Errors -->
-                @if ($errors->any())
+                <?php if($errors->any()): ?>
                     <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
                         <strong>Errors:</strong>
                         <ul class="mt-2 list-disc list-inside">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
+                            <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <li><?php echo e($error); ?></li>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </ul>
                     </div>
-                @endif
+                <?php endif; ?>
 
-                <form method="POST" action="{{ route('payments.store') }}" onsubmit="console.log('Form submitting...', new FormData(this))">
-                    @csrf
+                <form method="POST" action="<?php echo e(route('payments.store')); ?>" onsubmit="console.log('Form submitting...', new FormData(this))">
+                    <?php echo csrf_field(); ?>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- Receipt Information -->
@@ -39,9 +48,9 @@
                                 <select name="customer_id" x-model="customerId" @change="fetchCustomerDetails()" 
                                         class="mt-1 block w-full rounded-md border-gray-300" required>
                                     <option value="">Select Customer</option>
-                                    @foreach($customers as $customer)
-                                        <option value="{{ $customer->id }}">{{ $customer->full_name }}</option>
-                                    @endforeach
+                                    <?php $__currentLoopData = $customers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $customer): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($customer->id); ?>"><?php echo e($customer->full_name); ?></option>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </select>
                             </div>
 
@@ -149,7 +158,7 @@
 
                     <!-- Action Buttons -->
                     <div class="mt-8 flex justify-end space-x-4">
-                        <a href="{{ route('payments.index') }}" 
+                        <a href="<?php echo e(route('payments.index')); ?>" 
                            class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400">
                             Cancel
                         </a>
@@ -173,7 +182,7 @@
     <script>
         function paymentForm() {
             return {
-                receiptDate: '{{ now()->format('Y-m-d') }}',
+                receiptDate: '<?php echo e(now()->format('Y-m-d')); ?>',
                 customerId: '',
                 customerName: '',
                 contact: '',
@@ -197,7 +206,7 @@
 
                     try {
                         // Fetch customer balance
-                        const balanceResponse = await fetch(`{{ route('api.customer-balance') }}?customer_id=${this.customerId}`);
+                        const balanceResponse = await fetch(`<?php echo e(route('api.customer-balance')); ?>?customer_id=${this.customerId}`);
                         const balanceData = await balanceResponse.json();
                         
                         this.customerName = balanceData.customer_name || '';
@@ -205,7 +214,7 @@
                         this.previousBalance = balanceData.balance || 0;
 
                         // Fetch customer bookings
-                        const bookingsResponse = await fetch(`{{ route('api.customer-bookings') }}?customer_id=${this.customerId}`);
+                        const bookingsResponse = await fetch(`<?php echo e(route('api.customer-bookings')); ?>?customer_id=${this.customerId}`);
                         const bookingsData = await bookingsResponse.json();
                         this.customerBookings = bookingsData;
                     } catch (error) {
@@ -252,7 +261,7 @@
                     try {
                         // Prepare form data
                         const formData = new FormData();
-                        formData.append('_token', '{{ csrf_token() }}');
+                        formData.append('_token', '<?php echo e(csrf_token()); ?>');
                         formData.append('receipt_date', this.receiptDate);
                         formData.append('customer_id', this.customerId);
                         formData.append('customer_name', this.customerName);
@@ -266,7 +275,7 @@
                         formData.append('booking_id', this.selectedBookingId);
 
                         // Save payment via AJAX
-                        const response = await fetch('{{ route('payments.store') }}', {
+                        const response = await fetch('<?php echo e(route('payments.store')); ?>', {
                             method: 'POST',
                             body: formData,
                             headers: {
@@ -280,7 +289,7 @@
                             window.open(`/payments/${data.payment_id}/receipt-print`, '_blank');
                             // Redirect to payments list after a short delay
                             setTimeout(() => {
-                                window.location.href = '{{ route('payments.index') }}';
+                                window.location.href = '<?php echo e(route('payments.index')); ?>';
                             }, 500);
                         } else {
                             const errorData = await response.json();
@@ -294,4 +303,14 @@
             }
         }
     </script>
-</x-app-layout>
+ <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54)): ?>
+<?php $attributes = $__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54; ?>
+<?php unset($__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54)): ?>
+<?php $component = $__componentOriginal9ac128a9029c0e4701924bd2d73d7f54; ?>
+<?php unset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54); ?>
+<?php endif; ?>
+<?php /**PATH C:\Users\Shahjahan\Desktop\the_venue\resources\views/payments/create.blade.php ENDPATH**/ ?>
