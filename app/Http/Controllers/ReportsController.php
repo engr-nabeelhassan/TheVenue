@@ -21,13 +21,60 @@ class ReportsController extends Controller
     {
         $fromDate = $request->get('from_date', now()->startOfMonth()->format('Y-m-d'));
         $toDate = $request->get('to_date', now()->endOfMonth()->format('Y-m-d'));
+        $search = $request->get('search');
+        $sort = $request->get('sort', 'full_name');
+        $direction = $request->get('direction', 'asc');
+        $perPage = (int) $request->get('per_page', 10);
 
-        $customers = Customer::with(['bookings' => function($query) use ($fromDate, $toDate) {
-            $query->whereBetween('created_at', [$fromDate, $toDate]);
-        }])->get();
+        if (!in_array($perPage, [10, 25, 50, 100])) {
+            $perPage = 10;
+        }
 
-        $totalCustomers = $customers->count();
-        $activeCustomers = $customers->where('bookings', '!=', null)->count();
+        // Get all customers with bookings in date range
+        $query = Customer::with(['bookings' => function($q) use ($fromDate, $toDate) {
+            $q->whereBetween('created_at', [$fromDate, $toDate]);
+        }]);
+
+        // Search functionality
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('full_name', 'like', "%{$search}%")
+                  ->orWhere('phone', 'like', "%{$search}%")
+                  ->orWhere('cnic', 'like', "%{$search}%");
+            });
+        }
+
+        // Get all for totals calculation
+        $allCustomers = (clone $query)->get();
+        $totalCustomers = $allCustomers->count();
+        $activeCustomers = $allCustomers->filter(function($customer) {
+            return $customer->bookings->count() > 0;
+        })->count();
+
+        // Apply sorting
+        $sortable = ['full_name', 'phone', 'total_bookings', 'total_amount', 'status'];
+        if (!in_array($sort, $sortable)) {
+            $sort = 'full_name';
+        }
+
+        if (in_array($sort, ['full_name', 'phone'])) {
+            $query->orderBy($sort, $direction);
+        }
+
+        $customers = $query->paginate($perPage)->appends($request->query());
+
+        // Sort by calculated fields if needed
+        if (in_array($sort, ['total_bookings', 'total_amount', 'status'])) {
+            $customers->setCollection($customers->getCollection()->sortBy(function($customer) use ($sort) {
+                if ($sort === 'total_bookings') {
+                    return $customer->bookings->count();
+                } elseif ($sort === 'total_amount') {
+                    return $customer->bookings->sum('invoice_net_amount');
+                } elseif ($sort === 'status') {
+                    return $customer->bookings->count() > 0 ? 1 : 0;
+                }
+            }, SORT_REGULAR, $direction === 'desc'));
+        }
 
         return view('reports.customers-summary', compact('customers', 'fromDate', 'toDate', 'totalCustomers', 'activeCustomers'));
     }
@@ -42,7 +89,9 @@ class ReportsController extends Controller
         }])->get();
 
         $totalCustomers = $customers->count();
-        $activeCustomers = $customers->where('bookings', '!=', null)->count();
+        $activeCustomers = $customers->filter(function($customer) {
+            return $customer->bookings->count() > 0;
+        })->count();
 
         $pdf = Pdf::loadView('reports.customers-summary-pdf', compact('customers', 'fromDate', 'toDate', 'totalCustomers', 'activeCustomers'));
         return $pdf->download('customers-summary-' . $fromDate . '-to-' . $toDate . '.pdf');
