@@ -330,22 +330,63 @@ class BookingController extends Controller
 
     public function cancelled(Request $request): View
     {
+        $fromDate = $request->get('from_date', now()->subMonths(3)->format('Y-m-d'));
+        $toDate = $request->get('to_date', now()->format('Y-m-d'));
+        $search = $request->get('search');
+        $sort = $request->get('sort', 'event_start_at');
+        $direction = $request->get('direction', 'desc');
+        $perPage = (int) $request->get('per_page', 10);
+
+        if (!in_array($perPage, [10, 25, 50, 100])) {
+            $perPage = 10;
+        }
+
         $query = Booking::with('customer')
-            ->where('event_status', 'Cancelled');
+            ->where('event_status', 'Cancelled')
+            ->whereBetween('event_start_at', [$fromDate, $toDate]);
 
         // Search functionality
-        if ($request->filled('search')) {
-            $search = $request->search;
+        if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('customer_name', 'like', "%{$search}%")
-                  ->orWhere('invoice_date', 'like', "%{$search}%")
                   ->orWhere('event_type', 'like', "%{$search}%");
             });
         }
 
-        $bookings = $query->orderBy('created_at', 'desc')->paginate(10);
+        // Apply sorting
+        $sortable = ['customer_name', 'event_type', 'event_start_at'];
+        if (!in_array($sort, $sortable)) {
+            $sort = 'event_start_at';
+        }
 
-        return view('bookings.cancelled', compact('bookings'));
+        $query->orderBy($sort, $direction);
+
+        $bookings = $query->paginate($perPage)->appends($request->query());
+
+        return view('bookings.cancelled', compact('bookings', 'fromDate', 'toDate'));
+    }
+
+    public function cancelledPdf(Request $request)
+    {
+        $fromDate = $request->get('from_date', now()->subMonths(3)->format('Y-m-d'));
+        $toDate = $request->get('to_date', now()->format('Y-m-d'));
+        $search = $request->get('search');
+
+        $query = Booking::with('customer')
+            ->where('event_status', 'Cancelled')
+            ->whereBetween('event_start_at', [$fromDate, $toDate]);
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('customer_name', 'like', "%{$search}%")
+                  ->orWhere('event_type', 'like', "%{$search}%");
+            });
+        }
+
+        $bookings = $query->orderBy('event_start_at', 'desc')->get();
+
+        $pdf = Pdf::loadView('bookings.cancelled-pdf', compact('bookings', 'fromDate', 'toDate'));
+        return $pdf->download('cancelled-bookings-' . $fromDate . '-to-' . $toDate . '.pdf');
     }
 
     public function postponed(Request $request): View
