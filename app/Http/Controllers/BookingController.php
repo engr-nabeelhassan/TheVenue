@@ -370,23 +370,42 @@ class BookingController extends Controller
 
     public function upcoming(Request $request): View
     {
+        $fromDate = $request->get('from_date', now()->format('Y-m-d'));
+        $toDate = $request->get('to_date', now()->addMonths(3)->format('Y-m-d'));
+        $search = $request->get('search');
+        $sort = $request->get('sort', 'event_start_at');
+        $direction = $request->get('direction', 'asc');
+        $perPage = (int) $request->get('per_page', 10);
+
+        if (!in_array($perPage, [10, 25, 50, 100])) {
+            $perPage = 10;
+        }
+
         $query = Booking::with('customer')
             ->where('event_status', '!=', 'Cancelled')
             ->where('event_status', '!=', 'Postponed')
-            ->where('event_start_at', '>=', now());
+            ->whereBetween('event_start_at', [$fromDate, $toDate]);
 
         // Search functionality
-        if ($request->filled('search')) {
-            $search = $request->search;
+        if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('customer_name', 'like', "%{$search}%")
-                  ->orWhere('event_type', 'like', "%{$search}%");
+                  ->orWhere('event_type', 'like', "%{$search}%")
+                  ->orWhere('contact', 'like', "%{$search}%");
             });
         }
 
-        $bookings = $query->orderBy('event_start_at', 'asc')->paginate(10);
+        // Apply sorting
+        $sortable = ['event_start_at', 'customer_name', 'event_type'];
+        if (!in_array($sort, $sortable)) {
+            $sort = 'event_start_at';
+        }
 
-        return view('bookings.upcoming', compact('bookings'));
+        $query->orderBy($sort, $direction);
+
+        $bookings = $query->paginate($perPage)->appends($request->query());
+
+        return view('bookings.upcoming', compact('bookings', 'fromDate', 'toDate'));
     }
 
     public function upcomingPdf(Request $request)

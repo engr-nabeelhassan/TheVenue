@@ -24,24 +24,39 @@
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white shadow-sm sm:rounded-lg">
-                <!-- Search Section -->
+                <!-- Filters Section -->
                 <div class="p-6 border-b border-gray-200">
                     <form method="GET" action="{{ route('bookings.upcoming') }}" class="space-y-4">
-                        <div class="flex gap-4">
-                            <div class="flex-1">
-                                <label class="block text-sm font-medium text-gray-700">Search</label>
-                                <input type="text" name="search" value="{{ request('search') }}" 
-                                       class="mt-1 block w-full rounded-md border-gray-300" 
-                                       placeholder="Search by customer name, event type, or contact">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">From Date</label>
+                                <input type="date" name="from_date" value="{{ $fromDate }}" 
+                                       class="mt-1 block w-full rounded-md border-gray-300" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">To Date</label>
+                                <input type="date" name="to_date" value="{{ $toDate }}" 
+                                       class="mt-1 block w-full rounded-md border-gray-300" required>
                             </div>
                             <div class="flex items-end">
-                                <button type="submit" class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700">
-                                    Search
+                                <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700">
+                                    Generate
                                 </button>
-                                <a href="{{ route('bookings.upcoming') }}" class="ml-2 bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400">
-                                    Clear
-                                </a>
                             </div>
+                        </div>
+                        
+                        <!-- Search Box -->
+                        <div class="flex gap-2">
+                            <input type="hidden" name="from_date" value="{{ $fromDate }}">
+                            <input type="hidden" name="to_date" value="{{ $toDate }}">
+                            <input type="hidden" name="sort" value="{{ request('sort', 'event_start_at') }}">
+                            <input type="hidden" name="direction" value="{{ request('direction', 'asc') }}">
+                            <input type="text" name="search" value="{{ request('search') }}" 
+                                   placeholder="Search by customer name, event type, or contact" 
+                                   class="w-full md:w-96 rounded-md border-gray-300 shadow-sm py-2">
+                            <button type="submit" class="px-4 py-2 bg-gray-100 border rounded-md hover:bg-gray-200">Search</button>
+                            <a href="{{ route('bookings.upcoming', ['from_date' => $fromDate, 'to_date' => $toDate]) }}" 
+                               class="px-4 py-2 border rounded-md hover:bg-gray-50">Reset</a>
                         </div>
                     </form>
                 </div>
@@ -52,13 +67,41 @@
                         <thead class="bg-green-50">
                             <tr>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sr#</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Event Date & Time</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer Name</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <a href="{{ route('bookings.upcoming', array_merge(request()->query(), ['sort' => 'event_start_at', 'direction' => request('sort')==='event_start_at' && request('direction')==='asc' ? 'desc' : 'asc'])) }}" 
+                                       class="inline-flex items-center gap-1 hover:text-gray-700">
+                                        Event Date & Time
+                                        @if(request('sort')==='event_start_at')
+                                            <span class="text-gray-400">{{ request('direction')==='asc' ? '▲' : '▼' }}</span>
+                                        @else
+                                            <span class="text-gray-300">↕</span>
+                                        @endif
+                                    </a>
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <a href="{{ route('bookings.upcoming', array_merge(request()->query(), ['sort' => 'customer_name', 'direction' => request('sort')==='customer_name' && request('direction')==='asc' ? 'desc' : 'asc'])) }}" 
+                                       class="inline-flex items-center gap-1 hover:text-gray-700">
+                                        Customer Name
+                                        @if(request('sort')==='customer_name')
+                                            <span class="text-gray-400">{{ request('direction')==='asc' ? '▲' : '▼' }}</span>
+                                        @else
+                                            <span class="text-gray-300">↕</span>
+                                        @endif
+                                    </a>
+                                </th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Guests</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">From Date</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">To Date</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Event Type</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <a href="{{ route('bookings.upcoming', array_merge(request()->query(), ['sort' => 'event_type', 'direction' => request('sort')==='event_type' && request('direction')==='asc' ? 'desc' : 'asc'])) }}" 
+                                       class="inline-flex items-center gap-1 hover:text-gray-700">
+                                        Event Type
+                                        @if(request('sort')==='event_type')
+                                            <span class="text-gray-400">{{ request('direction')==='asc' ? '▲' : '▼' }}</span>
+                                        @else
+                                            <span class="text-gray-300">↕</span>
+                                        @endif
+                                    </a>
+                                </th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                             </tr>
                         </thead>
@@ -91,18 +134,12 @@
                                         </div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                        {{ $booking->contact ?? 'N/A' }}
+                                        {{ $booking->customer->phone ?? $booking->contact ?? 'N/A' }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                         <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
                                             {{ $booking->total_guests ?? 'N/A' }}
                                         </span>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                        {{ $booking->event_start_at ? $booking->event_start_at->format('M d, Y') : 'N/A' }}
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                        {{ $booking->event_end_at ? $booking->event_end_at->format('M d, Y') : 'N/A' }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                         <span class="px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800">
@@ -122,7 +159,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="9" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                                    <td colspan="7" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
                                         <div class="flex flex-col items-center justify-center py-8">
                                             <svg class="w-12 h-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
@@ -137,9 +174,32 @@
                     </table>
                 </div>
 
-                <!-- Pagination -->
-                <div class="px-6 py-4 border-t border-gray-200">
-                    {{ $bookings->links() }}
+                <!-- Pagination & Per-page Controls -->
+                <div class="px-6 py-4 border-t border-gray-200 mt-4 flex items-center justify-between gap-4">
+                    <form method="GET" action="{{ route('bookings.upcoming') }}" class="flex items-center gap-2 text-sm">
+                        <span class="text-gray-600">Show</span>
+                        <select name="per_page" class="rounded-md border-gray-300" onchange="this.form.submit()">
+                            @foreach([10,25,50,100] as $n)
+                                <option value="{{ $n }}" {{ (int)request('per_page', 10) === $n ? 'selected' : '' }}>{{ $n }}</option>
+                            @endforeach
+                        </select>
+                        <span class="text-gray-600">entries</span>
+                        <input type="hidden" name="from_date" value="{{ $fromDate }}" />
+                        <input type="hidden" name="to_date" value="{{ $toDate }}" />
+                        <input type="hidden" name="search" value="{{ request('search') }}" />
+                        <input type="hidden" name="sort" value="{{ request('sort', 'event_start_at') }}" />
+                        <input type="hidden" name="direction" value="{{ request('direction', 'asc') }}" />
+                    </form>
+
+                    <div class="text-sm text-gray-600">
+                        @if ($bookings->total() > 0)
+                            Showing {{ $bookings->firstItem() }} to {{ $bookings->lastItem() }} of {{ $bookings->total() }} entries
+                        @else
+                            Showing 0 entries
+                        @endif
+                    </div>
+
+                    <div>{{ $bookings->links() }}</div>
                 </div>
             </div>
         </div>
