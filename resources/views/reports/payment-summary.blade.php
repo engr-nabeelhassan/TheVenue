@@ -27,6 +27,22 @@
                             <button type="submit" class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700">Generate</button>
                         </div>
                     </form>
+
+                    <!-- Search Box -->
+                    <div class="mt-4">
+                        <form method="GET" action="{{ route('reports.payment-summary') }}" class="flex gap-2">
+                            <input type="hidden" name="from_date" value="{{ $fromDate }}">
+                            <input type="hidden" name="to_date" value="{{ $toDate }}">
+                            <input type="hidden" name="sort" value="{{ request('sort', 'receipt_date') }}">
+                            <input type="hidden" name="direction" value="{{ request('direction', 'desc') }}">
+                            <input type="text" name="search" value="{{ request('search') }}" 
+                                   placeholder="Search by customer, method, or status" 
+                                   class="w-full md:w-96 rounded-md border-gray-300 shadow-sm py-2">
+                            <button type="submit" class="px-4 py-2 bg-gray-100 border rounded-md hover:bg-gray-200">Search</button>
+                            <a href="{{ route('reports.payment-summary', ['from_date' => $fromDate, 'to_date' => $toDate]) }}" 
+                               class="px-4 py-2 border rounded-md hover:bg-gray-50">Reset</a>
+                        </form>
+                    </div>
                 </div>
 
                 <!-- Summary -->
@@ -53,17 +69,67 @@
                         <thead class="bg-gray-50">
                             <tr>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sr#</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Receipt Date</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Method</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <a href="{{ route('reports.payment-summary', array_merge(request()->query(), ['sort' => 'receipt_date', 'direction' => request('sort')==='receipt_date' && request('direction')==='asc' ? 'desc' : 'asc'])) }}" 
+                                       class="inline-flex items-center gap-1 hover:text-gray-700">
+                                        Receipt Date
+                                        @if(request('sort')==='receipt_date')
+                                            <span class="text-gray-400">{{ request('direction')==='asc' ? '▲' : '▼' }}</span>
+                                        @else
+                                            <span class="text-gray-300">↕</span>
+                                        @endif
+                                    </a>
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <a href="{{ route('reports.payment-summary', array_merge(request()->query(), ['sort' => 'customer_name', 'direction' => request('sort')==='customer_name' && request('direction')==='asc' ? 'desc' : 'asc'])) }}" 
+                                       class="inline-flex items-center gap-1 hover:text-gray-700">
+                                        Customer
+                                        @if(request('sort')==='customer_name')
+                                            <span class="text-gray-400">{{ request('direction')==='asc' ? '▲' : '▼' }}</span>
+                                        @else
+                                            <span class="text-gray-300">↕</span>
+                                        @endif
+                                    </a>
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <a href="{{ route('reports.payment-summary', array_merge(request()->query(), ['sort' => 'payment_method', 'direction' => request('sort')==='payment_method' && request('direction')==='asc' ? 'desc' : 'asc'])) }}" 
+                                       class="inline-flex items-center gap-1 hover:text-gray-700">
+                                        Method
+                                        @if(request('sort')==='payment_method')
+                                            <span class="text-gray-400">{{ request('direction')==='asc' ? '▲' : '▼' }}</span>
+                                        @else
+                                            <span class="text-gray-300">↕</span>
+                                        @endif
+                                    </a>
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <a href="{{ route('reports.payment-summary', array_merge(request()->query(), ['sort' => 'payment_status', 'direction' => request('sort')==='payment_status' && request('direction')==='asc' ? 'desc' : 'asc'])) }}" 
+                                       class="inline-flex items-center gap-1 hover:text-gray-700">
+                                        Status
+                                        @if(request('sort')==='payment_status')
+                                            <span class="text-gray-400">{{ request('direction')==='asc' ? '▲' : '▼' }}</span>
+                                        @else
+                                            <span class="text-gray-300">↕</span>
+                                        @endif
+                                    </a>
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <a href="{{ route('reports.payment-summary', array_merge(request()->query(), ['sort' => 'add_amount', 'direction' => request('sort')==='add_amount' && request('direction')==='asc' ? 'desc' : 'asc'])) }}" 
+                                       class="inline-flex items-center gap-1 hover:text-gray-700">
+                                        Amount
+                                        @if(request('sort')==='add_amount')
+                                            <span class="text-gray-400">{{ request('direction')==='asc' ? '▲' : '▼' }}</span>
+                                        @else
+                                            <span class="text-gray-300">↕</span>
+                                        @endif
+                                    </a>
+                                </th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             @foreach($payments as $index => $payment)
                                 <tr class="hover:bg-gray-50">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $index + 1 }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $payments->firstItem() + $index }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ optional($payment->receipt_date)->format('M d, Y') }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $payment->customer_name }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $payment->payment_method }}</td>
@@ -73,6 +139,34 @@
                             @endforeach
                         </tbody>
                     </table>
+                </div>
+
+                <!-- Pagination & Per-page Controls -->
+                <div class="px-6 py-4 border-t border-gray-200 mt-4 flex items-center justify-between gap-4">
+                    <form method="GET" action="{{ route('reports.payment-summary') }}" class="flex items-center gap-2 text-sm">
+                        <span class="text-gray-600">Show</span>
+                        <select name="per_page" class="rounded-md border-gray-300" onchange="this.form.submit()">
+                            @foreach([10,25,50,100] as $n)
+                                <option value="{{ $n }}" {{ (int)request('per_page', 10) === $n ? 'selected' : '' }}>{{ $n }}</option>
+                            @endforeach
+                        </select>
+                        <span class="text-gray-600">entries</span>
+                        <input type="hidden" name="from_date" value="{{ $fromDate }}" />
+                        <input type="hidden" name="to_date" value="{{ $toDate }}" />
+                        <input type="hidden" name="search" value="{{ request('search') }}" />
+                        <input type="hidden" name="sort" value="{{ request('sort', 'receipt_date') }}" />
+                        <input type="hidden" name="direction" value="{{ request('direction', 'desc') }}" />
+                    </form>
+
+                    <div class="text-sm text-gray-600">
+                        @if ($payments->total() > 0)
+                            Showing {{ $payments->firstItem() }} to {{ $payments->lastItem() }} of {{ $payments->total() }} entries
+                        @else
+                            Showing 0 entries
+                        @endif
+                    </div>
+
+                    <div>{{ $payments->links() }}</div>
                 </div>
             </div>
         </div>

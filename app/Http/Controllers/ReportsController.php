@@ -165,14 +165,42 @@ class ReportsController extends Controller
     {
         $fromDate = $request->get('from_date', now()->startOfMonth()->format('Y-m-d'));
         $toDate = $request->get('to_date', now()->endOfMonth()->format('Y-m-d'));
+        $search = $request->get('search');
+        $sort = $request->get('sort', 'receipt_date');
+        $direction = $request->get('direction', 'desc');
+        $perPage = (int) $request->get('per_page', 10);
 
-        $payments = Payment::with(['customer', 'booking'])
-            ->whereBetween('receipt_date', [$fromDate, $toDate])
-            ->get();
+        if (!in_array($perPage, [10, 25, 50, 100])) {
+            $perPage = 10;
+        }
 
-        $totalDebit = $payments->where('payment_method', 'Debit')->sum('add_amount');
-        $totalCredit = $payments->where('payment_method', 'Credit')->sum('add_amount');
+        $query = Payment::with(['customer', 'booking'])
+            ->whereBetween('receipt_date', [$fromDate, $toDate]);
+
+        // Search functionality
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('customer_name', 'like', "%{$search}%")
+                  ->orWhere('payment_method', 'like', "%{$search}%")
+                  ->orWhere('payment_status', 'like', "%{$search}%");
+            });
+        }
+
+        // Get all for totals calculation
+        $allPayments = (clone $query)->get();
+        $totalDebit = $allPayments->where('payment_method', 'Debit')->sum('add_amount');
+        $totalCredit = $allPayments->where('payment_method', 'Credit')->sum('add_amount');
         $netBalance = $totalDebit - $totalCredit;
+
+        // Apply sorting
+        $sortable = ['receipt_date', 'customer_name', 'payment_method', 'payment_status', 'add_amount'];
+        if (!in_array($sort, $sortable)) {
+            $sort = 'receipt_date';
+        }
+
+        $query->orderBy($sort, $direction);
+
+        $payments = $query->paginate($perPage)->appends($request->query());
 
         return view('reports.payment-summary', compact('payments', 'fromDate', 'toDate', 'totalDebit', 'totalCredit', 'netBalance'));
     }
