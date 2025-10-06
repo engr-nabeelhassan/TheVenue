@@ -22,10 +22,10 @@ class DashboardController extends Controller
         // Get total customers
         $totalCustomers = Customer::count();
         
-        // Get available halls (assuming 5 halls total for now)
-        $totalHalls = 5;
-        $bookedHalls = Booking::whereDate('event_start_at', today())->count();
-        $availableHalls = max(0, $totalHalls - $bookedHalls);
+        // Get today's events (all bookings for today)
+        $todayEvents = Booking::whereDate('event_start_at', today())
+            ->where('event_status', '!=', 'Cancelled')
+            ->count();
         
         // Get year and month from request or use current
         $year = $request->get('year', now()->year);
@@ -44,7 +44,7 @@ class DashboardController extends Controller
             'todayBookings',
             'upcomingEvents', 
             'totalCustomers',
-            'availableHalls',
+            'todayEvents',
             'recentBookings',
             'year',
             'month'
