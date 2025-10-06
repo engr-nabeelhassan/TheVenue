@@ -116,7 +116,7 @@
                             <small><?php echo e($booking->event_start_at ? $booking->event_start_at->format('h:i A') : 'N/A'); ?></small>
                         </td>
                         <td><strong><?php echo e($booking->customer_name); ?></strong></td>
-                        <td><?php echo e($booking->contact ?? 'N/A'); ?></td>
+                        <td><?php echo e($booking->customer->phone ?? $booking->contact ?? 'N/A'); ?></td>
                         <td>
                             <span class="status-badge status-upcoming">
                                 <?php echo e($booking->total_guests ?? 'N/A'); ?>

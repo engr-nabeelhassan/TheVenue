@@ -115,7 +115,7 @@
                             <small>{{ $booking->event_start_at ? $booking->event_start_at->format('h:i A') : 'N/A' }}</small>
                         </td>
                         <td><strong>{{ $booking->customer_name }}</strong></td>
-                        <td>{{ $booking->contact ?? 'N/A' }}</td>
+                        <td>{{ $booking->customer->phone ?? $booking->contact ?? 'N/A' }}</td>
                         <td>
                             <span class="status-badge status-upcoming">
                                 {{ $booking->total_guests ?? 'N/A' }}
