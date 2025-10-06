@@ -27,6 +27,13 @@ class DashboardController extends Controller
             ->where('event_status', '!=', 'Cancelled')
             ->count();
         
+        // Get today's event details for slider
+        $todayEventsList = Booking::with('customer')
+            ->whereDate('event_start_at', today())
+            ->where('event_status', '!=', 'Cancelled')
+            ->orderBy('event_start_at', 'asc')
+            ->get();
+        
         // Get year and month from request or use current
         $year = $request->get('year', now()->year);
         $month = $request->get('month', now()->month);
@@ -45,6 +52,7 @@ class DashboardController extends Controller
             'upcomingEvents', 
             'totalCustomers',
             'todayEvents',
+            'todayEventsList',
             'recentBookings',
             'year',
             'month'

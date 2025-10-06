@@ -1,4 +1,13 @@
-<x-app-layout>
+<?php if (isset($component)) { $__componentOriginal9ac128a9029c0e4701924bd2d73d7f54 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54 = $attributes; } ?>
+<?php $component = App\View\Components\AppLayout::resolve([] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('app-layout'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\App\View\Components\AppLayout::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
     <div class="min-h-[calc(100vh-4rem)] bg-gradient-to-br from-indigo-50 via-white to-purple-50">
         <div class="flex">
             <!-- Sidebar -->
@@ -22,8 +31,8 @@
                                 <svg class="w-4 h-4 ml-auto" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
                             </button>
                             <div x-show="open" @click.away="open = false" class="mt-1 ml-8 bg-white border border-gray-100 rounded-lg shadow-lg py-1 w-48 z-10 absolute left-0">
-                                <a href="{{ route('customers.create') }}" class="block px-4 py-2 text-gray-700 hover:bg-indigo-50 rounded">Add New Customer</a>
-                                <a href="{{ route('customers.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-indigo-50 rounded">Customers List</a>
+                                <a href="<?php echo e(route('customers.create')); ?>" class="block px-4 py-2 text-gray-700 hover:bg-indigo-50 rounded">Add New Customer</a>
+                                <a href="<?php echo e(route('customers.index')); ?>" class="block px-4 py-2 text-gray-700 hover:bg-indigo-50 rounded">Customers List</a>
                             </div>
                         </div>
                         <div x-data="{ open: false }" class="relative">
@@ -33,8 +42,8 @@
                                 <svg class="w-4 h-4 ml-auto" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
                             </button>
                             <div x-show="open" @click.away="open = false" class="mt-1 ml-8 bg-white border border-gray-100 rounded-lg shadow-lg py-1 w-48 z-10 absolute left-0">
-                                <a href="{{ route('bookings.create') }}" class="block px-4 py-2 text-gray-700 hover:bg-indigo-50 rounded">New Booking</a>
-                                <a href="{{ route('bookings.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-indigo-50 rounded">Booking List</a>
+                                <a href="<?php echo e(route('bookings.create')); ?>" class="block px-4 py-2 text-gray-700 hover:bg-indigo-50 rounded">New Booking</a>
+                                <a href="<?php echo e(route('bookings.index')); ?>" class="block px-4 py-2 text-gray-700 hover:bg-indigo-50 rounded">Booking List</a>
                             </div>
                         </div>
                         <div x-data="{ open: false }" class="relative">
@@ -46,8 +55,8 @@
                                 <svg class="w-4 h-4 ml-auto" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
                             </button>
                             <div x-show="open" @click.away="open = false" class="mt-1 ml-8 bg-white border border-gray-100 rounded-lg shadow-lg py-1 w-48 z-10 absolute left-0">
-                                <a href="{{ route('payments.create') }}" class="block px-4 py-2 text-gray-700 hover:bg-indigo-50 rounded">Collect Payment</a>
-                                <a href="{{ route('payments.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-indigo-50 rounded">Payment List</a>
+                                <a href="<?php echo e(route('payments.create')); ?>" class="block px-4 py-2 text-gray-700 hover:bg-indigo-50 rounded">Collect Payment</a>
+                                <a href="<?php echo e(route('payments.index')); ?>" class="block px-4 py-2 text-gray-700 hover:bg-indigo-50 rounded">Payment List</a>
                             </div>
                         </div>
                         <div x-data="{ open: false }" class="relative">
@@ -59,18 +68,18 @@
                                 <svg class="w-4 h-4 ml-auto" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
                             </button>
                             <div x-show="open" @click.away="open = false" class="mt-1 ml-8 bg-white border border-gray-100 rounded-lg shadow-lg py-1 w-64 z-10 absolute left-0">
-                                <a href="{{ route('reports.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-indigo-50 rounded">All Reports</a>
-                                <a href="{{ route('reports.customers-summary') }}" class="block px-4 py-2 text-gray-700 hover:bg-indigo-50 rounded">Customers Summary</a>
-                                <a href="{{ route('reports.events-balance') }}" class="block px-4 py-2 text-gray-700 hover:bg-indigo-50 rounded">Events Balance Summary</a>
-                                <a href="{{ route('reports.payment-summary') }}" class="block px-4 py-2 text-gray-700 hover:bg-indigo-50 rounded">Payment Summary</a>
-                                <a href="{{ route('reports.venue-events') }}" class="block px-4 py-2 text-gray-700 hover:bg-indigo-50 rounded">Venue Events Summary</a>
-                                <a href="{{ route('reports.customer-statements') }}" class="block px-4 py-2 text-gray-700 hover:bg-indigo-50 rounded">Customer Statements</a>
+                                <a href="<?php echo e(route('reports.index')); ?>" class="block px-4 py-2 text-gray-700 hover:bg-indigo-50 rounded">All Reports</a>
+                                <a href="<?php echo e(route('reports.customers-summary')); ?>" class="block px-4 py-2 text-gray-700 hover:bg-indigo-50 rounded">Customers Summary</a>
+                                <a href="<?php echo e(route('reports.events-balance')); ?>" class="block px-4 py-2 text-gray-700 hover:bg-indigo-50 rounded">Events Balance Summary</a>
+                                <a href="<?php echo e(route('reports.payment-summary')); ?>" class="block px-4 py-2 text-gray-700 hover:bg-indigo-50 rounded">Payment Summary</a>
+                                <a href="<?php echo e(route('reports.venue-events')); ?>" class="block px-4 py-2 text-gray-700 hover:bg-indigo-50 rounded">Venue Events Summary</a>
+                                <a href="<?php echo e(route('reports.customer-statements')); ?>" class="block px-4 py-2 text-gray-700 hover:bg-indigo-50 rounded">Customer Statements</a>
                             </div>
                         </div>
                     </nav>
 
-                    <form method="POST" action="{{ route('logout') }}" class="pt-4 border-t border-gray-100">
-                        @csrf
+                    <form method="POST" action="<?php echo e(route('logout')); ?>" class="pt-4 border-t border-gray-100">
+                        <?php echo csrf_field(); ?>
                         <button type="submit" class="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold shadow hover:from-indigo-500 hover:to-purple-500">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M3 3.75A1.75 1.75 0 0 1 4.75 2h6.5A1.75 1.75 0 0 1 13 3.75v2a.75.75 0 0 1-1.5 0v-2a.25.25 0 0 0-.25-.25h-6.5a.25.25 0 0 0-.25.25v12.5c0 .138.112.25.25.25h6.5a.25.25 0 0 0 .25-.25v-2a.75.75 0 0 1 1.5 0v2A1.75 1.75 0 0 1 11.25 18h-6.5A1.75 1.75 0 0 1 3 16.25V3.75Zm12.03 4.47a.75.75 0 1 0-1.06 1.06l1.72 1.72H8.75a.75.75 0 0 0 0 1.5h6.94l-1.72 1.72a.75.75 0 0 0 1.06 1.06l3-3a.75.75 0 0 0 0-1.06l-3-3Z" clip-rule="evenodd"/></svg>
                             <span>Logout</span>
@@ -81,50 +90,55 @@
                     <div class="pt-4 border-t border-gray-100">
                         <div class="mb-3 flex items-center justify-between">
                             <h3 class="text-sm font-semibold text-gray-900">Today's Events</h3>
-                            <span class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-medium">{{ $todayEventsList->count() }}</span>
+                            <span class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-medium"><?php echo e($todayEventsList->count()); ?></span>
                         </div>
                         
-                        @if($todayEventsList->count() > 0)
+                        <?php if($todayEventsList->count() > 0): ?>
                             <div class="space-y-2 max-h-64 overflow-y-auto pr-2" id="todayEventsSlider">
-                                @foreach($todayEventsList as $event)
+                                <?php $__currentLoopData = $todayEventsList; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $event): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <div class="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-3 hover:shadow-md transition-all cursor-pointer"
-                                         onclick="window.location.href='{{ route('bookings.show', $event) }}'">
+                                         onclick="window.location.href='<?php echo e(route('bookings.show', $event)); ?>'">
                                         <div class="flex items-start gap-2">
                                             <div class="flex-shrink-0 w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
-                                                {{ substr($event->customer_name, 0, 2) }}
+                                                <?php echo e(substr($event->customer_name, 0, 2)); ?>
+
                                             </div>
                                             <div class="flex-1 min-w-0">
                                                 <div class="text-sm font-semibold text-gray-900 truncate">
-                                                    {{ $event->customer_name }}
+                                                    <?php echo e($event->customer_name); ?>
+
                                                 </div>
                                                 <div class="text-xs text-gray-600 flex items-center gap-1 mt-1">
                                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
                                                     </svg>
-                                                    {{ $event->customer->phone ?? $event->contact ?? 'N/A' }}
+                                                    <?php echo e($event->customer->phone ?? $event->contact ?? 'N/A'); ?>
+
                                                 </div>
                                                 <div class="text-xs text-blue-700 font-medium mt-1 flex items-center gap-1">
                                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                                     </svg>
-                                                    {{ $event->event_start_at->format('h:i A') }}
+                                                    <?php echo e($event->event_start_at->format('h:i A')); ?>
+
                                                 </div>
                                                 <div class="text-xs text-gray-500 mt-1 truncate">
-                                                    {{ $event->event_type }}
+                                                    <?php echo e($event->event_type); ?>
+
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                @endforeach
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </div>
-                        @else
+                        <?php else: ?>
                             <div class="text-center py-6 bg-gray-50 rounded-lg border border-gray-200">
                                 <svg class="w-8 h-8 text-gray-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                 </svg>
                                 <p class="text-xs text-gray-500">No events today</p>
                             </div>
-                        @endif
+                        <?php endif; ?>
                     </div>
                 </div>
             </aside>
@@ -133,23 +147,23 @@
                 <div class="max-w-7xl mx-auto">
                     <div class="flex items-center justify-between">
                         <div>
-                            <h1 class="text-2xl lg:text-3xl font-bold tracking-tight text-gray-900">Welcome, {{ auth()->user()->name }}</h1>
+                            <h1 class="text-2xl lg:text-3xl font-bold tracking-tight text-gray-900">Welcome, <?php echo e(auth()->user()->name); ?></h1>
                             <p class="text-gray-500 mt-1">Here is an overview of your banquet operations.</p>
                         </div>
                         <div class="hidden md:flex items-center gap-3">
-                            <a href="{{ route('bookings.cancelled') }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-red-600 text-white shadow hover:bg-red-500">
+                            <a href="<?php echo e(route('bookings.cancelled')); ?>" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-red-600 text-white shadow hover:bg-red-500">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                                 </svg>
                                 Cancelled Booking
                             </a>
-                            <a href="{{ route('bookings.postponed') }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-yellow-600 text-white shadow hover:bg-yellow-500">
+                            <a href="<?php echo e(route('bookings.postponed')); ?>" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-yellow-600 text-white shadow hover:bg-yellow-500">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                 </svg>
                                 Postponed Booking
                             </a>
-                            <a href="{{ route('bookings.upcoming') }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-green-600 text-white shadow hover:bg-green-500">
+                            <a href="<?php echo e(route('bookings.upcoming')); ?>" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-green-600 text-white shadow hover:bg-green-500">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                                 </svg>
@@ -166,18 +180,18 @@
                                 <div class="flex items-center justify-between">
                                     <h2 class="text-xl font-semibold text-gray-900">Booking Calendar</h2>
                                     <div class="flex items-center space-x-2">
-                                        <a href="{{ route('dashboard', ['year' => $month == 1 ? $year - 1 : $year, 'month' => $month == 1 ? 12 : $month - 1]) }}" 
+                                        <a href="<?php echo e(route('dashboard', ['year' => $month == 1 ? $year - 1 : $year, 'month' => $month == 1 ? 12 : $month - 1])); ?>" 
                                            class="p-2 rounded-lg bg-white border border-gray-200 hover:bg-gray-50">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                                             </svg>
                                         </a>
-                                        <a href="{{ route('dashboard', ['year' => now()->year, 'month' => now()->month]) }}" 
+                                        <a href="<?php echo e(route('dashboard', ['year' => now()->year, 'month' => now()->month])); ?>" 
                                            class="px-3 py-2 text-sm rounded-lg bg-white border border-gray-200 hover:bg-gray-50">
                                             Today
                                         </a>
-                                        <span class="text-lg font-medium text-gray-900">{{ \Carbon\Carbon::create($year, $month, 1)->format('F Y') }}</span>
-                                        <a href="{{ route('dashboard', ['year' => $month == 12 ? $year + 1 : $year, 'month' => $month == 12 ? 1 : $month + 1]) }}" 
+                                        <span class="text-lg font-medium text-gray-900"><?php echo e(\Carbon\Carbon::create($year, $month, 1)->format('F Y')); ?></span>
+                                        <a href="<?php echo e(route('dashboard', ['year' => $month == 12 ? $year + 1 : $year, 'month' => $month == 12 ? 1 : $month + 1])); ?>" 
                                            class="p-2 rounded-lg bg-white border border-gray-200 hover:bg-gray-50">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
@@ -200,62 +214,67 @@
                                 </div>
 
                                 <div class="grid grid-cols-7 gap-1" id="calendar-grid">
-                                    @php
+                                    <?php
                                         $firstDay = \Carbon\Carbon::create($year, $month, 1);
                                         $lastDay = \Carbon\Carbon::create($year, $month, 1)->endOfMonth();
                                         $startDate = $firstDay->copy()->startOfWeek();
                                         $endDate = $lastDay->copy()->endOfWeek();
                                         $currentDate = $startDate->copy();
-                                    @endphp
+                                    ?>
 
-                                    @while($currentDate <= $endDate)
-                                        @php
+                                    <?php while($currentDate <= $endDate): ?>
+                                        <?php
                                             $dateString = $currentDate->format('Y-m-d');
                                             $isCurrentMonth = $currentDate->month == $month;
                                             $isToday = $currentDate->isToday();
                                             $dayBookings = $recentBookings->get($dateString, collect());
                                             $hasBookings = $dayBookings->count() > 0;
-                                        @endphp
+                                        ?>
 
                                         <div class="relative min-h-[80px] p-2 border border-gray-200 rounded-lg
-                                                    {{ $isToday ? 'ring-2 ring-indigo-500 bg-indigo-50' : '' }}
-                                                    {{ $hasBookings ? 'bg-red-50 hover:bg-red-100' : ($isCurrentMonth ? 'bg-white hover:bg-gray-50' : 'bg-gray-50') }}
+                                                    <?php echo e($isToday ? 'ring-2 ring-indigo-500 bg-indigo-50' : ''); ?>
+
+                                                    <?php echo e($hasBookings ? 'bg-red-50 hover:bg-red-100' : ($isCurrentMonth ? 'bg-white hover:bg-gray-50' : 'bg-gray-50')); ?>
+
                                                     cursor-pointer transition-colors duration-200"
-                                             data-date="{{ $dateString }}"
-                                             data-bookings="{{ $dayBookings->toJson() }}"
-                                             onclick="handleDateClick('{{ $dateString }}', {{ $dayBookings->toJson() }})">
+                                             data-date="<?php echo e($dateString); ?>"
+                                             data-bookings="<?php echo e($dayBookings->toJson()); ?>"
+                                             onclick="handleDateClick('<?php echo e($dateString); ?>', <?php echo e($dayBookings->toJson()); ?>)">
                                             
                                             <div class="text-sm font-medium 
-                                                        {{ $isCurrentMonth ? 'text-gray-900' : 'text-gray-400' }}
-                                                        {{ $isToday ? 'text-indigo-600 font-bold' : '' }}">
-                                                {{ $currentDate->format('j') }}
+                                                        <?php echo e($isCurrentMonth ? 'text-gray-900' : 'text-gray-400'); ?>
+
+                                                        <?php echo e($isToday ? 'text-indigo-600 font-bold' : ''); ?>">
+                                                <?php echo e($currentDate->format('j')); ?>
+
                                             </div>
 
-                                            @if($hasBookings)
+                                            <?php if($hasBookings): ?>
                                                 <div class="mt-1 space-y-1">
-                                                    @foreach($dayBookings->take(2) as $booking)
+                                                    <?php $__currentLoopData = $dayBookings->take(2); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $booking): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                         <div class="text-xs bg-red-200 text-red-800 px-1 py-0.5 rounded truncate"
-                                                             title="{{ $booking->customer_name }} - {{ $booking->event_type }}">
-                                                            {{ $booking->customer_name }}
+                                                             title="<?php echo e($booking->customer_name); ?> - <?php echo e($booking->event_type); ?>">
+                                                            <?php echo e($booking->customer_name); ?>
+
                                                         </div>
-                                                    @endforeach
-                                                    @if($dayBookings->count() > 2)
+                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                    <?php if($dayBookings->count() > 2): ?>
                                                         <div class="text-xs text-red-600">
-                                                            +{{ $dayBookings->count() - 2 }} more
+                                                            +<?php echo e($dayBookings->count() - 2); ?> more
                                                         </div>
-                                                    @endif
+                                                    <?php endif; ?>
                                                 </div>
-                                            @elseif($isCurrentMonth)
+                                            <?php elseif($isCurrentMonth): ?>
                                                 <div class="mt-1 text-xs text-green-600">
                                                     Available
                                                 </div>
-                                            @endif
+                                            <?php endif; ?>
                                         </div>
 
-                                        @php
+                                        <?php
                                             $currentDate->addDay();
-                                        @endphp
-                                    @endwhile
+                                        ?>
+                                    <?php endwhile; ?>
                                 </div>
                             </div>
 
@@ -285,7 +304,7 @@
                             <div class="flex items-center justify-between">
                                 <div>
                                     <div class="text-sm text-gray-500">Today's Bookings</div>
-                                    <div class="mt-2 text-2xl font-bold text-indigo-600">{{ $todayBookings }}</div>
+                                    <div class="mt-2 text-2xl font-bold text-indigo-600"><?php echo e($todayBookings); ?></div>
                                 </div>
                                 <div class="p-3 bg-indigo-100 rounded-lg">
                                     <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -298,7 +317,7 @@
                             <div class="flex items-center justify-between">
                                 <div>
                                     <div class="text-sm text-gray-500">Today Events</div>
-                                    <div class="mt-2 text-2xl font-bold text-blue-600">{{ $todayEvents }}</div>
+                                    <div class="mt-2 text-2xl font-bold text-blue-600"><?php echo e($todayEvents); ?></div>
                                 </div>
                                 <div class="p-3 bg-blue-100 rounded-lg">
                                     <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -311,7 +330,7 @@
                             <div class="flex items-center justify-between">
                                 <div>
                                     <div class="text-sm text-gray-500">Upcoming Events</div>
-                                    <div class="mt-2 text-2xl font-bold text-green-600">{{ $upcomingEvents }}</div>
+                                    <div class="mt-2 text-2xl font-bold text-green-600"><?php echo e($upcomingEvents); ?></div>
                                 </div>
                                 <div class="p-3 bg-green-100 rounded-lg">
                                     <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -324,7 +343,7 @@
                             <div class="flex items-center justify-between">
                                 <div>
                                     <div class="text-sm text-gray-500">Total Customers</div>
-                                    <div class="mt-2 text-2xl font-bold text-purple-600">{{ $totalCustomers }}</div>
+                                    <div class="mt-2 text-2xl font-bold text-purple-600"><?php echo e($totalCustomers); ?></div>
                                 </div>
                                 <div class="p-3 bg-purple-100 rounded-lg">
                                     <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -406,7 +425,7 @@
                         <div class="text-green-600 text-6xl mb-4">✓</div>
                         <h3 class="text-lg font-semibold text-gray-900 mb-2">Date Available</h3>
                         <p class="text-gray-600">This date is available for booking.</p>
-                        <a href="{{ route('bookings.create') }}?date=${dateString}" 
+                        <a href="<?php echo e(route('bookings.create')); ?>?date=${dateString}" 
                            class="mt-4 inline-block bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">
                             Create Booking
                         </a>
@@ -432,4 +451,14 @@
             }
         });
     </script>
-</x-app-layout>
+ <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54)): ?>
+<?php $attributes = $__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54; ?>
+<?php unset($__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54)): ?>
+<?php $component = $__componentOriginal9ac128a9029c0e4701924bd2d73d7f54; ?>
+<?php unset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54); ?>
+<?php endif; ?>
+<?php /**PATH C:\Users\Shahjahan\Desktop\the_venue\resources\views/dashboard.blade.php ENDPATH**/ ?>
