@@ -73,9 +73,9 @@
                         <thead class="bg-gray-50">
                             <tr>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    <a href="<?php echo e(route('payments.index', array_merge(request()->query(), ['sort' => 'sr', 'direction' => request('sort')==='sr' && request('direction')==='asc' ? 'desc' : 'asc']))); ?>" class="inline-flex items-center gap-1 hover:text-gray-700">
-                                        Sr#
-                                        <?php if(request('sort')==='sr'): ?>
+                                    <a href="<?php echo e(route('payments.index', array_merge(request()->query(), ['sort' => 'receipt_date', 'direction' => request('sort')==='receipt_date' && request('direction')==='asc' ? 'desc' : 'asc']))); ?>" class="inline-flex items-center gap-1 hover:text-gray-700">
+                                        Receipt Date
+                                        <?php if(request('sort')==='receipt_date'): ?>
                                             <span class="text-gray-400"><?php echo e(request('direction')==='asc' ? '▲' : '▼'); ?></span>
                                         <?php else: ?>
                                             <span class="text-gray-300">↕</span>
@@ -130,7 +130,7 @@
                             <?php $__empty_1 = true; $__currentLoopData = $payments; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $payment): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                                 <tr class="hover:bg-gray-50">
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                        <?php echo e($payments->firstItem() + $index); ?>
+                                        <?php echo e(optional($payment->receipt_date)->format('M d, Y')); ?>
 
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -194,7 +194,7 @@
                         </select>
                         <span class="text-gray-600">entries</span>
                         <input type="hidden" name="search" value="<?php echo e(request('search')); ?>" />
-                        <input type="hidden" name="sort" value="<?php echo e(request('sort', 'sr')); ?>" />
+                        <input type="hidden" name="sort" value="<?php echo e(request('sort', 'receipt_date')); ?>" />
                         <input type="hidden" name="direction" value="<?php echo e(request('direction', 'desc')); ?>" />
                     </form>
 

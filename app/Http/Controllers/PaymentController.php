@@ -47,17 +47,18 @@ class PaymentController extends Controller
             $perPage = 10;
         }
 
-        // Sorting (sr, customer_name, debit, credit, balance)
-        $sort = $request->input('sort', 'sr');
+        // Sorting (receipt_date, customer_name, debit, credit, balance)
+        $sort = $request->input('sort', 'receipt_date');
         $direction = strtolower($request->input('direction', 'desc')) === 'asc' ? 'asc' : 'desc';
         $sortable = [
             'sr' => 'id',
+            'receipt_date' => 'receipt_date',
             'customer_name' => 'customer_name',
             'debit' => 'add_amount',
             'credit' => 'add_amount',
             'balance' => 'remaining_balance',
         ];
-        $sortColumn = $sortable[$sort] ?? 'id';
+        $sortColumn = $sortable[$sort] ?? 'receipt_date';
 
         $payments = $query->orderBy($sortColumn, $direction)
                           ->paginate($perPage)
@@ -149,6 +150,12 @@ class PaymentController extends Controller
 
     public function details(Request $request)
     {
+        $request->validate([
+            'from_date' => 'required|date',
+            'to_date' => 'required|date|after_or_equal:from_date',
+            'customer_id' => 'nullable|exists:customers,id'
+        ]);
+
         $fromDate = $request->input('from_date');
         $toDate = $request->input('to_date');
         $customerId = $request->input('customer_id');
@@ -166,7 +173,9 @@ class PaymentController extends Controller
         $payments = $query->orderBy('receipt_date')->get();
         $customer = $customerId ? Customer::find($customerId) : null;
 
-        $pdf = Pdf::loadView('payments.details', compact('payments', 'customer', 'fromDate', 'toDate'));
+        $pdf = Pdf::loadView('payments.details', compact('payments', 'customer', 'fromDate', 'toDate'))
+            ->setPaper('a4', 'landscape');
+        
         return $pdf->download("payment-details-{$fromDate}-to-{$toDate}.pdf");
     }
 

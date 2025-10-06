@@ -63,9 +63,9 @@
                         <thead class="bg-gray-50">
                             <tr>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    <a href="{{ route('payments.index', array_merge(request()->query(), ['sort' => 'sr', 'direction' => request('sort')==='sr' && request('direction')==='asc' ? 'desc' : 'asc'])) }}" class="inline-flex items-center gap-1 hover:text-gray-700">
-                                        Sr#
-                                        @if(request('sort')==='sr')
+                                    <a href="{{ route('payments.index', array_merge(request()->query(), ['sort' => 'receipt_date', 'direction' => request('sort')==='receipt_date' && request('direction')==='asc' ? 'desc' : 'asc'])) }}" class="inline-flex items-center gap-1 hover:text-gray-700">
+                                        Receipt Date
+                                        @if(request('sort')==='receipt_date')
                                             <span class="text-gray-400">{{ request('direction')==='asc' ? '▲' : '▼' }}</span>
                                         @else
                                             <span class="text-gray-300">↕</span>
@@ -120,7 +120,7 @@
                             @forelse($payments as $index => $payment)
                                 <tr class="hover:bg-gray-50">
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                        {{ $payments->firstItem() + $index }}
+                                        {{ optional($payment->receipt_date)->format('M d, Y') }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                         {{ $payment->customer_name }}
@@ -181,7 +181,7 @@
                         </select>
                         <span class="text-gray-600">entries</span>
                         <input type="hidden" name="search" value="{{ request('search') }}" />
-                        <input type="hidden" name="sort" value="{{ request('sort', 'sr') }}" />
+                        <input type="hidden" name="sort" value="{{ request('sort', 'receipt_date') }}" />
                         <input type="hidden" name="direction" value="{{ request('direction', 'desc') }}" />
                     </form>
 
