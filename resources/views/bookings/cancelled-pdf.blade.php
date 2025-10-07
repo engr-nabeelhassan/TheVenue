@@ -83,7 +83,7 @@
     </div>
 
     <div class="report-info">
-        <strong>Generated on:</strong> {{ now()->format('F d, Y \a\t h:i A') }}<br>
+        <strong>Generated on:</strong> {{ now()->format('F d, Y \a\t H:i') }}<br>
         <strong>Total Cancelled Bookings:</strong> {{ $bookings->count() }}
     </div>
 

@@ -115,7 +115,7 @@
                                         <div class="flex flex-col">
                                             <div class="font-medium">{{ $booking->event_start_at ? $booking->event_start_at->format('M d, Y') : 'N/A' }}</div>
                                             <div class="text-xs text-gray-500">
-                                                {{ $booking->event_start_at ? $booking->event_start_at->format('h:i A') : 'N/A' }}
+                                                {{ $booking->event_start_at ? $booking->event_start_at->format('H:i') : 'N/A' }}
                                             </div>
                                         </div>
                                     </td>

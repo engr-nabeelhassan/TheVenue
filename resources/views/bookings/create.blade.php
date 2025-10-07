@@ -65,11 +65,11 @@
                         <div class="grid grid-cols-2 gap-2">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Event Start</label>
-                                <input type="datetime-local" x-model="eventStart" class="mt-1 block w-full rounded-md border-gray-300" required>
+                                <input type="datetime-local" x-model="eventStart" step="60" class="mt-1 block w-full rounded-md border-gray-300" required>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Event End</label>
-                                <input type="datetime-local" x-model="eventEnd" class="mt-1 block w-full rounded-md border-gray-300" required>
+                                <input type="datetime-local" x-model="eventEnd" step="60" class="mt-1 block w-full rounded-md border-gray-300" required>
                             </div>
                         </div>
 
@@ -261,8 +261,8 @@
                         { name: 'event_type', value: this.eventType },
                         { name: 'event_status', value: this.eventStatus },
                         { name: 'total_guests', value: this.totalGuests },
-                        { name: 'event_start_at', value: this.eventStart ? new Date(this.eventStart).toISOString() : '' },
-                        { name: 'event_end_at', value: this.eventEnd ? new Date(this.eventEnd).toISOString() : '' },
+                        { name: 'event_start_at', value: this.eventStart ? this.eventStart.replace('T', ' ') + ':00' : '' },
+                        { name: 'event_end_at', value: this.eventEnd ? this.eventEnd.replace('T', ' ') + ':00' : '' },
                         { name: 'payment_status', value: this.paymentStatus },
                         { name: 'payment_option', value: this.paymentOptionFull ? 'full' : (this.paymentOptionAdvance ? 'advance' : '') },
                         { name: 'advance_amount', value: this.paymentOptionAdvance ? (this.advanceAmount || 0) : 0 },

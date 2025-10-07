@@ -88,7 +88,7 @@
     </div>
 
     <div class="report-info">
-        <strong>Generated on:</strong> {{ now()->format('F d, Y \a\t h:i A') }}<br>
+        <strong>Generated on:</strong> {{ now()->format('F d, Y \a\t H:i') }}<br>
         <strong>Total Events:</strong> {{ $bookings->count() }}
     </div>
 
@@ -112,7 +112,7 @@
                         <td>{{ $index + 1 }}</td>
                         <td>
                             <strong>{{ $booking->event_start_at ? $booking->event_start_at->format('M d, Y') : 'N/A' }}</strong><br>
-                            <small>{{ $booking->event_start_at ? $booking->event_start_at->format('h:i A') : 'N/A' }}</small>
+                            <small>{{ $booking->event_start_at ? $booking->event_start_at->format('H:i') : 'N/A' }}</small>
                         </td>
                         <td><strong>{{ $booking->customer_name }}</strong></td>
                         <td>{{ $booking->customer->phone ?? $booking->contact ?? 'N/A' }}</td>
