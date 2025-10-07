@@ -153,7 +153,9 @@ class BookingController extends Controller
         });
 
         if ($request->input('action') === 'save_and_print' && $booking) {
-            return redirect()->route('bookings.invoice', $booking);
+            return redirect()->route('bookings.index')
+                ->with('status', 'Booking saved successfully.')
+                ->with('print_invoice', $booking->id);
         }
 
         return redirect()->route('bookings.index')->with('status', 'Booking saved successfully.');

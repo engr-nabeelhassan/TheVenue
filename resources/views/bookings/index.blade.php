@@ -37,6 +37,12 @@
                         <div class="mb-4 p-3 rounded bg-green-50 text-green-700">{{ session('status') }}</div>
                     @endif
 
+                    @if (session('print_invoice'))
+                        <script>
+                            window.open('{{ route('bookings.invoice', session('print_invoice')) }}', '_blank');
+                        </script>
+                    @endif
+
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
