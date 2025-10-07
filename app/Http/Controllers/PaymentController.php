@@ -222,15 +222,15 @@ class PaymentController extends Controller
             return response()->json(['balance' => 0]);
         }
 
-        // Get total invoice amount for customer
-        $totalInvoiceAmount = Booking::where('customer_id', $customerId)->sum('invoice_net_amount');
+        // Get total closing amount for customer (unpaid balance from bookings)
+        $totalClosingAmount = Booking::where('customer_id', $customerId)->sum('invoice_closing_amount');
         
         // Get total payments made by customer
         $totalPayments = Payment::where('customer_id', $customerId)
             ->where('payment_method', 'Credit')
             ->sum('add_amount');
 
-        $balance = $totalInvoiceAmount - $totalPayments;
+        $balance = $totalClosingAmount - $totalPayments;
 
         return response()->json([
             'balance' => $balance,
