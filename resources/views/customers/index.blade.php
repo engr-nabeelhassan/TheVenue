@@ -23,6 +23,10 @@
                         <div class="mb-4 p-3 rounded bg-green-50 text-green-700">{{ session('status') }}</div>
                     @endif
 
+                    @if (session('error'))
+                        <div class="mb-4 p-3 rounded bg-red-50 text-red-700">{{ session('error') }}</div>
+                    @endif
+
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">

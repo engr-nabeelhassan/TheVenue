@@ -81,6 +81,12 @@ class CustomerController extends Controller
 
     public function destroy(Customer $customer): RedirectResponse
     {
+        // Check if customer has any bookings
+        if ($customer->bookings()->exists()) {
+            return redirect()->route('customers.index')
+                ->with('error', 'Cannot delete customer. This customer has existing bookings.');
+        }
+
         $customer->delete();
 
         return redirect()->route('customers.index')
