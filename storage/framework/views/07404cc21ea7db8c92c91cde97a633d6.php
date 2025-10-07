@@ -50,24 +50,38 @@
 
             <div class="bg-white shadow-sm sm:rounded-lg">
 
-                <!-- Payment Details Form -->
+                <!-- Payment List Filters -->
                 <div class="p-6 border-b border-gray-200">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Payment Details Report</h3>
-                    <form method="GET" action="<?php echo e(route('payments.details')); ?>" id="reportForm" class="space-y-4">
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Payment List Filters</h3>
+                    <form method="GET" action="<?php echo e(route('payments.index')); ?>" id="filterForm" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Search</label>
+                                <input type="text" name="search" value="<?php echo e(request('search')); ?>" 
+                                       placeholder="Customer name or contact" 
+                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
+                            </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">From Date</label>
                                 <input type="date" name="from_date" value="<?php echo e(request('from_date')); ?>" 
-                                       class="mt-1 block w-full rounded-md border-gray-300" required>
+                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">To Date</label>
                                 <input type="date" name="to_date" value="<?php echo e(request('to_date')); ?>" 
-                                       class="mt-1 block w-full rounded-md border-gray-300" required>
+                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Customer (Optional)</label>
-                                <select name="customer_id" class="mt-1 block w-full rounded-md border-gray-300">
+                                <label class="block text-sm font-medium text-gray-700">Payment Method</label>
+                                <select name="payment_method" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                                    <option value="">All Methods</option>
+                                    <option value="Debit" <?php echo e(request('payment_method') == 'Debit' ? 'selected' : ''); ?>>Debit</option>
+                                    <option value="Credit" <?php echo e(request('payment_method') == 'Credit' ? 'selected' : ''); ?>>Credit</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Customer (for PDF)</label>
+                                <select name="customer_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                                     <option value="">All Customers</option>
                                     <?php $__currentLoopData = \App\Models\Customer::orderBy('full_name')->get(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $customer): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <option value="<?php echo e($customer->id); ?>" <?php echo e(request('customer_id') == $customer->id ? 'selected' : ''); ?>>
@@ -78,20 +92,14 @@
                                 </select>
                             </div>
                         </div>
-                    </form>
-
-                    <!-- Shared action row: Search (left) and Generate PDF (right) -->
-                    <div class="mt-6 flex flex-col md:flex-row md:items-end md:justify-between gap-3">
-                        <form method="GET" action="<?php echo e(route('payments.index')); ?>" class="flex gap-2 w-full md:w-auto">
-                            <input type="text" name="search" value="<?php echo e(request('search')); ?>" placeholder="Search by customer name or contact" class="w-full md:w-96 rounded-md border-gray-300 shadow-sm py-2" />
-                            <button type="submit" class="px-4 py-2 bg-gray-100 border rounded-md hover:bg-gray-200">Search</button>
+                        <div class="flex gap-2">
+                            <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Apply Filters</button>
                             <a href="<?php echo e(route('payments.index')); ?>" class="px-4 py-2 border rounded-md hover:bg-gray-50">Reset</a>
-                        </form>
-
-                        <button type="submit" form="reportForm" class="self-end md:self-auto bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700">
-                            Generate PDF Report
-                        </button>
-                    </div>
+                            <button type="submit" formaction="<?php echo e(route('payments.details')); ?>" class="ml-auto px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
+                                Generate PDF Report
+                            </button>
+                        </div>
+                    </form>
                 </div>
 
                 <!-- Payments Table -->
@@ -221,6 +229,9 @@
                         </select>
                         <span class="text-gray-600">entries</span>
                         <input type="hidden" name="search" value="<?php echo e(request('search')); ?>" />
+                        <input type="hidden" name="from_date" value="<?php echo e(request('from_date')); ?>" />
+                        <input type="hidden" name="to_date" value="<?php echo e(request('to_date')); ?>" />
+                        <input type="hidden" name="payment_method" value="<?php echo e(request('payment_method')); ?>" />
                         <input type="hidden" name="sort" value="<?php echo e(request('sort', 'receipt_date')); ?>" />
                         <input type="hidden" name="direction" value="<?php echo e(request('direction', 'desc')); ?>" />
                     </form>

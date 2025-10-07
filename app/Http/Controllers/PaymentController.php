@@ -26,10 +26,6 @@ class PaymentController extends Controller
             });
         }
 
-        // Clone filtered query for totals BEFORE pagination
-        $filtered = clone $query;
-
-        // Paginate for table view
         // Additional filters
         if ($request->filled('payment_method')) {
             $query->where('payment_method', $request->input('payment_method'));
@@ -40,6 +36,9 @@ class PaymentController extends Controller
                 $request->input('to_date')
             ]);
         }
+
+        // Clone filtered query for totals BEFORE pagination
+        $filtered = clone $query;
 
         // Per-page selection similar to bookings list
         $perPage = (int) $request->input('per_page', 10);
@@ -175,8 +174,8 @@ class PaymentController extends Controller
     public function details(Request $request)
     {
         $request->validate([
-            'from_date' => 'required|date',
-            'to_date' => 'required|date|after_or_equal:from_date',
+            'from_date' => 'nullable|date',
+            'to_date' => 'nullable|date|after_or_equal:from_date',
             'customer_id' => 'nullable|exists:customers,id'
         ]);
 
@@ -207,10 +206,17 @@ class PaymentController extends Controller
         });
         $totalBalance = $latestPayments->sum('remaining_balance');
 
+        $filename = 'payment-details';
+        if ($fromDate && $toDate) {
+            $filename .= "-{$fromDate}-to-{$toDate}";
+        } else {
+            $filename .= '-' . now()->format('Y-m-d');
+        }
+
         $pdf = Pdf::loadView('payments.details', compact('payments', 'customer', 'fromDate', 'toDate', 'totalDebit', 'totalCredit', 'totalBalance'))
             ->setPaper('a4', 'landscape');
         
-        return $pdf->download("payment-details-{$fromDate}-to-{$toDate}.pdf");
+        return $pdf->download("{$filename}.pdf");
     }
 
     public function getCustomerBalance(Request $request)
