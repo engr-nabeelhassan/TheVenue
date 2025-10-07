@@ -28,12 +28,22 @@
                         </div>
                     </form>
 
-                    <?php if(session('status')): ?>
-                        <div class="mb-4 p-3 rounded bg-green-50 text-green-700"><?php echo e(session('status')); ?></div>
+                    <?php if(session('success')): ?>
+                        <div class="mb-4 p-4 rounded-lg bg-green-50 text-green-700 border border-green-200"><?php echo e(session('success')); ?></div>
                     <?php endif; ?>
 
                     <?php if(session('error')): ?>
-                        <div class="mb-4 p-3 rounded bg-red-50 text-red-700"><?php echo e(session('error')); ?></div>
+                        <div class="mb-4 p-4 rounded-lg bg-red-50 text-red-700 border border-red-200"><?php echo e(session('error')); ?></div>
+                    <?php endif; ?>
+
+                    <?php if($errors->any()): ?>
+                        <div class="mb-4 p-4 rounded-lg bg-red-50 text-red-700 border border-red-200">
+                            <ul class="list-disc list-inside">
+                                <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <li><?php echo e($error); ?></li>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                            </ul>
+                        </div>
                     <?php endif; ?>
 
                     <div class="overflow-x-auto">
@@ -110,7 +120,7 @@
                                         <td class="px-4 py-2"><?php echo e($customer->full_name); ?></td>
                                         <td class="px-4 py-2"><?php echo e($customer->cnic); ?></td>
                                         <td class="px-4 py-2"><?php echo e($customer->phone); ?></td>
-                                        <td class="px-4 py-2"><?php echo e($customer->address); ?></td>
+                                        <td class="px-4 py-2"><?php echo e($customer->address ?: '-'); ?></td>
                                         <td class="px-4 py-2 text-sm text-gray-500"><?php echo e($customer->created_at->format('Y-m-d')); ?></td>
                                         <td class="px-4 py-2">
                                             <div class="flex items-center gap-2">

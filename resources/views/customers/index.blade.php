@@ -111,7 +111,7 @@
                                         <td class="px-4 py-2">{{ $customer->full_name }}</td>
                                         <td class="px-4 py-2">{{ $customer->cnic }}</td>
                                         <td class="px-4 py-2">{{ $customer->phone }}</td>
-                                        <td class="px-4 py-2">{{ $customer->address }}</td>
+                                        <td class="px-4 py-2">{{ $customer->address ?: '-' }}</td>
                                         <td class="px-4 py-2 text-sm text-gray-500">{{ $customer->created_at->format('Y-m-d') }}</td>
                                         <td class="px-4 py-2">
                                             <div class="flex items-center gap-2">
