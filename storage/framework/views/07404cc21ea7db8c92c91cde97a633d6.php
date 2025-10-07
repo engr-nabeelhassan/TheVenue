@@ -21,6 +21,33 @@
 
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <!-- Success Message -->
+            <?php if(session('success')): ?>
+                <div class="mb-4 p-4 rounded-lg bg-green-50 text-green-700 border border-green-200">
+                    <?php echo e(session('success')); ?>
+
+                </div>
+            <?php endif; ?>
+
+            <!-- Error Message -->
+            <?php if(session('error')): ?>
+                <div class="mb-4 p-4 rounded-lg bg-red-50 text-red-700 border border-red-200">
+                    <?php echo e(session('error')); ?>
+
+                </div>
+            <?php endif; ?>
+
+            <!-- Validation Errors -->
+            <?php if($errors->any()): ?>
+                <div class="mb-4 p-4 rounded-lg bg-red-50 text-red-700 border border-red-200">
+                    <ul class="list-disc list-inside">
+                        <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <li><?php echo e($error); ?></li>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    </ul>
+                </div>
+            <?php endif; ?>
+
             <div class="bg-white shadow-sm sm:rounded-lg">
 
                 <!-- Payment Details Form -->

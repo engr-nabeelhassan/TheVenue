@@ -81,8 +81,12 @@ class PaymentController extends Controller
 
     public function destroy(Payment $payment): RedirectResponse
     {
-        $payment->delete();
-        return redirect()->route('payments.index')->with('status', 'Payment deleted successfully.');
+        try {
+            $payment->delete();
+            return redirect()->route('payments.index')->with('success', 'Payment deleted successfully.');
+        } catch (\Exception $e) {
+            return redirect()->route('payments.index')->with('error', 'Failed to delete payment. Please try again.');
+        }
     }
 
     public function create(): View
@@ -118,7 +122,7 @@ class PaymentController extends Controller
             ]);
         }
 
-        return redirect()->route('payments.index')->with('status', 'Payment collected successfully.');
+        return redirect()->route('payments.index')->with('success', 'Payment collected successfully.');
     }
 
     public function edit(Payment $payment): View
@@ -144,9 +148,12 @@ class PaymentController extends Controller
             'remarks' => ['nullable', 'string', 'max:500'],
         ]);
 
-        $payment->update($validated);
-
-        return redirect()->route('payments.index')->with('status', 'Payment updated successfully.');
+        try {
+            $payment->update($validated);
+            return redirect()->route('payments.index')->with('success', 'Payment updated successfully.');
+        } catch (\Exception $e) {
+            return redirect()->route('payments.index')->with('error', 'Failed to update payment. Please try again.');
+        }
     }
 
     public function receipt(Payment $payment)

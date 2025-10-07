@@ -56,7 +56,7 @@ class CustomerController extends Controller
         Customer::create($validated);
 
         return redirect()->route('customers.index')
-            ->with('status', 'Customer created successfully.');
+            ->with('success', 'Customer created successfully.');
     }
 
     public function edit(Customer $customer): View
@@ -76,7 +76,7 @@ class CustomerController extends Controller
         $customer->update($validated);
 
         return redirect()->route('customers.index')
-            ->with('status', 'Customer updated successfully.');
+            ->with('success', 'Customer updated successfully.');
     }
 
     public function destroy(Customer $customer): RedirectResponse
@@ -90,7 +90,7 @@ class CustomerController extends Controller
         $customer->delete();
 
         return redirect()->route('customers.index')
-            ->with('status', 'Customer deleted successfully.');
+            ->with('success', 'Customer deleted successfully.');
     }
 }
 

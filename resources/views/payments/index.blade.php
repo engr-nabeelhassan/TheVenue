@@ -12,6 +12,31 @@
 
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <!-- Success Message -->
+            @if (session('success'))
+                <div class="mb-4 p-4 rounded-lg bg-green-50 text-green-700 border border-green-200">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            <!-- Error Message -->
+            @if (session('error'))
+                <div class="mb-4 p-4 rounded-lg bg-red-50 text-red-700 border border-red-200">
+                    {{ session('error') }}
+                </div>
+            @endif
+
+            <!-- Validation Errors -->
+            @if ($errors->any())
+                <div class="mb-4 p-4 rounded-lg bg-red-50 text-red-700 border border-red-200">
+                    <ul class="list-disc list-inside">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
             <div class="bg-white shadow-sm sm:rounded-lg">
 
                 <!-- Payment Details Form -->
