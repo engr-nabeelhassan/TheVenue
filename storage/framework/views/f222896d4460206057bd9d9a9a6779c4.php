@@ -76,7 +76,7 @@
                         </script>
                     <?php endif; ?>
 
-                    <div class="overflow-x-auto max-h-96 overflow-y-auto border border-gray-200 rounded-lg">
+                    <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
                                 <tr>
