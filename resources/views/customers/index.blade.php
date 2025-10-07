@@ -1,23 +1,32 @@
 <x-app-layout>
+    <x-slot name="header">
+        <div class="flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                    Customers List
+                </h2>
+                <a href="{{ route('dashboard') }}" class="text-gray-600 hover:text-gray-800 underline">Back to Dashboard</a>
+            </div>
+            <a href="{{ route('customers.create') }}" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">Add New Customer</a>
+        </div>
+    </x-slot>
+
     <div class="py-8">
         <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm rounded-xl">
                 <div class="p-6 text-gray-900">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="flex items-center gap-3">
-                            <h2 class="text-xl font-semibold">Customers List</h2>
-                            <a href="{{ route('dashboard') }}" class="text-gray-600 hover:text-gray-800 underline">Back to Dashboard</a>
-                        </div>
-                        <a href="{{ route('customers.create') }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-500">Add New Customer</a>
-                    </div>
 
-                    <form method="GET" action="{{ route('customers.index') }}" class="mb-4">
-                        <div class="flex gap-2">
-                            <input type="text" name="q" value="{{ request('q') }}" placeholder="Search by customer name" class="flex-1 rounded-md border-gray-300 shadow-sm" />
-                            <button type="submit" class="px-4 py-2 bg-gray-100 border rounded-md hover:bg-gray-200">Search</button>
-                            <a href="{{ route('customers.index') }}" class="px-4 py-2 border rounded-md hover:bg-gray-50">Reset</a>
-                        </div>
-                    </form>
+                    <!-- Customer List Filters -->
+                    <div class="p-6 border-b border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Customer List Filters</h3>
+                        <form method="GET" action="{{ route('customers.index') }}" class="space-y-4">
+                            <div class="flex gap-2">
+                                <input type="text" name="q" value="{{ request('q') }}" placeholder="Search by customer name" class="flex-1 rounded-md border-gray-300 shadow-sm" />
+                                <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Search</button>
+                                <a href="{{ route('customers.index') }}" class="px-4 py-2 border rounded-md hover:bg-gray-50">Reset</a>
+                            </div>
+                        </form>
+                    </div>
 
                     @if (session('success'))
                         <div class="mb-4 p-4 rounded-lg bg-green-50 text-green-700 border border-green-200">{{ session('success') }}</div>
