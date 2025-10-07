@@ -8,39 +8,63 @@
 <?php $attributes = $attributes->except(\App\View\Components\AppLayout::ignoredParameterNames()); ?>
 <?php endif; ?>
 <?php $component->withAttributes([]); ?>
+     <?php $__env->slot('header', null, []); ?> 
+        <div class="flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                    Booking List
+                </h2>
+                <a href="<?php echo e(route('dashboard')); ?>" class="text-gray-600 hover:text-gray-800 underline">Back to Dashboard</a>
+            </div>
+            <div class="flex gap-2">
+                <a href="<?php echo e(route('bookings.calendar')); ?>" class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700">Calendar View</a>
+                <a href="<?php echo e(route('bookings.create')); ?>" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">New Booking</a>
+            </div>
+        </div>
+     <?php $__env->endSlot(); ?>
+
     <div class="py-8">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm rounded-xl">
                 <div class="p-6 text-gray-900">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="flex items-center gap-3">
-                            <h2 class="text-xl font-semibold">Booking List</h2>
-                            <a href="<?php echo e(route('dashboard')); ?>" class="text-gray-600 hover:text-gray-800 underline">Back to Dashboard</a>
-                        </div>
-                        <div class="flex gap-2">
-                            <a href="<?php echo e(route('bookings.calendar')); ?>" class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-500">Calendar View</a>
-                            <a href="<?php echo e(route('bookings.create')); ?>" class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-500">New Booking</a>
-                        </div>
-                    </div>
 
-                    <form method="GET" action="<?php echo e(route('bookings.index')); ?>" class="mb-4">
-                        <div class="grid grid-cols-1 md:grid-cols-4 gap-2 mb-2">
-                            <input type="text" name="search" value="<?php echo e(request('search')); ?>" placeholder="Search by customer name, invoice date, or event type" class="rounded-md border-gray-300 shadow-sm" />
-                            <select name="event_status" class="rounded-md border-gray-300 shadow-sm">
-                                <option value="">All Status</option>
-                                <option value="In Progress" <?php echo e(request('event_status') == 'In Progress' ? 'selected' : ''); ?>>In Progress</option>
-                                <option value="Completed" <?php echo e(request('event_status') == 'Completed' ? 'selected' : ''); ?>>Completed</option>
-                                <option value="Cancelled" <?php echo e(request('event_status') == 'Cancelled' ? 'selected' : ''); ?>>Cancelled</option>
-                                <option value="Postponed" <?php echo e(request('event_status') == 'Postponed' ? 'selected' : ''); ?>>Postponed</option>
-                            </select>
-                            <input type="date" name="invoice_date_from" value="<?php echo e(request('invoice_date_from')); ?>" placeholder="From Date" class="rounded-md border-gray-300 shadow-sm" />
-                            <input type="date" name="invoice_date_to" value="<?php echo e(request('invoice_date_to')); ?>" placeholder="To Date" class="rounded-md border-gray-300 shadow-sm" />
-                        </div>
-                        <div class="flex gap-2">
-                            <button type="submit" class="px-4 py-2 bg-gray-100 border rounded-md hover:bg-gray-200">Search</button>
-                            <a href="<?php echo e(route('bookings.index')); ?>" class="px-4 py-2 border rounded-md hover:bg-gray-50">Reset</a>
-                        </div>
-                    </form>
+                    <div class="p-6 border-b border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Booking List Filters</h3>
+                        <form method="GET" action="<?php echo e(route('bookings.index')); ?>" class="space-y-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Search</label>
+                                    <input type="text" name="search" value="<?php echo e(request('search')); ?>" 
+                                           placeholder="Customer name, invoice date, or event type" 
+                                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Event Status</label>
+                                    <select name="event_status" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                                        <option value="">All Status</option>
+                                        <option value="In Progress" <?php echo e(request('event_status') == 'In Progress' ? 'selected' : ''); ?>>In Progress</option>
+                                        <option value="Completed" <?php echo e(request('event_status') == 'Completed' ? 'selected' : ''); ?>>Completed</option>
+                                        <option value="Cancelled" <?php echo e(request('event_status') == 'Cancelled' ? 'selected' : ''); ?>>Cancelled</option>
+                                        <option value="Postponed" <?php echo e(request('event_status') == 'Postponed' ? 'selected' : ''); ?>>Postponed</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">From Date</label>
+                                    <input type="date" name="invoice_date_from" value="<?php echo e(request('invoice_date_from')); ?>" 
+                                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">To Date</label>
+                                    <input type="date" name="invoice_date_to" value="<?php echo e(request('invoice_date_to')); ?>" 
+                                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Apply Filters</button>
+                                <a href="<?php echo e(route('bookings.index')); ?>" class="px-4 py-2 border rounded-md hover:bg-gray-50">Reset</a>
+                            </div>
+                        </form>
+                    </div>
 
                     <?php if(session('status')): ?>
                         <div class="mb-4 p-3 rounded bg-green-50 text-green-700"><?php echo e(session('status')); ?></div>
