@@ -95,4 +95,16 @@ npm install
 copy .env.example .env
 php artisan key:generate
 
+<---Database Clear Krna--->
 
+php artisan migrate:fresh 
+- Saari tables drop karke fresh migrations run karta hai
+Saara data delete ho jata hai
+Tables dobara create hoti hain
+Foreign keys properly set hoti hain
+
+Admin user create kiya:
+Username: admin
+Email: admin@thevenue.com
+Password: password
+Role: admin

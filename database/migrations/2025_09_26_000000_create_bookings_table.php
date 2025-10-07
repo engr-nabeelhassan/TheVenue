@@ -19,6 +19,7 @@ return new class extends Migration
             // Multi-day event support: store start and end datetime
             $table->dateTime('event_start_at');
             $table->dateTime('event_end_at');
+            $table->enum('event_status', ['In Progress', 'Completed', 'Cancelled', 'Postponed'])->default('In Progress');
 
             // Payment fields
             $table->string('payment_status'); // Cash, Cheque, Online Transaction

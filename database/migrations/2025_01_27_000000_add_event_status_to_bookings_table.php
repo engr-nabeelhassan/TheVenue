@@ -11,6 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Column is now added in create_bookings_table migration
+        // This migration is kept for backward compatibility but does nothing
+        // if the column already exists
         if (Schema::hasTable('bookings') && !Schema::hasColumn('bookings', 'event_status')) {
             Schema::table('bookings', function (Blueprint $table) {
                 $table->enum('event_status', ['In Progress', 'Completed', 'Cancelled', 'Postponed'])->default('In Progress')->after('event_end_at');
