@@ -135,12 +135,13 @@
             <thead>
                 <tr>
                     <th style="width: 5%;">Sr#</th>
-                    <th style="width: 25%;">Customer Name</th>
-                    <th style="width: 15%;">Contact</th>
+                    <th style="width: 20%;">Customer Name</th>
+                    <th style="width: 12%;">Contact</th>
                     <th style="width: 10%;">CNIC</th>
-                    <th style="width: 10%;">Total Bookings</th>
-                    <th style="width: 15%;">Total Amount</th>
-                    <th style="width: 10%;">Status</th>
+                    <th style="width: 9%;">Status</th>
+                    <th style="width: 8%;">Total Bookings</th>
+                    <th style="width: 13%;">Total Amount</th>
+                    <th style="width: 13%;">Current Balance</th>
                 </tr>
             </thead>
             <tbody>
@@ -148,6 +149,9 @@
                     <?php
                         $totalBookings = $customer->bookings->count();
                         $totalAmount = $customer->bookings->sum('invoice_net_amount');
+                        $totalClosingAmount = $customer->bookings->sum('invoice_closing_amount');
+                        $totalPayments = $customer->payments->sum('add_amount');
+                        $currentBalance = $totalClosingAmount - $totalPayments;
                         $isActive = $totalBookings > 0;
                     ?>
                     <tr>
@@ -156,6 +160,12 @@
                         <td><?php echo e($customer->phone ?? 'N/A'); ?></td>
                         <td><?php echo e($customer->cnic ?? 'N/A'); ?></td>
                         <td>
+                            <span class="status-badge <?php echo e($isActive ? 'status-active' : 'status-inactive'); ?>">
+                                <?php echo e($isActive ? 'Active' : 'Inactive'); ?>
+
+                            </span>
+                        </td>
+                        <td>
                             <span class="status-badge status-active">
                                 <?php echo e($totalBookings); ?>
 
@@ -163,10 +173,9 @@
                         </td>
                         <td><strong><?php echo e(number_format($totalAmount, 2)); ?> PKR</strong></td>
                         <td>
-                            <span class="status-badge <?php echo e($isActive ? 'status-active' : 'status-inactive'); ?>">
-                                <?php echo e($isActive ? 'Active' : 'Inactive'); ?>
-
-                            </span>
+                            <strong style="color: <?php echo e($currentBalance > 0 ? '#DC2626' : ($currentBalance < 0 ? '#059669' : '#374151')); ?>;">
+                                <?php echo e(number_format($currentBalance, 2)); ?> PKR
+                            </strong>
                         </td>
                     </tr>
                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>

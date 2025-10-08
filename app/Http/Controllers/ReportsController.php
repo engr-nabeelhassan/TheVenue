@@ -30,10 +30,15 @@ class ReportsController extends Controller
             $perPage = 10;
         }
 
-        // Get all customers with bookings in date range
-        $query = Customer::with(['bookings' => function($q) use ($fromDate, $toDate) {
-            $q->whereBetween('created_at', [$fromDate, $toDate]);
-        }]);
+        // Get all customers with bookings and payments
+        $query = Customer::with([
+            'bookings' => function($q) use ($fromDate, $toDate) {
+                $q->whereBetween('created_at', [$fromDate, $toDate]);
+            },
+            'payments' => function($q) use ($fromDate, $toDate) {
+                $q->whereBetween('created_at', [$fromDate, $toDate]);
+            }
+        ]);
 
         // Search functionality
         if ($search) {
@@ -52,7 +57,7 @@ class ReportsController extends Controller
         })->count();
 
         // Apply sorting
-        $sortable = ['full_name', 'phone', 'total_bookings', 'total_amount', 'status'];
+        $sortable = ['full_name', 'phone', 'total_bookings', 'total_amount', 'current_balance', 'status'];
         if (!in_array($sort, $sortable)) {
             $sort = 'full_name';
         }
@@ -64,12 +69,16 @@ class ReportsController extends Controller
         $customers = $query->paginate($perPage)->appends($request->query());
 
         // Sort by calculated fields if needed
-        if (in_array($sort, ['total_bookings', 'total_amount', 'status'])) {
+        if (in_array($sort, ['total_bookings', 'total_amount', 'current_balance', 'status'])) {
             $customers->setCollection($customers->getCollection()->sortBy(function($customer) use ($sort) {
                 if ($sort === 'total_bookings') {
                     return $customer->bookings->count();
                 } elseif ($sort === 'total_amount') {
                     return $customer->bookings->sum('invoice_net_amount');
+                } elseif ($sort === 'current_balance') {
+                    $totalClosingAmount = $customer->bookings->sum('invoice_closing_amount');
+                    $totalPayments = $customer->payments->sum('add_amount');
+                    return $totalClosingAmount - $totalPayments;
                 } elseif ($sort === 'status') {
                     return $customer->bookings->count() > 0 ? 1 : 0;
                 }
@@ -84,9 +93,14 @@ class ReportsController extends Controller
         $fromDate = $request->get('from_date', now()->startOfMonth()->format('Y-m-d'));
         $toDate = $request->get('to_date', now()->endOfMonth()->format('Y-m-d'));
 
-        $customers = Customer::with(['bookings' => function($query) use ($fromDate, $toDate) {
-            $query->whereBetween('created_at', [$fromDate, $toDate]);
-        }])->get();
+        $customers = Customer::with([
+            'bookings' => function($query) use ($fromDate, $toDate) {
+                $query->whereBetween('created_at', [$fromDate, $toDate]);
+            },
+            'payments' => function($query) use ($fromDate, $toDate) {
+                $query->whereBetween('created_at', [$fromDate, $toDate]);
+            }
+        ])->get();
 
         $totalCustomers = $customers->count();
         $activeCustomers = $customers->filter(function($customer) {

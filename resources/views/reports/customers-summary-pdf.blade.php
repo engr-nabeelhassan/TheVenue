@@ -134,12 +134,13 @@
             <thead>
                 <tr>
                     <th style="width: 5%;">Sr#</th>
-                    <th style="width: 25%;">Customer Name</th>
-                    <th style="width: 15%;">Contact</th>
+                    <th style="width: 20%;">Customer Name</th>
+                    <th style="width: 12%;">Contact</th>
                     <th style="width: 10%;">CNIC</th>
-                    <th style="width: 10%;">Total Bookings</th>
-                    <th style="width: 15%;">Total Amount</th>
-                    <th style="width: 10%;">Status</th>
+                    <th style="width: 9%;">Status</th>
+                    <th style="width: 8%;">Total Bookings</th>
+                    <th style="width: 13%;">Total Amount</th>
+                    <th style="width: 13%;">Current Balance</th>
                 </tr>
             </thead>
             <tbody>
@@ -147,6 +148,9 @@
                     @php
                         $totalBookings = $customer->bookings->count();
                         $totalAmount = $customer->bookings->sum('invoice_net_amount');
+                        $totalClosingAmount = $customer->bookings->sum('invoice_closing_amount');
+                        $totalPayments = $customer->payments->sum('add_amount');
+                        $currentBalance = $totalClosingAmount - $totalPayments;
                         $isActive = $totalBookings > 0;
                     @endphp
                     <tr>
@@ -155,15 +159,20 @@
                         <td>{{ $customer->phone ?? 'N/A' }}</td>
                         <td>{{ $customer->cnic ?? 'N/A' }}</td>
                         <td>
+                            <span class="status-badge {{ $isActive ? 'status-active' : 'status-inactive' }}">
+                                {{ $isActive ? 'Active' : 'Inactive' }}
+                            </span>
+                        </td>
+                        <td>
                             <span class="status-badge status-active">
                                 {{ $totalBookings }}
                             </span>
                         </td>
                         <td><strong>{{ number_format($totalAmount, 2) }} PKR</strong></td>
                         <td>
-                            <span class="status-badge {{ $isActive ? 'status-active' : 'status-inactive' }}">
-                                {{ $isActive ? 'Active' : 'Inactive' }}
-                            </span>
+                            <strong style="color: {{ $currentBalance > 0 ? '#DC2626' : ($currentBalance < 0 ? '#059669' : '#374151') }};">
+                                {{ number_format($currentBalance, 2) }} PKR
+                            </strong>
                         </td>
                     </tr>
                 @endforeach
