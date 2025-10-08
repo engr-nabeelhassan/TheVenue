@@ -140,6 +140,8 @@ class ReportsController extends Controller
         $totalRevenue = $allBookings->sum('invoice_net_amount');
         $totalPaid = $allBookings->sum('advance_amount');
         $totalClosingAmount = $allBookings->sum('invoice_closing_amount');
+        $totalSubtotal = $allBookings->sum('items_subtotal');
+        $totalDiscount = $allBookings->sum('items_discount_amount');
 
         // Apply sorting
         $sortable = ['created_at', 'event_start_at', 'customer_name', 'items_subtotal', 'items_discount_amount', 'invoice_net_amount'];
@@ -151,7 +153,7 @@ class ReportsController extends Controller
 
         $bookings = $query->paginate($perPage)->appends($request->query());
 
-        return view('reports.events-balance', compact('bookings', 'fromDate', 'toDate', 'totalRevenue', 'totalPaid', 'totalClosingAmount'));
+        return view('reports.events-balance', compact('bookings', 'fromDate', 'toDate', 'totalRevenue', 'totalPaid', 'totalClosingAmount', 'totalSubtotal', 'totalDiscount'));
     }
 
     public function eventsBalancePdf(Request $request)
@@ -166,8 +168,10 @@ class ReportsController extends Controller
         $totalRevenue = $bookings->sum('invoice_net_amount');
         $totalPaid = $bookings->sum('advance_amount');
         $totalClosingAmount = $bookings->sum('invoice_closing_amount');
+        $totalSubtotal = $bookings->sum('items_subtotal');
+        $totalDiscount = $bookings->sum('items_discount_amount');
 
-        $pdf = Pdf::loadView('reports.events-balance-pdf', compact('bookings', 'fromDate', 'toDate', 'totalRevenue', 'totalPaid', 'totalClosingAmount'));
+        $pdf = Pdf::loadView('reports.events-balance-pdf', compact('bookings', 'fromDate', 'toDate', 'totalRevenue', 'totalPaid', 'totalClosingAmount', 'totalSubtotal', 'totalDiscount'));
         return $pdf->download('events-balance-' . $fromDate . '-to-' . $toDate . '.pdf');
     }
 

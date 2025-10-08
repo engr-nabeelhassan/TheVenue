@@ -49,18 +49,27 @@
 
                 <!-- Summary -->
                 <div class="p-6 border-b border-gray-200">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- Column Order: Invoice Subtotal → Discount Total → Invoice Amount → Advance/Full-Payment → Closing Amount -->
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                        <div class="bg-purple-50 p-4 rounded">
+                            <div class="text-sm text-purple-600">Total Invoice Subtotal</div>
+                            <div class="text-xl font-bold text-purple-900">{{ number_format($totalSubtotal, 2) }} PKR</div>
+                        </div>
+                        <div class="bg-orange-50 p-4 rounded">
+                            <div class="text-sm text-orange-600">Total Discount</div>
+                            <div class="text-xl font-bold text-orange-900">{{ number_format($totalDiscount, 2) }} PKR</div>
+                        </div>
                         <div class="bg-blue-50 p-4 rounded">
-                            <div class="text-sm text-blue-600">Total Revenue</div>
-                            <div class="text-2xl font-bold text-blue-900">{{ number_format($totalRevenue, 2) }} PKR</div>
+                            <div class="text-sm text-blue-600">Total Invoice Amount</div>
+                            <div class="text-xl font-bold text-blue-900">{{ number_format($totalRevenue, 2) }} PKR</div>
                         </div>
                         <div class="bg-green-50 p-4 rounded">
                             <div class="text-sm text-green-600">Total Advance/Full-Payment</div>
-                            <div class="text-2xl font-bold text-green-900">{{ number_format($totalPaid, 2) }} PKR</div>
+                            <div class="text-xl font-bold text-green-900">{{ number_format($totalPaid, 2) }} PKR</div>
                         </div>
                         <div class="bg-red-50 p-4 rounded">
                             <div class="text-sm text-red-600">Total Closing Amount</div>
-                            <div class="text-2xl font-bold text-red-900">{{ number_format($totalClosingAmount, 2) }} PKR</div>
+                            <div class="text-xl font-bold text-red-900">{{ number_format($totalClosingAmount, 2) }} PKR</div>
                         </div>
                     </div>
                 </div>

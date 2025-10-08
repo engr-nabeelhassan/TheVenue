@@ -53,12 +53,20 @@
 
     <table>
         <tr>
-            <th>Total Revenue</th>
+            <th>Total Invoice Subtotal</th>
+            <td>{{ number_format($totalSubtotal, 2) }}</td>
+            <th>Total Discount</th>
+            <td>{{ number_format($totalDiscount, 2) }}</td>
+            <th>Total Invoice Amount</th>
             <td>{{ number_format($totalRevenue, 2) }}</td>
+        </tr>
+        <tr>
             <th>Total Advance/Full-Payment</th>
             <td>{{ number_format($totalPaid, 2) }}</td>
             <th>Total Closing Amount</th>
             <td>{{ number_format($totalClosingAmount, 2) }}</td>
+            <th></th>
+            <td></td>
         </tr>
     </table>
 
