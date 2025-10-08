@@ -73,25 +73,36 @@
                             ->where('event_start_at', '<', $fromDate)
                             ->sum('invoice_net_amount');
                         
-                        $openingPayments = \App\Models\Payment::where('customer_id', $customerId)
+                        $openingAdvance = \App\Models\Booking::where('customer_id', $customerId)
+                            ->where('event_start_at', '<', $fromDate)
+                            ->sum('advance_amount');
+                        
+                        $openingDebits = \App\Models\Payment::where('customer_id', $customerId)
+                            ->where('receipt_date', '<', $fromDate)
+                            ->where('payment_method', 'Debit')
+                            ->sum('add_amount');
+                        
+                        $openingCredits = \App\Models\Payment::where('customer_id', $customerId)
                             ->where('receipt_date', '<', $fromDate)
                             ->where('payment_method', 'Credit')
                             ->sum('add_amount');
                         
-                        $openingBalance = $openingBookings - $openingPayments;
+                        $openingBalance = $openingBookings + $openingDebits - ($openingAdvance + $openingCredits);
                         
                         // Calculate totals for current period
                         $totalBookings = $bookings->sum('invoice_net_amount');
-                        $totalPayments = $payments->where('payment_method', 'Credit')->sum('add_amount');
+                        $totalAdvance = $bookings->sum('advance_amount');
+                        $totalCredits = $payments->where('payment_method', 'Credit')->sum('add_amount');
                         $totalDebits = $payments->where('payment_method', 'Debit')->sum('add_amount');
                         
                         // Closing balance
-                        $closingBalance = $openingBalance + $totalBookings - $totalPayments + $totalDebits;
+                        $closingBalance = $openingBalance + $totalBookings + $totalDebits - ($totalAdvance + $totalCredits);
                         
                         // Combine and sort all transactions
                         $transactions = collect();
                         
                         foreach($bookings as $booking) {
+                            // Add booking invoice
                             $transactions->push([
                                 'date' => $booking->event_start_at,
                                 'type' => 'Booking',
@@ -100,6 +111,18 @@
                                 'credit' => 0,
                                 'reference' => 'Invoice #' . $booking->id
                             ]);
+                            
+                            // Add advance payment if exists
+                            if($booking->advance_amount > 0) {
+                                $transactions->push([
+                                    'date' => $booking->event_start_at,
+                                    'type' => 'Advance Payment',
+                                    'description' => 'Advance Payment for ' . $booking->event_type,
+                                    'debit' => 0,
+                                    'credit' => $booking->advance_amount,
+                                    'reference' => 'Advance #' . $booking->id
+                                ]);
+                            }
                         }
                         
                         foreach($payments as $payment) {
@@ -129,7 +152,7 @@
                             </div>
                             <div class="bg-purple-50 p-4 rounded">
                                 <div class="text-sm text-purple-600">Total Paid</div>
-                                <div class="text-2xl font-bold text-purple-900">{{ number_format($totalPayments, 2) }} PKR</div>
+                                <div class="text-2xl font-bold text-purple-900">{{ number_format($totalAdvance + $totalCredits, 2) }} PKR</div>
                             </div>
                             <div class="bg-red-50 p-4 rounded">
                                 <div class="text-sm text-red-600">Closing Balance</div>
@@ -197,7 +220,7 @@
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Closing Balance</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">—</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right">{{ number_format($totalBookings + $totalDebits, 2) }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right">{{ number_format($totalPayments, 2) }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right">{{ number_format($totalAdvance + $totalCredits, 2) }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right">{{ number_format($closingBalance, 2) }}</td>
                                 </tr>
                             </tbody>
