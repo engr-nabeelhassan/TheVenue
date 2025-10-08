@@ -127,6 +127,10 @@
             <h3>{{ $totalCustomers - $activeCustomers }}</h3>
             <p>Inactive Customers</p>
         </div>
+        <div class="summary-card">
+            <h3>{{ number_format($totalCurrentBalance, 2) }} PKR</h3>
+            <p>Total Current Balance</p>
+        </div>
     </div>
 
     @if($customers->count() > 0)
@@ -143,9 +147,6 @@
                 </tr>
             </thead>
             <tbody>
-                @php
-                    $totalCurrentBalanceSum = 0;
-                @endphp
                 @foreach($customers as $index => $customer)
                     @php
                         $totalBookings = $customer->bookings->count();
@@ -154,9 +155,6 @@
                         $totalPayments = $customer->payments->sum('add_amount');
                         $currentBalance = $totalClosingAmount - $totalPayments;
                         $isActive = $totalBookings > 0;
-                        
-                        // Add to totals
-                        $totalCurrentBalanceSum += $currentBalance;
                     @endphp
                     <tr>
                         <td>{{ $index + 1 }}</td>
@@ -180,18 +178,6 @@
                         </td>
                     </tr>
                 @endforeach
-                
-                <!-- Totals Row -->
-                <tr style="background-color: #F3F4F6; border-top: 2px solid #9CA3AF;">
-                    <td colspan="6" style="padding: 8px; font-weight: bold; font-size: 11px;">
-                        <strong>TOTALS</strong>
-                    </td>
-                    <td style="padding: 8px; font-weight: bold; font-size: 11px;">
-                        <strong style="color: {{ $totalCurrentBalanceSum > 0 ? '#DC2626' : ($totalCurrentBalanceSum < 0 ? '#059669' : '#374151') }};">
-                            {{ number_format($totalCurrentBalanceSum, 2) }} PKR
-                        </strong>
-                    </td>
-                </tr>
             </tbody>
         </table>
     @else

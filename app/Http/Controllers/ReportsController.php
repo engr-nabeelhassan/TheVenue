@@ -55,6 +55,13 @@ class ReportsController extends Controller
         $activeCustomers = $allCustomers->filter(function($customer) {
             return $customer->bookings->count() > 0;
         })->count();
+        
+        // Calculate total current balance
+        $totalCurrentBalance = $allCustomers->sum(function($customer) {
+            $totalClosingAmount = $customer->bookings->sum('invoice_closing_amount');
+            $totalPayments = $customer->payments->sum('add_amount');
+            return $totalClosingAmount - $totalPayments;
+        });
 
         // Apply sorting
         $sortable = ['full_name', 'phone', 'total_bookings', 'total_amount', 'current_balance', 'status'];
@@ -85,7 +92,7 @@ class ReportsController extends Controller
             }, SORT_REGULAR, $direction === 'desc'));
         }
 
-        return view('reports.customers-summary', compact('customers', 'fromDate', 'toDate', 'totalCustomers', 'activeCustomers'));
+        return view('reports.customers-summary', compact('customers', 'fromDate', 'toDate', 'totalCustomers', 'activeCustomers', 'totalCurrentBalance'));
     }
 
     public function customersSummaryPdf(Request $request)
@@ -106,8 +113,15 @@ class ReportsController extends Controller
         $activeCustomers = $customers->filter(function($customer) {
             return $customer->bookings->count() > 0;
         })->count();
+        
+        // Calculate total current balance
+        $totalCurrentBalance = $customers->sum(function($customer) {
+            $totalClosingAmount = $customer->bookings->sum('invoice_closing_amount');
+            $totalPayments = $customer->payments->sum('add_amount');
+            return $totalClosingAmount - $totalPayments;
+        });
 
-        $pdf = Pdf::loadView('reports.customers-summary-pdf', compact('customers', 'fromDate', 'toDate', 'totalCustomers', 'activeCustomers'));
+        $pdf = Pdf::loadView('reports.customers-summary-pdf', compact('customers', 'fromDate', 'toDate', 'totalCustomers', 'activeCustomers', 'totalCurrentBalance'));
         return $pdf->download('customers-summary-' . $fromDate . '-to-' . $toDate . '.pdf');
     }
 

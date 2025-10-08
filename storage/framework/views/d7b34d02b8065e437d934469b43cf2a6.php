@@ -128,6 +128,10 @@
             <h3><?php echo e($totalCustomers - $activeCustomers); ?></h3>
             <p>Inactive Customers</p>
         </div>
+        <div class="summary-card">
+            <h3><?php echo e(number_format($totalCurrentBalance, 2)); ?> PKR</h3>
+            <p>Total Current Balance</p>
+        </div>
     </div>
 
     <?php if($customers->count() > 0): ?>
@@ -144,9 +148,6 @@
                 </tr>
             </thead>
             <tbody>
-                <?php
-                    $totalCurrentBalanceSum = 0;
-                ?>
                 <?php $__currentLoopData = $customers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $customer): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <?php
                         $totalBookings = $customer->bookings->count();
@@ -155,9 +156,6 @@
                         $totalPayments = $customer->payments->sum('add_amount');
                         $currentBalance = $totalClosingAmount - $totalPayments;
                         $isActive = $totalBookings > 0;
-                        
-                        // Add to totals
-                        $totalCurrentBalanceSum += $currentBalance;
                     ?>
                     <tr>
                         <td><?php echo e($index + 1); ?></td>
@@ -183,18 +181,6 @@
                         </td>
                     </tr>
                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                
-                <!-- Totals Row -->
-                <tr style="background-color: #F3F4F6; border-top: 2px solid #9CA3AF;">
-                    <td colspan="6" style="padding: 8px; font-weight: bold; font-size: 11px;">
-                        <strong>TOTALS</strong>
-                    </td>
-                    <td style="padding: 8px; font-weight: bold; font-size: 11px;">
-                        <strong style="color: <?php echo e($totalCurrentBalanceSum > 0 ? '#DC2626' : ($totalCurrentBalanceSum < 0 ? '#059669' : '#374151')); ?>;">
-                            <?php echo e(number_format($totalCurrentBalanceSum, 2)); ?> PKR
-                        </strong>
-                    </td>
-                </tr>
             </tbody>
         </table>
     <?php else: ?>

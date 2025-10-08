@@ -71,7 +71,7 @@
 
                 <!-- Summary Cards -->
                 <div class="p-6 border-b border-gray-200">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div class="bg-blue-50 p-4 rounded-lg">
                             <div class="text-sm text-blue-600">Total Customers</div>
                             <div class="text-2xl font-bold text-blue-900"><?php echo e($totalCustomers); ?></div>
@@ -83,6 +83,12 @@
                         <div class="bg-purple-50 p-4 rounded-lg">
                             <div class="text-sm text-purple-600">Inactive Customers</div>
                             <div class="text-2xl font-bold text-purple-900"><?php echo e($totalCustomers - $activeCustomers); ?></div>
+                        </div>
+                        <div class="bg-orange-50 p-4 rounded-lg">
+                            <div class="text-sm text-orange-600">Total Current Balance</div>
+                            <div class="text-2xl font-bold text-orange-900">
+                                <?php echo e(number_format($totalCurrentBalance, 2)); ?> PKR
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -141,9 +147,6 @@
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
-                            <?php
-                                $totalCurrentBalanceSum = 0;
-                            ?>
                             <?php $__empty_1 = true; $__currentLoopData = $customers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $customer): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                                 <?php
                                     $totalBookings = $customer->bookings->count();
@@ -152,9 +155,6 @@
                                     $totalPayments = $customer->payments->sum('add_amount');
                                     $currentBalance = $totalClosingAmount - $totalPayments;
                                     $isActive = $totalBookings > 0;
-                                    
-                                    // Add to totals
-                                    $totalCurrentBalanceSum += $currentBalance;
                                 ?>
                                 <tr class="hover:bg-gray-50">
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -213,19 +213,6 @@
                                 </tr>
                             <?php endif; ?>
                             
-                            <?php if($customers->count() > 0): ?>
-                                <!-- Totals Row -->
-                                <tr class="bg-gray-100 border-t-2 border-gray-300">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900" colspan="5">
-                                        TOTALS
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">
-                                        <span class="px-2 py-1 text-xs font-bold rounded-full <?php echo e($totalCurrentBalanceSum > 0 ? 'bg-red-100 text-red-800' : ($totalCurrentBalanceSum < 0 ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800')); ?>">
-                                            <?php echo e(number_format($totalCurrentBalanceSum, 2)); ?> PKR
-                                        </span>
-                                    </td>
-                                </tr>
-                            <?php endif; ?>
                         </tbody>
                     </table>
                 </div>
