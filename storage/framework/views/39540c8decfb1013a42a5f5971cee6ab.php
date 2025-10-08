@@ -128,17 +128,6 @@
                                     </a>
                                 </th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    <a href="<?php echo e(route('reports.customers-summary', array_merge(request()->query(), ['sort' => 'total_amount', 'direction' => request('sort')==='total_amount' && request('direction')==='asc' ? 'desc' : 'asc']))); ?>" 
-                                       class="inline-flex items-center gap-1 hover:text-gray-700">
-                                        Total Amount
-                                        <?php if(request('sort')==='total_amount'): ?>
-                                            <span class="text-gray-400"><?php echo e(request('direction')==='asc' ? '▲' : '▼'); ?></span>
-                                        <?php else: ?>
-                                            <span class="text-gray-300">↕</span>
-                                        <?php endif; ?>
-                                    </a>
-                                </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     <a href="<?php echo e(route('reports.customers-summary', array_merge(request()->query(), ['sort' => 'current_balance', 'direction' => request('sort')==='current_balance' && request('direction')==='asc' ? 'desc' : 'asc']))); ?>" 
                                        class="inline-flex items-center gap-1 hover:text-gray-700">
                                         Current Balance
@@ -152,6 +141,9 @@
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
+                            <?php
+                                $totalCurrentBalanceSum = 0;
+                            ?>
                             <?php $__empty_1 = true; $__currentLoopData = $customers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $customer): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                                 <?php
                                     $totalBookings = $customer->bookings->count();
@@ -160,6 +152,9 @@
                                     $totalPayments = $customer->payments->sum('add_amount');
                                     $currentBalance = $totalClosingAmount - $totalPayments;
                                     $isActive = $totalBookings > 0;
+                                    
+                                    // Add to totals
+                                    $totalCurrentBalanceSum += $currentBalance;
                                 ?>
                                 <tr class="hover:bg-gray-50">
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -199,9 +194,6 @@
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                        <?php echo e(number_format($totalAmount, 2)); ?> PKR
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                         <span class="px-2 py-1 text-xs font-semibold rounded-full <?php echo e($currentBalance > 0 ? 'bg-red-100 text-red-800' : ($currentBalance < 0 ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800')); ?>">
                                             <?php echo e(number_format($currentBalance, 2)); ?> PKR
                                         </span>
@@ -209,7 +201,7 @@
                                 </tr>
                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                 <tr>
-                                    <td colspan="7" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                                    <td colspan="6" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
                                         <div class="flex flex-col items-center justify-center py-8">
                                             <svg class="w-12 h-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
@@ -217,6 +209,20 @@
                                             <p class="text-lg font-medium text-gray-900">No customers found</p>
                                             <p class="text-sm text-gray-500">No customers found for the selected date range</p>
                                         </div>
+                                    </td>
+                                </tr>
+                            <?php endif; ?>
+                            
+                            <?php if($customers->count() > 0): ?>
+                                <!-- Totals Row -->
+                                <tr class="bg-gray-100 border-t-2 border-gray-300">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900" colspan="5">
+                                        TOTALS
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">
+                                        <span class="px-2 py-1 text-xs font-bold rounded-full <?php echo e($totalCurrentBalanceSum > 0 ? 'bg-red-100 text-red-800' : ($totalCurrentBalanceSum < 0 ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800')); ?>">
+                                            <?php echo e(number_format($totalCurrentBalanceSum, 2)); ?> PKR
+                                        </span>
                                     </td>
                                 </tr>
                             <?php endif; ?>

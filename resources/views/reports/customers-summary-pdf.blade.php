@@ -134,16 +134,18 @@
             <thead>
                 <tr>
                     <th style="width: 5%;">Sr#</th>
-                    <th style="width: 20%;">Customer Name</th>
-                    <th style="width: 12%;">Contact</th>
-                    <th style="width: 10%;">CNIC</th>
-                    <th style="width: 9%;">Status</th>
-                    <th style="width: 8%;">Total Bookings</th>
-                    <th style="width: 13%;">Total Amount</th>
-                    <th style="width: 13%;">Current Balance</th>
+                    <th style="width: 25%;">Customer Name</th>
+                    <th style="width: 15%;">Contact</th>
+                    <th style="width: 12%;">CNIC</th>
+                    <th style="width: 10%;">Status</th>
+                    <th style="width: 10%;">Total Bookings</th>
+                    <th style="width: 23%;">Current Balance</th>
                 </tr>
             </thead>
             <tbody>
+                @php
+                    $totalCurrentBalanceSum = 0;
+                @endphp
                 @foreach($customers as $index => $customer)
                     @php
                         $totalBookings = $customer->bookings->count();
@@ -152,6 +154,9 @@
                         $totalPayments = $customer->payments->sum('add_amount');
                         $currentBalance = $totalClosingAmount - $totalPayments;
                         $isActive = $totalBookings > 0;
+                        
+                        // Add to totals
+                        $totalCurrentBalanceSum += $currentBalance;
                     @endphp
                     <tr>
                         <td>{{ $index + 1 }}</td>
@@ -168,7 +173,6 @@
                                 {{ $totalBookings }}
                             </span>
                         </td>
-                        <td><strong>{{ number_format($totalAmount, 2) }} PKR</strong></td>
                         <td>
                             <strong style="color: {{ $currentBalance > 0 ? '#DC2626' : ($currentBalance < 0 ? '#059669' : '#374151') }};">
                                 {{ number_format($currentBalance, 2) }} PKR
@@ -176,6 +180,18 @@
                         </td>
                     </tr>
                 @endforeach
+                
+                <!-- Totals Row -->
+                <tr style="background-color: #F3F4F6; border-top: 2px solid #9CA3AF;">
+                    <td colspan="6" style="padding: 8px; font-weight: bold; font-size: 11px;">
+                        <strong>TOTALS</strong>
+                    </td>
+                    <td style="padding: 8px; font-weight: bold; font-size: 11px;">
+                        <strong style="color: {{ $totalCurrentBalanceSum > 0 ? '#DC2626' : ($totalCurrentBalanceSum < 0 ? '#059669' : '#374151') }};">
+                            {{ number_format($totalCurrentBalanceSum, 2) }} PKR
+                        </strong>
+                    </td>
+                </tr>
             </tbody>
         </table>
     @else
