@@ -151,9 +151,10 @@
                     @php
                         $totalBookings = $customer->bookings->count();
                         $totalAmount = $customer->bookings->sum('invoice_net_amount');
-                        $totalClosingAmount = $customer->bookings->sum('invoice_closing_amount');
-                        $totalPayments = $customer->payments->sum('add_amount');
-                        $currentBalance = $totalClosingAmount - $totalPayments;
+                        $totalAdvanceAmount = $customer->bookings->sum('advance_amount');
+                        $totalDebits = $customer->payments->where('payment_method', 'Debit')->sum('add_amount');
+                        $totalCredits = $customer->payments->where('payment_method', 'Credit')->sum('add_amount');
+                        $currentBalance = $totalAmount + $totalDebits - ($totalAdvanceAmount + $totalCredits);
                         $isActive = $totalBookings > 0;
                     @endphp
                     <tr>

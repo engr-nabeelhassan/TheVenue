@@ -150,6 +150,14 @@
                             </div>
                         </div>
                         <div class="mt-4">
+                            @php
+                                $totalRevenue = \App\Models\Booking::sum('invoice_net_amount');
+                                $totalDebits = \App\Models\Payment::where('payment_method', 'Debit')->sum('add_amount');
+                                $totalCredits = \App\Models\Payment::where('payment_method', 'Credit')->sum('add_amount');
+                                $totalAdvanceAmount = \App\Models\Booking::sum('advance_amount');
+                                $totalPayments = $totalCredits + $totalAdvanceAmount; // Only actual payments received
+                                $netBalance = $totalRevenue + $totalDebits - $totalPayments; // Revenue + Debits - Payments
+                            @endphp
                             <div class="grid grid-cols-2 gap-4 text-sm">
                                 <div>
                                     <div class="text-gray-500">Total Customers</div>
@@ -161,11 +169,15 @@
                                 </div>
                                 <div>
                                     <div class="text-gray-500">Total Revenue</div>
-                                    <div class="text-lg font-semibold">{{ number_format(\App\Models\Booking::sum('invoice_net_amount'), 2) }} PKR</div>
+                                    <div class="text-lg font-semibold">{{ number_format($totalRevenue, 2) }} PKR</div>
                                 </div>
                                 <div>
                                     <div class="text-gray-500">Total Payments</div>
-                                    <div class="text-lg font-semibold">{{ number_format(\App\Models\Payment::sum('add_amount'), 2) }} PKR</div>
+                                    <div class="text-lg font-semibold">{{ number_format($totalPayments, 2) }} PKR</div>
+                                </div>
+                                <div class="col-span-2">
+                                    <div class="text-gray-500">Net Balance</div>
+                                    <div class="text-lg font-semibold {{ $netBalance >= 0 ? 'text-green-600' : 'text-red-600' }}">{{ number_format($netBalance, 2) }} PKR</div>
                                 </div>
                             </div>
                         </div>

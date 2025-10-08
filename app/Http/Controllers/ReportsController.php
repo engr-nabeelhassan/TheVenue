@@ -58,9 +58,11 @@ class ReportsController extends Controller
         
         // Calculate total current balance
         $totalCurrentBalance = $allCustomers->sum(function($customer) {
-            $totalClosingAmount = $customer->bookings->sum('invoice_closing_amount');
-            $totalPayments = $customer->payments->sum('add_amount');
-            return $totalClosingAmount - $totalPayments;
+            $totalInvoiceAmount = $customer->bookings->sum('invoice_net_amount');
+            $totalAdvanceAmount = $customer->bookings->sum('advance_amount');
+            $totalDebits = $customer->payments->where('payment_method', 'Debit')->sum('add_amount');
+            $totalCredits = $customer->payments->where('payment_method', 'Credit')->sum('add_amount');
+            return $totalInvoiceAmount + $totalDebits - ($totalAdvanceAmount + $totalCredits);
         });
 
         // Apply sorting
@@ -83,9 +85,11 @@ class ReportsController extends Controller
                 } elseif ($sort === 'total_amount') {
                     return $customer->bookings->sum('invoice_net_amount');
                 } elseif ($sort === 'current_balance') {
-                    $totalClosingAmount = $customer->bookings->sum('invoice_closing_amount');
-                    $totalPayments = $customer->payments->sum('add_amount');
-                    return $totalClosingAmount - $totalPayments;
+                    $totalInvoiceAmount = $customer->bookings->sum('invoice_net_amount');
+                    $totalAdvanceAmount = $customer->bookings->sum('advance_amount');
+                    $totalDebits = $customer->payments->where('payment_method', 'Debit')->sum('add_amount');
+                    $totalCredits = $customer->payments->where('payment_method', 'Credit')->sum('add_amount');
+                    return $totalInvoiceAmount + $totalDebits - ($totalAdvanceAmount + $totalCredits);
                 } elseif ($sort === 'status') {
                     return $customer->bookings->count() > 0 ? 1 : 0;
                 }
@@ -116,9 +120,11 @@ class ReportsController extends Controller
         
         // Calculate total current balance
         $totalCurrentBalance = $customers->sum(function($customer) {
-            $totalClosingAmount = $customer->bookings->sum('invoice_closing_amount');
-            $totalPayments = $customer->payments->sum('add_amount');
-            return $totalClosingAmount - $totalPayments;
+            $totalInvoiceAmount = $customer->bookings->sum('invoice_net_amount');
+            $totalAdvanceAmount = $customer->bookings->sum('advance_amount');
+            $totalDebits = $customer->payments->where('payment_method', 'Debit')->sum('add_amount');
+            $totalCredits = $customer->payments->where('payment_method', 'Credit')->sum('add_amount');
+            return $totalInvoiceAmount + $totalDebits - ($totalAdvanceAmount + $totalCredits);
         });
 
         $pdf = Pdf::loadView('reports.customers-summary-pdf', compact('customers', 'fromDate', 'toDate', 'totalCustomers', 'activeCustomers', 'totalCurrentBalance'));
