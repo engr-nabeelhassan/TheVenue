@@ -162,7 +162,7 @@
                             <?php $__currentLoopData = $bookings; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $booking): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <?php
                                     $advanceFullPayment = $booking->advance_amount ?? 0;
-                                    $closingAmount = $booking->invoice_closing_amount ?? 0;
+                                    $closingAmount = ($booking->invoice_net_amount ?? 0) - $advanceFullPayment; // Fixed: Invoice Amount - Advance Payment
                                 ?>
                                 <tr class="hover:bg-gray-50">
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?php echo e(optional($booking->created_at)->format('M d, Y')); ?></td>

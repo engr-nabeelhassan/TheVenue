@@ -174,7 +174,7 @@
                                 </div>
                                 <div>
                                     <div class="text-gray-500">Total Payments</div>
-                                    <div class="text-lg font-semibold"><?php echo e(number_format(\App\Models\Payment::sum('add_amount'), 2)); ?> PKR</div>
+                                    <div class="text-lg font-semibold"><?php echo e(number_format(\App\Models\Payment::sum('add_amount') + \App\Models\Booking::sum('advance_amount'), 2)); ?> PKR</div>
                                 </div>
                             </div>
                         </div>

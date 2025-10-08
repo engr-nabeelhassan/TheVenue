@@ -27,7 +27,7 @@
                 <th>Method</th>
                 <th>Status</th>
                 <th>Previous Balance</th>
-                <th>Amount</th>
+                <th>Receipt Paid</th>
                 <th>Remaining Balance</th>
             </tr>
         </thead>

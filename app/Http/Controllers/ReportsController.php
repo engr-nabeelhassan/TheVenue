@@ -153,7 +153,7 @@ class ReportsController extends Controller
         $allBookings = (clone $query)->get();
         $totalRevenue = $allBookings->sum('invoice_net_amount');
         $totalPaid = $allBookings->sum('advance_amount');
-        $totalClosingAmount = $allBookings->sum('invoice_closing_amount');
+        $totalClosingAmount = $totalRevenue - $totalPaid; // Fixed: Invoice Amount - Advance Payment
         $totalSubtotal = $allBookings->sum('items_subtotal');
         $totalDiscount = $allBookings->sum('items_discount_amount');
 
@@ -181,7 +181,7 @@ class ReportsController extends Controller
 
         $totalRevenue = $bookings->sum('invoice_net_amount');
         $totalPaid = $bookings->sum('advance_amount');
-        $totalClosingAmount = $bookings->sum('invoice_closing_amount');
+        $totalClosingAmount = $totalRevenue - $totalPaid; // Fixed: Invoice Amount - Advance Payment
         $totalSubtotal = $bookings->sum('items_subtotal');
         $totalDiscount = $bookings->sum('items_discount_amount');
 

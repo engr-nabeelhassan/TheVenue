@@ -35,7 +35,7 @@
             @foreach($bookings as $index => $booking)
                 @php
                     $advanceFullPayment = $booking->advance_amount ?? 0;
-                    $closingAmount = $booking->invoice_closing_amount ?? 0;
+                    $closingAmount = ($booking->invoice_net_amount ?? 0) - $advanceFullPayment; // Fixed: Invoice Amount - Advance Payment
                 @endphp
                 <tr>
                     <td>{{ optional($booking->created_at)->format('M d, Y') }}</td>
