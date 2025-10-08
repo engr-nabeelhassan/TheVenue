@@ -20,8 +20,10 @@
 </head>
 <body>
     <div class="header">
-        <h1>Customer Statement</h1>
-        <p>The Venue - Banquet Management System</p>
+        <h1 style="margin: 0; color: #4F46E5; font-size: 20px;">THE VENUE BANQUET</h1>
+        <p style="margin: 5px 0; font-size: 10px; color: #666;">Contact: 0335-999 9357 - 0304-888 1100 | 021-34635544 - 021-34635533</p>
+        <p style="margin: 5px 0 10px 0; font-size: 10px; color: #666;">Address: Askari 4, Main Rashid Minhas Road Karachi</p>
+        <h2 style="margin: 10px 0 0 0; color: #374151; font-size: 16px;">Customer Statement</h2>
     </div>
 
     <div class="customer-info">
