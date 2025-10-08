@@ -203,7 +203,7 @@ class ReportsController extends Controller
         $netBalance = $totalDebit - $totalCredit;
 
         // Apply sorting
-        $sortable = ['receipt_date', 'customer_name', 'payment_method', 'payment_status', 'add_amount'];
+        $sortable = ['receipt_date', 'customer_name', 'payment_method', 'payment_status', 'previous_balance', 'add_amount', 'remaining_balance'];
         if (!in_array($sort, $sortable)) {
             $sort = 'receipt_date';
         }

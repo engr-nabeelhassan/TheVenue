@@ -114,10 +114,32 @@
                                     </a>
                                 </th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <a href="{{ route('reports.payment-summary', array_merge(request()->query(), ['sort' => 'previous_balance', 'direction' => request('sort')==='previous_balance' && request('direction')==='asc' ? 'desc' : 'asc'])) }}" 
+                                       class="inline-flex items-center gap-1 hover:text-gray-700">
+                                        Previous Balance
+                                        @if(request('sort')==='previous_balance')
+                                            <span class="text-gray-400">{{ request('direction')==='asc' ? '▲' : '▼' }}</span>
+                                        @else
+                                            <span class="text-gray-300">↕</span>
+                                        @endif
+                                    </a>
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     <a href="{{ route('reports.payment-summary', array_merge(request()->query(), ['sort' => 'add_amount', 'direction' => request('sort')==='add_amount' && request('direction')==='asc' ? 'desc' : 'asc'])) }}" 
                                        class="inline-flex items-center gap-1 hover:text-gray-700">
-                                        Amount
+                                        Receipt Paid
                                         @if(request('sort')==='add_amount')
+                                            <span class="text-gray-400">{{ request('direction')==='asc' ? '▲' : '▼' }}</span>
+                                        @else
+                                            <span class="text-gray-300">↕</span>
+                                        @endif
+                                    </a>
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <a href="{{ route('reports.payment-summary', array_merge(request()->query(), ['sort' => 'remaining_balance', 'direction' => request('sort')==='remaining_balance' && request('direction')==='asc' ? 'desc' : 'asc'])) }}" 
+                                       class="inline-flex items-center gap-1 hover:text-gray-700">
+                                        Remaining Balance
+                                        @if(request('sort')==='remaining_balance')
                                             <span class="text-gray-400">{{ request('direction')==='asc' ? '▲' : '▼' }}</span>
                                         @else
                                             <span class="text-gray-300">↕</span>
@@ -134,7 +156,9 @@
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $payment->customer_name }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $payment->payment_method }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $payment->payment_status }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ number_format($payment->previous_balance ?? 0, 2) }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ number_format($payment->add_amount, 2) }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ number_format($payment->remaining_balance ?? 0, 2) }}</td>
                                 </tr>
                             @endforeach
                         </tbody>

@@ -26,7 +26,9 @@
                 <th>Customer</th>
                 <th>Method</th>
                 <th>Status</th>
-                <th>Amount</th>
+                <th>Previous Balance</th>
+                <th>Receipt Paid</th>
+                <th>Remaining Balance</th>
             </tr>
         </thead>
         <tbody>
@@ -37,7 +39,9 @@
                 <td>{{ $payment->customer_name }}</td>
                 <td>{{ $payment->payment_method }}</td>
                 <td>{{ $payment->payment_status }}</td>
+                <td>{{ number_format($payment->previous_balance ?? 0, 2) }}</td>
                 <td>{{ number_format($payment->add_amount, 2) }}</td>
+                <td>{{ number_format($payment->remaining_balance ?? 0, 2) }}</td>
             </tr>
             @endforeach
         </tbody>
