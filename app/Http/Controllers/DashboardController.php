@@ -13,8 +13,8 @@ class DashboardController extends Controller
 {
     public function index(Request $request): View
     {
-        // Get today's bookings
-        $todayBookings = Booking::whereDate('event_start_at', today())->count();
+        // Get today's bookings (bookings created today)
+        $todayBookings = Booking::whereDate('created_at', today())->count();
         
         // Get upcoming events (next 7 days)
         $upcomingEvents = Booking::whereBetween('event_start_at', [today(), today()->addDays(7)])->count();
