@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 06, 2025 at 01:25 PM
+-- Generation Time: Oct 08, 2025 at 12:37 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -495,19 +495,16 @@ CREATE TABLE `bookings` (
 --
 
 INSERT INTO `bookings` (`id`, `invoice_date`, `customer_id`, `customer_name`, `event_type`, `total_guests`, `event_start_at`, `event_end_at`, `event_status`, `payment_status`, `payment_option`, `advance_amount`, `items_subtotal`, `items_discount_amount`, `invoice_net_amount`, `invoice_total_paid`, `invoice_closing_amount`, `amount_in_words`, `remarks`, `created_at`, `updated_at`) VALUES
-(6, '2025-10-01', 9, 'Ahtsham', 'Wedding', 500, '2025-09-30 22:00:00', '2025-10-02 13:00:00', 'In Progress', 'Cash', 'advance', 4000.00, 415000.00, 3000.00, 412000.00, 4000.00, 408000.00, NULL, NULL, '2025-10-01 02:28:51', '2025-10-03 00:05:57'),
-(7, '2025-10-01', 8, 'Jameel Shaikh', 'Birthday', 200, '2025-10-10 05:00:00', '2025-10-12 13:00:00', 'In Progress', 'Cash', 'advance', 500.00, 20000.00, 0.00, 20000.00, 500.00, 19500.00, NULL, NULL, '2025-10-01 02:36:16', '2025-10-01 02:36:16'),
-(8, '2025-10-01', 12, 'Muneeb', 'Corporate', 200, '2025-10-05 05:00:00', '2025-10-05 07:00:00', 'Cancelled', 'Cash', 'advance', 50000.00, 500000.00, 0.00, 500000.00, 50000.00, 450000.00, 'Five Lac Only.', 'Pending Payment In 450,000 In After Event Cheque', '2025-10-01 04:42:05', '2025-10-01 04:42:05'),
-(9, '2025-10-01', 5, 'Faisal Baksh', 'Birthday', 50, '2025-10-01 05:00:00', '2025-10-01 13:00:00', 'Postponed', 'Cash', 'full', 0.00, 50000.00, 0.00, 50000.00, 50000.00, 0.00, NULL, NULL, '2025-10-01 04:46:58', '2025-10-01 04:46:58'),
-(10, '2025-10-01', 4, 'kasim', 'Corporate', 100, '2025-10-01 05:00:00', '2025-10-01 13:00:00', 'In Progress', 'Cash', 'full', 0.00, 100000.00, 0.00, 100000.00, 100000.00, 0.00, NULL, NULL, '2025-10-01 04:57:08', '2025-10-01 04:57:08'),
-(11, '2025-10-01', 4, 'kasim', 'Corporate', 100, '2025-10-01 05:00:00', '2025-10-01 13:00:00', 'In Progress', 'Cash', 'advance', 50000.00, 500000.00, 0.00, 500000.00, 50000.00, 450000.00, NULL, NULL, '2025-10-01 04:58:36', '2025-10-01 04:58:36'),
-(12, '2025-10-01', 11, 'Arif Hussain', 'Wedding', 600, '2025-10-08 15:00:00', '2025-10-08 18:59:00', 'In Progress', 'Online Transaction', 'advance', 365000.00, 700000.00, 35000.00, 665000.00, 365000.00, 300000.00, 'Three Lakh Rupees Only', 'Pending Payment After Event.', '2025-10-01 06:22:12', '2025-10-01 06:22:12'),
-(13, '2025-10-03', 12, 'Muneeb', 'Birthday', 500, '2025-10-03 05:00:00', '2025-10-03 13:00:00', 'Completed', 'Cash', NULL, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 'Zero Rupees Only', NULL, '2025-10-03 00:09:29', '2025-10-03 00:09:29'),
-(14, '2025-10-03', 12, 'Muneeb', 'Wedding', 0, '2025-10-03 05:00:00', '2025-10-03 13:00:00', 'In Progress', 'Cash', NULL, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 'Zero Rupees Only', NULL, '2025-10-03 00:09:45', '2025-10-03 00:09:45'),
-(15, '2025-10-03', 10, 'Tariq Hussain', 'Wedding', 5000, '2025-10-03 05:00:00', '2025-10-03 13:00:00', 'In Progress', 'Cash', NULL, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 'Zero Rupees Only', NULL, '2025-10-03 00:10:29', '2025-10-03 00:10:29'),
-(16, '2025-10-03', 5, 'Faisal Baksh', 'Wedding', 1, '2025-10-03 05:00:00', '2025-10-03 13:00:00', 'In Progress', 'Cash', NULL, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 'Zero Rupees Only', NULL, '2025-10-03 00:10:55', '2025-10-03 00:10:55'),
-(17, '2025-10-06', 1, 'Ali', 'Wedding', 300, '2025-10-05 19:00:00', '2025-10-07 03:00:00', 'In Progress', 'Cash', 'advance', 10000.00, 400000.00, 20000.00, 380000.00, 10000.00, 370000.00, 'Three Lakh Seventy Thousand Rupees Only', 'Pending Payment After Event.', '2025-10-06 02:47:06', '2025-10-06 05:47:20'),
-(18, '2025-10-06', 10, 'Tariq Hussain', 'Wedding', 1000, '2025-10-09 00:00:00', '2025-10-11 08:00:00', 'In Progress', 'Cash', 'full', 0.00, 111110.00, 0.00, 111110.00, 111110.00, 0.00, 'Zero Rupees Only', NULL, '2025-10-06 06:19:54', '2025-10-06 06:21:24');
+(1, '2025-10-01', 14, 'Fatima Noor', 'Wedding', 400, '2025-10-07 19:00:00', '2025-10-07 23:30:00', 'In Progress', 'Cheque', 'advance', 215000.00, 450000.00, 50000.00, 400000.00, 215000.00, 185000.00, 'One Lakh Eighty Five Thousand Rupees Only', 'Pending Payment After Event', '2025-10-07 01:09:02', '2025-10-07 07:37:48'),
+(3, '2025-10-02', 13, 'Adnan Latif', 'Wedding', 500, '2025-10-08 20:00:00', '2025-10-08 23:59:00', 'In Progress', 'Cash', 'advance', 35000.00, 600000.00, 60000.00, 540000.00, 35000.00, 505000.00, 'Five Lakh Five Thousand Rupees Only', NULL, '2025-10-07 02:00:45', '2025-10-07 07:36:19'),
+(6, '2025-10-03', 12, 'Maria Khan', 'Wedding', 650, '2025-10-09 20:00:00', '2025-10-09 23:59:00', 'Completed', 'Online Transaction', 'advance', 300000.00, 720000.00, 31400.00, 688600.00, 300000.00, 388600.00, 'Three Lakh Eighty Eight Thousand Six Hundred Rupees Only', 'Stage Requirements', '2025-10-07 09:13:50', '2025-10-07 09:13:50'),
+(7, '2025-10-04', 11, 'Imran Sheikh', 'Wedding', 1000, '2025-10-11 12:00:00', '2025-10-11 16:00:00', 'Postponed', 'Cheque', 'advance', 490000.00, 1250000.00, 0.00, 1250000.00, 490000.00, 760000.00, 'Seven Lakh Sixty Thousand Rupees Only', 'Date Pending, Not Confirm.', '2025-10-07 09:19:58', '2025-10-08 04:51:29'),
+(8, '2025-10-06', 10, 'Ayesha Siddiqui', 'Corporate', 0, '2025-10-12 18:00:00', '2025-10-12 23:59:00', 'Cancelled', 'Cash', 'full', 0.00, 450000.00, 0.00, 450000.00, 450000.00, 0.00, 'Zero Rupees Only', 'Not Confirmed.', '2025-10-07 10:01:04', '2025-10-08 04:28:50'),
+(9, '2025-10-07', 9, 'Faisal Qureshi', 'Birthday', 200, '2025-10-13 14:30:00', '2025-10-13 18:59:00', 'Completed', 'Cash', 'advance', 65000.00, 180000.00, 0.00, 180000.00, 65000.00, 115000.00, 'One Lakh Fifteen Thousand Rupees Only', 'Pending Payment Check Rs: 115,000.', '2025-10-07 10:07:32', '2025-10-07 10:07:32'),
+(10, '2025-10-07', 7, 'Usman Tariq', 'Other', 150, '2025-10-17 15:00:00', '2025-10-17 18:59:00', 'Postponed', 'Cash', 'advance', 130000.00, 230000.00, 0.00, 230000.00, 130000.00, 100000.00, 'One Lakh Rupees Only', 'Payement Success, Stage Lights Added Also.', '2025-10-07 10:12:40', '2025-10-07 10:12:40'),
+(11, '2025-10-07', 8, 'Zainab Rehman', 'Birthday', 300, '2025-10-31 14:15:00', '2025-10-31 18:59:00', 'In Progress', 'Cheque', 'advance', 400000.00, 580000.00, 10000.00, 570000.00, 400000.00, 170000.00, 'One Lakh Seventy Thousand Rupees Only', 'Pending Payement Event Day.', '2025-10-07 10:19:03', '2025-10-07 10:19:03'),
+(12, '2025-09-22', 5, 'Bilal Ahmed', 'Wedding', 500, '2025-10-22 14:30:00', '2025-10-22 18:00:00', 'Cancelled', 'Cheque', 'full', 0.00, 300000.00, 0.00, 300000.00, 300000.00, 0.00, 'Zero Rupees Only', 'Full Payment Done, Confirm Program', '2025-10-07 10:22:35', '2025-10-07 10:22:35'),
+(13, '2025-10-08', 4, 'Sara Khan', 'Wedding', 850, '2025-10-27 19:00:00', '2025-10-27 22:30:00', 'In Progress', 'Cash', 'advance', 430000.00, 640000.00, 0.00, 640000.00, 430000.00, 210000.00, 'Two Lakh Ten Thousand Rupees Only', 'Pending Payment After Event.', '2025-10-08 04:40:42', '2025-10-08 04:41:41');
 
 -- --------------------------------------------------------
 
@@ -534,20 +531,20 @@ CREATE TABLE `booking_items` (
 --
 
 INSERT INTO `booking_items` (`id`, `booking_id`, `sr_no`, `item_description`, `quantity`, `rate`, `discount_type`, `discount_value`, `net_amount`, `created_at`, `updated_at`) VALUES
-(8, 7, 1, 'Package', 1.00, 20000.00, 'percent', 0.00, 20000.00, '2025-10-01 02:36:16', '2025-10-01 02:36:16'),
-(9, 8, 1, 'VENUE Package', 1.00, 500000.00, 'percent', 0.00, 500000.00, '2025-10-01 04:42:05', '2025-10-01 04:42:05'),
-(10, 9, 1, 'DRINKS', 500.00, 100.00, 'percent', 0.00, 50000.00, '2025-10-01 04:46:58', '2025-10-01 04:46:58'),
-(11, 10, 1, 'Package', 100000.00, 1.00, 'percent', 0.00, 100000.00, '2025-10-01 04:57:08', '2025-10-01 04:57:08'),
-(12, 11, 1, 'Package', 1.00, 500000.00, 'percent', 0.00, 500000.00, '2025-10-01 04:58:36', '2025-10-01 04:58:36'),
-(13, 12, 1, 'Package &Stage Setup', 1.00, 700000.00, 'percent', 5.00, 665000.00, '2025-10-01 06:22:13', '2025-10-01 06:22:13'),
-(14, 6, 1, 'Package', 1.00, 400000.00, 'percent', 0.00, 400000.00, '2025-10-03 00:05:57', '2025-10-03 00:05:57'),
-(15, 6, 2, 'Stage Setup', 1.00, 15000.00, 'lump', 3000.00, 12000.00, '2025-10-03 00:05:57', '2025-10-03 00:05:57'),
-(16, 13, 1, 'Setup', 1.00, 0.00, 'percent', 0.00, 0.00, '2025-10-03 00:09:29', '2025-10-03 00:09:29'),
-(17, 14, 1, 'setup 2', 0.00, 0.00, 'percent', 0.00, 0.00, '2025-10-03 00:09:45', '2025-10-03 00:09:45'),
-(18, 15, 1, 'stafhe', 0.00, 0.00, 'percent', 0.00, 0.00, '2025-10-03 00:10:29', '2025-10-03 00:10:29'),
-(19, 16, 1, 'sikandr', 0.00, 0.00, 'percent', 0.00, 0.00, '2025-10-03 00:10:55', '2025-10-03 00:10:55'),
-(22, 17, 1, 'Package', 1.00, 400000.00, 'percent', 5.00, 380000.00, '2025-10-06 05:47:20', '2025-10-06 05:47:20'),
-(24, 18, 1, 'f', 1.00, 111110.00, 'percent', 0.00, 111110.00, '2025-10-06 06:21:24', '2025-10-06 06:21:24');
+(26, 3, 1, 'Package Full Stage', 1.00, 600000.00, 'percent', 10.00, 540000.00, '2025-10-07 07:36:19', '2025-10-07 07:36:19'),
+(27, 1, 1, 'Package Hall Full', 1.00, 450000.00, 'lump', 50000.00, 400000.00, '2025-10-07 07:37:48', '2025-10-07 07:37:48'),
+(30, 6, 1, 'Stage Booking & Drinks', 1.00, 70000.00, 'percent', 2.00, 68600.00, '2025-10-07 09:13:50', '2025-10-07 09:13:50'),
+(31, 6, 2, 'Rent', 1.00, 650000.00, 'lump', 30000.00, 620000.00, '2025-10-07 09:13:50', '2025-10-07 09:13:50'),
+(35, 9, 1, 'Package Deal', 1.00, 180000.00, 'percent', 0.00, 180000.00, '2025-10-07 10:07:32', '2025-10-07 10:07:32'),
+(36, 10, 1, 'Deal Package AZ', 1.00, 230000.00, 'percent', 0.00, 230000.00, '2025-10-07 10:12:40', '2025-10-07 10:12:40'),
+(37, 11, 1, 'Rent', 1.00, 400000.00, 'lump', 10000.00, 390000.00, '2025-10-07 10:19:03', '2025-10-07 10:19:03'),
+(38, 11, 2, 'Stage & Lights', 1.00, 50000.00, 'percent', 0.00, 50000.00, '2025-10-07 10:19:03', '2025-10-07 10:19:03'),
+(39, 11, 3, 'Soft Drinks', 1.00, 110000.00, 'percent', 0.00, 110000.00, '2025-10-07 10:19:03', '2025-10-07 10:19:03'),
+(40, 11, 4, 'SMD Screens', 1.00, 20000.00, 'percent', 0.00, 20000.00, '2025-10-07 10:19:03', '2025-10-07 10:19:03'),
+(41, 12, 1, 'Deals Some Items', 1.00, 300000.00, 'percent', 0.00, 300000.00, '2025-10-07 10:22:35', '2025-10-07 10:22:35'),
+(43, 8, 1, 'Venue Rent', 1.00, 450000.00, 'percent', 0.00, 450000.00, '2025-10-08 04:28:50', '2025-10-08 04:28:50'),
+(47, 13, 1, 'Package + Smd', 1.00, 640000.00, 'percent', 0.00, 640000.00, '2025-10-08 04:41:41', '2025-10-08 04:41:41'),
+(49, 7, 1, 'Package Full Event', 1.00, 1250000.00, 'percent', 0.00, 1250000.00, '2025-10-08 04:51:29', '2025-10-08 04:51:29');
 
 -- --------------------------------------------------------
 
@@ -584,7 +581,7 @@ CREATE TABLE `customers` (
   `full_name` varchar(255) NOT NULL,
   `cnic` varchar(255) NOT NULL,
   `phone` varchar(255) NOT NULL,
-  `address` text NOT NULL,
+  `address` varchar(255) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -594,17 +591,18 @@ CREATE TABLE `customers` (
 --
 
 INSERT INTO `customers` (`id`, `full_name`, `cnic`, `phone`, `address`, `created_at`, `updated_at`) VALUES
-(1, 'Ali', '45203-12345678-3', '0312-3456789', 'Gulshan Iqbal Karachi', '2025-09-25 05:51:56', '2025-09-29 02:30:06'),
-(3, 'Sikandar', '45203-12345678-8', '0312-3456723', 'Jouhar Mor Karachi', '2025-09-29 02:31:05', '2025-09-29 02:31:05'),
-(4, 'kasim', '45203-12345678-5', '0312-8338092', 'Karimabad Hyderbad', '2025-09-30 05:23:28', '2025-09-30 05:24:55'),
-(5, 'Faisal Baksh', '45203-12345678-1', '0312-8338843', 'Jacambad', '2025-09-30 05:25:41', '2025-09-30 05:25:41'),
-(6, 'Sheeraz', '45202-12345648-1', '0309-8338092', 'Sukkur', '2025-09-30 05:26:40', '2025-09-30 05:26:40'),
-(7, 'Khan Naseem', '45205-12345678-9', '0305-8338092', 'Khairpur', '2025-09-30 05:27:23', '2025-09-30 05:27:30'),
-(8, 'Jameel Shaikh', '45303-12345678-1', '0301-8338333', 'Jamshoro', '2025-09-30 05:28:28', '2025-09-30 05:28:28'),
-(9, 'Ahtsham', '45207-12345678-5', '0334-8338453', 'Lahore Punjab', '2025-09-30 05:29:33', '2025-09-30 05:29:33'),
-(10, 'Tariq Hussain', '45403-12393678-5', '0333-6738092', 'Mosamiyat', '2025-09-30 05:31:04', '2025-09-30 05:31:04'),
-(11, 'Arif Hussain', '43103-12345678-5', '0333-6738435', 'Kiranchi', '2025-09-30 05:31:41', '2025-10-06 02:03:33'),
-(12, 'Muneeb', '45102-48465467-0', '0329-83380092', 'Safoora Chowk', '2025-09-30 23:52:29', '2025-09-30 23:52:29');
+(3, 'Ahmed Raza', '42101-1234567-1', '0301-1234567', 'Gulshan-e-Iqbal, Karachi', '2025-10-07 00:53:20', '2025-10-07 00:53:20'),
+(4, 'Sara Khan', '42201-2345678-2', '0333-2345678', 'Clifton Block 5, Karachi', '2025-10-07 00:56:59', '2025-10-07 00:56:59'),
+(5, 'Bilal Ahmed', '42301-3456789-3', '0312-3456789', 'North Nazimabad Block H, Karachi', '2025-10-07 00:57:24', '2025-10-07 00:57:24'),
+(6, 'Hina Ali', '42102-4567890-4', '0345-4567890', 'PECHS Block 2, Karachi', '2025-10-07 00:57:51', '2025-10-07 00:57:51'),
+(7, 'Usman Tariq', '42203-5678901-5', '0300-5678901', 'Gulistan-e-Johar Block 15, Karachi', '2025-10-07 00:58:16', '2025-10-07 01:02:12'),
+(8, 'Zainab Rehman', '42104-6789012-6', '0321-6789012', 'DHA Phase 6, Karachi', '2025-10-07 00:58:39', '2025-10-07 00:58:39'),
+(9, 'Faisal Qureshi', '42302-7890123-7', '0311-7890123', 'Malir Cantt, Karachi', '2025-10-07 00:59:01', '2025-10-07 00:59:01'),
+(10, 'Ayesha Siddiqui', '42105-8901234-8', '0332-8901234', 'Bahadurabad, Karachi', '2025-10-07 00:59:26', '2025-10-07 00:59:26'),
+(11, 'Imran Sheikh', '42204-9012345-9', '0346-9012345', 'Saddar, Karachi', '2025-10-07 00:59:47', '2025-10-07 00:59:47'),
+(12, 'Maria Khan', '42303-0123456-0', '0315-0123456', 'Korangi No. 5, Karachi', '2025-10-07 01:00:09', '2025-10-07 01:00:09'),
+(13, 'Adnan Latif', '42106-2345678-9', '0302-2345678', 'Nazimabad No. 3, Karachi', '2025-10-07 01:00:31', '2025-10-07 01:00:31'),
+(14, 'Fatima Noor', '42205-3456789-1', '0323-3456789', 'North Karachi Sector 11-B, Karachi', '2025-10-07 01:01:13', '2025-10-07 01:01:13');
 
 -- --------------------------------------------------------
 
@@ -677,14 +675,13 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (1, '0001_01_01_000000_create_users_table', 1),
 (2, '0001_01_01_000001_create_cache_table', 1),
 (3, '0001_01_01_000002_create_jobs_table', 1),
-(4, '2025_09_25_062948_add_username_unique_and_role_to_users_table', 2),
-(5, '2025_09_25_093639_create_customers_table', 3),
-(6, '2025_09_25_000000_create_customers_table', 4),
-(7, '2025_09_26_000000_create_bookings_table', 5),
-(8, '2025_09_26_000001_create_booking_items_table', 5),
-(9, '2025_01_27_000000_add_event_status_to_bookings_table', 6),
-(10, '2025_01_27_000001_create_payments_table', 6),
-(11, '2025_09_26_000002_add_foreign_keys_after_tables_exist', 7);
+(4, '2025_01_27_000000_add_event_status_to_bookings_table', 1),
+(5, '2025_01_27_000001_create_payments_table', 1),
+(6, '2025_09_25_000000_create_customers_table', 1),
+(7, '2025_09_25_062948_add_username_unique_and_role_to_users_table', 1),
+(8, '2025_09_26_000000_create_bookings_table', 1),
+(9, '2025_09_26_000001_create_booking_items_table', 1),
+(10, '2025_09_26_000002_add_foreign_keys_after_tables_exist', 1);
 
 -- --------------------------------------------------------
 
@@ -697,15 +694,6 @@ CREATE TABLE `password_reset_tokens` (
   `token` varchar(255) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `password_reset_tokens`
---
-
-INSERT INTO `password_reset_tokens` (`email`, `token`, `created_at`) VALUES
-('nabeelkhoso46@gmail.com', '$2y$12$f54Hfyjcsb59RoLPYl.Y1u12kABoI2RCuqKJRkGhvIBD4OYIN6e4y', '2025-09-30 01:08:27'),
-('venue@example.com', '$2y$12$7PtJalKe/wCoSg2tdNwlWezp4EcSEhYOBS7SStZ.8LTuHHCCPM1HG', '2025-09-30 02:14:48'),
-('venue@test.com', '$2y$12$pQK.DDkRrHDMJiDHo4mizu9Hb4yc.5rDHuWMdlXG8ht5a8tZIpH/m', '2025-09-29 23:36:27');
 
 -- --------------------------------------------------------
 
@@ -735,13 +723,10 @@ CREATE TABLE `payments` (
 --
 
 INSERT INTO `payments` (`id`, `booking_id`, `customer_id`, `customer_name`, `contact`, `receipt_date`, `payment_method`, `payment_status`, `previous_balance`, `add_amount`, `remaining_balance`, `remarks`, `created_at`, `updated_at`) VALUES
-(1, 12, 11, 'Arif Hussain', '0333-67380435', '2025-10-03', 'Credit', 'Cash', 665000.00, 15000.00, 650000.00, 'Some Payment Collect', '2025-10-03 00:29:56', '2025-10-03 00:29:56'),
-(2, 12, 11, 'Arif Hussain', '0333-67380435', '2025-10-03', 'Debit', 'Cash', 650000.00, 78000.00, 728000.00, NULL, '2025-10-03 02:40:50', '2025-10-03 04:47:54'),
-(3, 9, 5, 'Faisal Baksh', '0312-8338843', '2025-10-03', 'Credit', 'Cash', 50000.00, 35000.00, 15000.00, NULL, '2025-10-03 04:51:57', '2025-10-03 04:51:57'),
-(5, 7, 8, 'Jameel Shaikh', '0301-8338333', '2025-10-03', 'Credit', 'Cheque', 20000.00, 6000.00, 14000.00, 'Recive', '2025-10-03 05:05:55', '2025-10-03 05:05:55'),
-(6, 12, 11, 'Arif Hussain', '0333-67380435', '2025-10-06', 'Credit', 'Online Transaction', 650000.00, 150000.00, 500000.00, NULL, '2025-10-05 23:07:00', '2025-10-05 23:07:00'),
-(7, 12, 11, 'Arif Hussain', '0333-67380435', '2025-10-06', 'Credit', 'Cheque', 500000.00, 10000.00, 490000.00, NULL, '2025-10-06 00:05:16', '2025-10-06 00:05:16'),
-(8, 11, 4, 'kasim', '0312-8338092', '2025-10-06', 'Credit', 'Cheque', 600000.00, 55000.00, 545000.00, NULL, '2025-10-06 00:17:55', '2025-10-06 00:17:55');
+(1, 11, 8, 'Zainab Rehman', '0321-6789012', '2025-10-07', 'Credit', 'Online Transaction', 170000.00, 60000.00, 110000.00, NULL, '2025-10-07 10:32:16', '2025-10-07 10:32:16'),
+(2, 7, 11, 'Imran Sheikh', '0346-9012345', '2025-10-01', 'Credit', 'Cheque', 760000.00, 410000.00, 350000.00, 'Check Date : 11/03/2025', '2025-10-07 10:36:48', '2025-10-07 10:36:48'),
+(3, 9, 9, 'Faisal Qureshi', '0311-7890123', '2025-10-02', 'Debit', 'Online Transaction', 115000.00, 5000.00, 120000.00, 'Additional Amount Soft Drinks Add, 5000/=', '2025-10-07 10:41:37', '2025-10-07 10:41:53'),
+(4, 10, 7, 'Usman Tariq', '0300-5678901', '2025-10-04', 'Credit', 'Cash', 100000.00, 100000.00, 0.00, 'Clear Event.....', '2025-10-07 10:43:23', '2025-10-07 10:43:39');
 
 -- --------------------------------------------------------
 
@@ -763,8 +748,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('5wSbW8kkloRj64GGhEqGqlJmzcAaoWKpe8yl1iKJ', 8, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoianFEOEFtN012ZWJFbE5YYUlkS3BYT1FidHplRTQ2SlpuT3d1WFFSZCI7czozOiJ1cmwiO2E6MDp7fXM6OToiX3ByZXZpb3VzIjthOjE6e3M6MzoidXJsIjtzOjMxOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvZGFzaGJvYXJkIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6ODt9', 1759747681),
-('NrU3zzDaLNLyV1BqOc9e0wieI2jRJkE5NYStnOb2', 8, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiV3FvckdHaFN3WE9xUUpid0d2bnNhaWs4WVgxS3dVVHBRdHYzZERobCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NTA6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMC9kYXNoYm9hcmQ/bW9udGg9MTAmeWVhcj0yMDI1Ijt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6ODt9', 1759749871);
+('hbHEW6glB6eXX8f5mXxiSKF6Usn8nKXMMbu51xak', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiQThObEdtOU5EN0h0UUdGaFpJT0M4TVhjTEZUQ2E2U0F2dW44TEhCTSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mjc6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMC9sb2dpbiI7fX0=', 1759919835);
 
 -- --------------------------------------------------------
 
@@ -789,7 +773,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `role`, `remember_token`, `created_at`, `updated_at`) VALUES
-(8, 'Venue', 'venue@example.com', NULL, '$2y$12$mOaOCoD3LNBs.3.Pi04lkOAaaCeqOltUdOFOEeG6AE64Te6xU4mlG', 'user', '0P83QESSd5vvauEXwjWNV7ZFwz5aQm4gpYXURZAacVxKzTBJpCu3SgMToUxA', '2025-09-29 23:45:16', '2025-09-30 01:35:18');
+(1, 'Admin', 'admin@thevenue.com', NULL, '$2y$12$LaGnqAHf/LGYwc9TGOYulO/0/XZnO0kSrmMSBu2mLRvtV.Jt.oO4K', 'admin', NULL, '2025-10-07 00:23:59', '2025-10-07 00:29:10');
 
 --
 -- Indexes for dumped tables
@@ -865,8 +849,8 @@ ALTER TABLE `password_reset_tokens`
 --
 ALTER TABLE `payments`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `payments_booking_id_foreign` (`booking_id`),
-  ADD KEY `payments_customer_id_foreign` (`customer_id`);
+  ADD KEY `payments_booking_id_index` (`booking_id`),
+  ADD KEY `payments_customer_id_index` (`customer_id`);
 
 --
 -- Indexes for table `sessions`
@@ -892,19 +876,19 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `bookings`
 --
 ALTER TABLE `bookings`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `booking_items`
 --
 ALTER TABLE `booking_items`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
 
 --
 -- AUTO_INCREMENT for table `customers`
 --
 ALTER TABLE `customers`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `failed_jobs`
@@ -922,19 +906,19 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `payments`
 --
 ALTER TABLE `payments`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Constraints for dumped tables
