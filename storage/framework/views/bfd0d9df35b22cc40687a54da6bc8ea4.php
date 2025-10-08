@@ -9,9 +9,12 @@
 <?php endif; ?>
 <?php $component->withAttributes([]); ?>
      <?php $__env->slot('header', null, []); ?> 
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Reports Dashboard
-        </h2>
+        <div class="flex items-center gap-3">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                Reports Dashboard
+            </h2>
+            <a href="<?php echo e(route('dashboard')); ?>" class="text-gray-600 hover:text-gray-800 underline">Back to Dashboard</a>
+        </div>
      <?php $__env->endSlot(); ?>
 
     <div class="py-6">

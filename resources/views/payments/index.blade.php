@@ -1,9 +1,12 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between items-center">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Payment List
-            </h2>
+            <div class="flex items-center gap-3">
+                <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                    Payment List
+                </h2>
+                <a href="{{ route('dashboard') }}" class="text-gray-600 hover:text-gray-800 underline">Back to Dashboard</a>
+            </div>
             <a href="{{ route('payments.create') }}" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">
                 Collect Payment
             </a>
