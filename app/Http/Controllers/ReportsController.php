@@ -138,10 +138,8 @@ class ReportsController extends Controller
         // Get all for totals calculation
         $allBookings = (clone $query)->get();
         $totalRevenue = $allBookings->sum('invoice_net_amount');
-        $totalPaid = $allBookings->sum(function($booking) {
-            return $booking->payments->where('payment_method', 'Credit')->sum('add_amount');
-        });
-        $totalOutstanding = $totalRevenue - $totalPaid;
+        $totalPaid = $allBookings->sum('advance_amount');
+        $totalClosingAmount = $allBookings->sum('invoice_closing_amount');
 
         // Apply sorting
         $sortable = ['created_at', 'event_start_at', 'customer_name', 'items_subtotal', 'items_discount_amount', 'invoice_net_amount'];
@@ -153,7 +151,7 @@ class ReportsController extends Controller
 
         $bookings = $query->paginate($perPage)->appends($request->query());
 
-        return view('reports.events-balance', compact('bookings', 'fromDate', 'toDate', 'totalRevenue', 'totalPaid', 'totalOutstanding'));
+        return view('reports.events-balance', compact('bookings', 'fromDate', 'toDate', 'totalRevenue', 'totalPaid', 'totalClosingAmount'));
     }
 
     public function eventsBalancePdf(Request $request)
@@ -166,12 +164,10 @@ class ReportsController extends Controller
             ->get();
 
         $totalRevenue = $bookings->sum('invoice_net_amount');
-        $totalPaid = $bookings->sum(function($booking) {
-            return $booking->payments->where('payment_method', 'Credit')->sum('add_amount');
-        });
-        $totalOutstanding = $totalRevenue - $totalPaid;
+        $totalPaid = $bookings->sum('advance_amount');
+        $totalClosingAmount = $bookings->sum('invoice_closing_amount');
 
-        $pdf = Pdf::loadView('reports.events-balance-pdf', compact('bookings', 'fromDate', 'toDate', 'totalRevenue', 'totalPaid', 'totalOutstanding'));
+        $pdf = Pdf::loadView('reports.events-balance-pdf', compact('bookings', 'fromDate', 'toDate', 'totalRevenue', 'totalPaid', 'totalClosingAmount'));
         return $pdf->download('events-balance-' . $fromDate . '-to-' . $toDate . '.pdf');
     }
 

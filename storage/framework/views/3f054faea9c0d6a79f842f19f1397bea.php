@@ -21,29 +21,31 @@
     <table>
         <thead>
             <tr>
-                <th>Sr#</th>
+                <th>Invoice Date</th>
                 <th>Event Date</th>
                 <th>Customer</th>
-                <th>Event Type</th>
+                <th>Invoice Subtotal</th>
+                <th>Discount Total</th>
                 <th>Invoice Amount</th>
-                <th>Paid (Credit)</th>
-                <th>Outstanding</th>
+                <th>Advance/Full-Payment</th>
+                <th>Closing Amount</th>
             </tr>
         </thead>
         <tbody>
             <?php $__currentLoopData = $bookings; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $booking): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <?php
-                    $paid = $booking->payments->where('payment_method', 'Credit')->sum('add_amount');
-                    $outstanding = ($booking->invoice_net_amount ?? 0) - $paid;
+                    $advanceFullPayment = $booking->advance_amount ?? 0;
+                    $closingAmount = $booking->invoice_closing_amount ?? 0;
                 ?>
                 <tr>
-                    <td><?php echo e($index + 1); ?></td>
+                    <td><?php echo e(optional($booking->created_at)->format('M d, Y')); ?></td>
                     <td><?php echo e(optional($booking->event_start_at)->format('M d, Y')); ?></td>
                     <td><?php echo e($booking->customer_name); ?></td>
-                    <td><?php echo e($booking->event_type); ?></td>
+                    <td><?php echo e(number_format($booking->items_subtotal ?? 0, 2)); ?></td>
+                    <td><?php echo e(number_format($booking->items_discount_amount ?? 0, 2)); ?></td>
                     <td><?php echo e(number_format($booking->invoice_net_amount, 2)); ?></td>
-                    <td><?php echo e(number_format($paid, 2)); ?></td>
-                    <td><?php echo e(number_format($outstanding, 2)); ?></td>
+                    <td><?php echo e(number_format($advanceFullPayment, 2)); ?></td>
+                    <td><?php echo e(number_format($closingAmount, 2)); ?></td>
                 </tr>
             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </tbody>
@@ -53,10 +55,10 @@
         <tr>
             <th>Total Revenue</th>
             <td><?php echo e(number_format($totalRevenue, 2)); ?></td>
-            <th>Total Paid</th>
+            <th>Total Advance/Full-Payment</th>
             <td><?php echo e(number_format($totalPaid, 2)); ?></td>
-            <th>Total Outstanding</th>
-            <td><?php echo e(number_format($totalOutstanding, 2)); ?></td>
+            <th>Total Closing Amount</th>
+            <td><?php echo e(number_format($totalClosingAmount, 2)); ?></td>
         </tr>
     </table>
 

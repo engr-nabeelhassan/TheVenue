@@ -55,12 +55,12 @@
                             <div class="text-2xl font-bold text-blue-900">{{ number_format($totalRevenue, 2) }} PKR</div>
                         </div>
                         <div class="bg-green-50 p-4 rounded">
-                            <div class="text-sm text-green-600">Total Paid</div>
+                            <div class="text-sm text-green-600">Total Advance/Full-Payment</div>
                             <div class="text-2xl font-bold text-green-900">{{ number_format($totalPaid, 2) }} PKR</div>
                         </div>
                         <div class="bg-red-50 p-4 rounded">
-                            <div class="text-sm text-red-600">Total Outstanding</div>
-                            <div class="text-2xl font-bold text-red-900">{{ number_format($totalOutstanding, 2) }} PKR</div>
+                            <div class="text-sm text-red-600">Total Closing Amount</div>
+                            <div class="text-2xl font-bold text-red-900">{{ number_format($totalClosingAmount, 2) }} PKR</div>
                         </div>
                     </div>
                 </div>
@@ -136,15 +136,15 @@
                                         @endif
                                     </a>
                                 </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Paid (Credit)</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Outstanding</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Advance/Full-Payment</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Closing Amount</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             @foreach($bookings as $index => $booking)
                                 @php
-                                    $paid = $booking->payments->where('payment_method', 'Credit')->sum('add_amount');
-                                    $outstanding = ($booking->invoice_net_amount ?? 0) - $paid;
+                                    $advanceFullPayment = $booking->advance_amount ?? 0;
+                                    $closingAmount = $booking->invoice_closing_amount ?? 0;
                                 @endphp
                                 <tr class="hover:bg-gray-50">
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ optional($booking->created_at)->format('M d, Y') }}</td>
@@ -153,8 +153,8 @@
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ number_format($booking->items_subtotal ?? 0, 2) }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ number_format($booking->items_discount_amount ?? 0, 2) }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ number_format($booking->invoice_net_amount, 2) }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ number_format($paid, 2) }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ number_format($outstanding, 2) }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ number_format($advanceFullPayment, 2) }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ number_format($closingAmount, 2) }}</td>
                                 </tr>
                             @endforeach
                         </tbody>

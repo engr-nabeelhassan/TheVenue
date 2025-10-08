@@ -27,15 +27,15 @@
                 <th>Invoice Subtotal</th>
                 <th>Discount Total</th>
                 <th>Invoice Amount</th>
-                <th>Paid (Credit)</th>
-                <th>Outstanding</th>
+                <th>Advance/Full-Payment</th>
+                <th>Closing Amount</th>
             </tr>
         </thead>
         <tbody>
             @foreach($bookings as $index => $booking)
                 @php
-                    $paid = $booking->payments->where('payment_method', 'Credit')->sum('add_amount');
-                    $outstanding = ($booking->invoice_net_amount ?? 0) - $paid;
+                    $advanceFullPayment = $booking->advance_amount ?? 0;
+                    $closingAmount = $booking->invoice_closing_amount ?? 0;
                 @endphp
                 <tr>
                     <td>{{ optional($booking->created_at)->format('M d, Y') }}</td>
@@ -44,8 +44,8 @@
                     <td>{{ number_format($booking->items_subtotal ?? 0, 2) }}</td>
                     <td>{{ number_format($booking->items_discount_amount ?? 0, 2) }}</td>
                     <td>{{ number_format($booking->invoice_net_amount, 2) }}</td>
-                    <td>{{ number_format($paid, 2) }}</td>
-                    <td>{{ number_format($outstanding, 2) }}</td>
+                    <td>{{ number_format($advanceFullPayment, 2) }}</td>
+                    <td>{{ number_format($closingAmount, 2) }}</td>
                 </tr>
             @endforeach
         </tbody>
@@ -55,10 +55,10 @@
         <tr>
             <th>Total Revenue</th>
             <td>{{ number_format($totalRevenue, 2) }}</td>
-            <th>Total Paid</th>
+            <th>Total Advance/Full-Payment</th>
             <td>{{ number_format($totalPaid, 2) }}</td>
-            <th>Total Outstanding</th>
-            <td>{{ number_format($totalOutstanding, 2) }}</td>
+            <th>Total Closing Amount</th>
+            <td>{{ number_format($totalClosingAmount, 2) }}</td>
         </tr>
     </table>
 
