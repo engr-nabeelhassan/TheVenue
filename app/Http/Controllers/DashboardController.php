@@ -16,8 +16,11 @@ class DashboardController extends Controller
         // Get today's bookings (bookings created today)
         $todayBookings = Booking::whereDate('created_at', today())->count();
         
-        // Get upcoming events (next 7 days)
-        $upcomingEvents = Booking::whereBetween('event_start_at', [today(), today()->addDays(7)])->count();
+        // Get upcoming events (matching the button logic - excluding cancelled and postponed)
+        $upcomingEvents = Booking::where('event_start_at', '>=', now())
+            ->where('event_status', '!=', 'Cancelled')
+            ->where('event_status', '!=', 'Postponed')
+            ->count();
         
         // Get total customers
         $totalCustomers = Customer::count();
