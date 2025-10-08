@@ -332,8 +332,8 @@ class BookingController extends Controller
 
     public function cancelled(Request $request): View
     {
-        $fromDate = $request->get('from_date', now()->subMonths(3)->format('Y-m-d'));
-        $toDate = $request->get('to_date', now()->format('Y-m-d'));
+        $fromDate = $request->get('from_date', now()->subYears(2)->format('Y-m-d'));
+        $toDate = $request->get('to_date', now()->addYears(1)->format('Y-m-d'));
         $search = $request->get('search');
         $sort = $request->get('sort', 'event_start_at');
         $direction = $request->get('direction', 'desc');
@@ -344,8 +344,12 @@ class BookingController extends Controller
         }
 
         $query = Booking::with('customer')
-            ->where('event_status', 'Cancelled')
-            ->whereBetween('event_start_at', [$fromDate, $toDate]);
+            ->where('event_status', 'Cancelled');
+            
+        // Only apply date filter if dates are provided
+        if ($request->filled('from_date') || $request->filled('to_date')) {
+            $query->whereBetween('event_start_at', [$fromDate, $toDate]);
+        }
 
         // Search functionality
         if ($search) {
@@ -393,8 +397,8 @@ class BookingController extends Controller
 
     public function postponed(Request $request): View
     {
-        $fromDate = $request->get('from_date', now()->subMonths(3)->format('Y-m-d'));
-        $toDate = $request->get('to_date', now()->format('Y-m-d'));
+        $fromDate = $request->get('from_date', now()->subYears(2)->format('Y-m-d'));
+        $toDate = $request->get('to_date', now()->addYears(1)->format('Y-m-d'));
         $search = $request->get('search');
         $sort = $request->get('sort', 'event_start_at');
         $direction = $request->get('direction', 'desc');
@@ -405,8 +409,12 @@ class BookingController extends Controller
         }
 
         $query = Booking::with('customer')
-            ->where('event_status', 'Postponed')
-            ->whereBetween('event_start_at', [$fromDate, $toDate]);
+            ->where('event_status', 'Postponed');
+            
+        // Only apply date filter if dates are provided
+        if ($request->filled('from_date') || $request->filled('to_date')) {
+            $query->whereBetween('event_start_at', [$fromDate, $toDate]);
+        }
 
         // Search functionality
         if ($search) {
