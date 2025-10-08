@@ -21,10 +21,11 @@
     <table>
         <thead>
             <tr>
-                <th>Sr#</th>
+                <th>Invoice Date</th>
                 <th>Event Date</th>
                 <th>Customer</th>
-                <th>Event Type</th>
+                <th>Invoice Subtotal</th>
+                <th>Discount Total</th>
                 <th>Invoice Amount</th>
                 <th>Paid (Credit)</th>
                 <th>Outstanding</th>
@@ -37,10 +38,11 @@
                     $outstanding = ($booking->invoice_net_amount ?? 0) - $paid;
                 @endphp
                 <tr>
-                    <td>{{ $index + 1 }}</td>
+                    <td>{{ optional($booking->created_at)->format('M d, Y') }}</td>
                     <td>{{ optional($booking->event_start_at)->format('M d, Y') }}</td>
                     <td>{{ $booking->customer_name }}</td>
-                    <td>{{ $booking->event_type }}</td>
+                    <td>{{ number_format($booking->items_subtotal ?? 0, 2) }}</td>
+                    <td>{{ number_format($booking->items_discount_amount ?? 0, 2) }}</td>
                     <td>{{ number_format($booking->invoice_net_amount, 2) }}</td>
                     <td>{{ number_format($paid, 2) }}</td>
                     <td>{{ number_format($outstanding, 2) }}</td>

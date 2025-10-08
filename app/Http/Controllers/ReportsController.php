@@ -144,7 +144,7 @@ class ReportsController extends Controller
         $totalOutstanding = $totalRevenue - $totalPaid;
 
         // Apply sorting
-        $sortable = ['event_start_at', 'customer_name', 'event_type', 'invoice_net_amount'];
+        $sortable = ['created_at', 'event_start_at', 'customer_name', 'items_subtotal', 'items_discount_amount', 'invoice_net_amount'];
         if (!in_array($sort, $sortable)) {
             $sort = 'event_start_at';
         }

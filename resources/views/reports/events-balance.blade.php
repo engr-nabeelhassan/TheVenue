@@ -70,7 +70,17 @@
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sr#</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <a href="{{ route('reports.events-balance', array_merge(request()->query(), ['sort' => 'created_at', 'direction' => request('sort')==='created_at' && request('direction')==='asc' ? 'desc' : 'asc'])) }}" 
+                                       class="inline-flex items-center gap-1 hover:text-gray-700">
+                                        Invoice Date
+                                        @if(request('sort')==='created_at')
+                                            <span class="text-gray-400">{{ request('direction')==='asc' ? '▲' : '▼' }}</span>
+                                        @else
+                                            <span class="text-gray-300">↕</span>
+                                        @endif
+                                    </a>
+                                </th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     <a href="{{ route('reports.events-balance', array_merge(request()->query(), ['sort' => 'event_start_at', 'direction' => request('sort')==='event_start_at' && request('direction')==='asc' ? 'desc' : 'asc'])) }}" 
                                        class="inline-flex items-center gap-1 hover:text-gray-700">
@@ -94,10 +104,21 @@
                                     </a>
                                 </th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    <a href="{{ route('reports.events-balance', array_merge(request()->query(), ['sort' => 'event_type', 'direction' => request('sort')==='event_type' && request('direction')==='asc' ? 'desc' : 'asc'])) }}" 
+                                    <a href="{{ route('reports.events-balance', array_merge(request()->query(), ['sort' => 'items_subtotal', 'direction' => request('sort')==='items_subtotal' && request('direction')==='asc' ? 'desc' : 'asc'])) }}" 
                                        class="inline-flex items-center gap-1 hover:text-gray-700">
-                                        Event Type
-                                        @if(request('sort')==='event_type')
+                                        Invoice Subtotal
+                                        @if(request('sort')==='items_subtotal')
+                                            <span class="text-gray-400">{{ request('direction')==='asc' ? '▲' : '▼' }}</span>
+                                        @else
+                                            <span class="text-gray-300">↕</span>
+                                        @endif
+                                    </a>
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <a href="{{ route('reports.events-balance', array_merge(request()->query(), ['sort' => 'items_discount_amount', 'direction' => request('sort')==='items_discount_amount' && request('direction')==='asc' ? 'desc' : 'asc'])) }}" 
+                                       class="inline-flex items-center gap-1 hover:text-gray-700">
+                                        Discount Total
+                                        @if(request('sort')==='items_discount_amount')
                                             <span class="text-gray-400">{{ request('direction')==='asc' ? '▲' : '▼' }}</span>
                                         @else
                                             <span class="text-gray-300">↕</span>
@@ -126,10 +147,11 @@
                                     $outstanding = ($booking->invoice_net_amount ?? 0) - $paid;
                                 @endphp
                                 <tr class="hover:bg-gray-50">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $bookings->firstItem() + $index }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ optional($booking->created_at)->format('M d, Y') }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ optional($booking->event_start_at)->format('M d, Y') }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $booking->customer_name }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $booking->event_type }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ number_format($booking->items_subtotal ?? 0, 2) }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ number_format($booking->items_discount_amount ?? 0, 2) }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ number_format($booking->invoice_net_amount, 2) }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ number_format($paid, 2) }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ number_format($outstanding, 2) }}</td>
